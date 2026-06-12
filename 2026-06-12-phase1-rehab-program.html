@@ -1,0 +1,1437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phase 1 — Foundation and Upstream Control · Kinec</title>
+<style>
+  /* ── Google Fonts ── */
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;800&family=Inter:wght@400;700&display=swap');
+
+  /* ── GL-003 Tokens ── */
+  :root {
+    --color-primary:       #9B2D30; /* Garnet */
+    --color-neutral-5:     #1A1A1A; /* Ebon */
+    --color-neutral-0:     #F9F7F2; /* Alabaster */
+    --color-supporting-1:  #5E3A2B; /* Deep Earth */
+    --color-supporting-2:  #D67D4E; /* Sienna */
+    --color-supporting-3:  #E8C0A3; /* Soft Sand */
+
+    --space-xs:  8px;
+    --space-sm:  16px;
+    --space-md:  24px;
+    --space-lg:  48px;
+    --space-xl:  64px;
+
+    --radius:    24px;
+    --radius-sm: 12px;
+  }
+
+  /* ── Reset & Base ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--color-neutral-5);
+    background: var(--color-neutral-0);
+    padding-top: 64px; /* nav offset */
+  }
+
+  /* ── Sticky Nav ── */
+  .top-nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: var(--color-neutral-5);
+    padding: 0 var(--space-md);
+    height: 56px;
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+  }
+
+  .top-nav .nav-brand {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--color-supporting-3);
+    letter-spacing: 0.02em;
+    margin-right: var(--space-sm);
+    flex-shrink: 0;
+  }
+
+  .top-nav a {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--color-supporting-3);
+    text-decoration: none;
+    padding: 4px 10px;
+    border-radius: var(--radius-sm);
+    transition: background 0.15s, color 0.15s;
+    flex-shrink: 0;
+  }
+  .top-nav a:hover {
+    background: var(--color-primary);
+    color: var(--color-neutral-0);
+  }
+
+  /* ── Layout ── */
+  .page {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: var(--space-lg) var(--space-md) var(--space-xl);
+  }
+
+  /* ── Header Block ── */
+  .program-header {
+    background: var(--color-neutral-5);
+    border-radius: var(--radius);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-lg);
+    color: var(--color-neutral-0);
+  }
+
+  .program-header .eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-supporting-3);
+    margin-bottom: var(--space-xs);
+  }
+
+  .program-header h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+    font-size: clamp(22px, 4vw, 34px);
+    color: var(--color-neutral-0);
+    margin-bottom: var(--space-sm);
+    line-height: 1.2;
+  }
+
+  .program-header .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: var(--space-xs) var(--space-md);
+    margin-top: var(--space-md);
+  }
+
+  .meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .meta-item .label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-supporting-3);
+    opacity: 0.7;
+  }
+
+  .meta-item .value {
+    font-size: 13px;
+    color: var(--color-neutral-0);
+    line-height: 1.5;
+  }
+
+  .conditions-list {
+    font-size: 13px;
+    color: var(--color-neutral-0);
+    line-height: 1.6;
+  }
+
+  /* ── Section ── */
+  .section {
+    margin-bottom: var(--space-lg);
+    scroll-margin-top: 72px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-md);
+    padding-bottom: var(--space-xs);
+    border-bottom: 2px solid var(--color-supporting-3);
+  }
+
+  .section-number {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+    font-size: 12px;
+    color: var(--color-supporting-2);
+    letter-spacing: 0.06em;
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--color-primary);
+  }
+
+  /* ── Sub-sections (Day blocks) ── */
+  .block {
+    background: white;
+    border-radius: var(--radius);
+    padding: var(--space-md);
+    margin-bottom: var(--space-md);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+
+  .block-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--color-supporting-1);
+    margin-bottom: var(--space-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .block-note {
+    font-size: 13px;
+    font-style: italic;
+    color: var(--color-supporting-1);
+    margin-bottom: var(--space-sm);
+    line-height: 1.5;
+  }
+
+  .block-duration {
+    font-size: 12px;
+    color: var(--color-supporting-2);
+    font-weight: 700;
+    margin-bottom: var(--space-sm);
+  }
+
+  /* ── Prose ── */
+  .prose {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--color-neutral-5);
+    margin-bottom: var(--space-sm);
+  }
+
+  .prose strong {
+    font-weight: 700;
+    color: var(--color-neutral-5);
+  }
+
+  .prose ol, .prose ul {
+    padding-left: var(--space-md);
+    margin-top: var(--space-xs);
+  }
+
+  .prose li {
+    margin-bottom: 4px;
+    line-height: 1.6;
+  }
+
+  /* ── Invariant callout ── */
+  .callout {
+    border-radius: var(--radius);
+    padding: var(--space-sm) var(--space-md);
+    margin-bottom: var(--space-md);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .callout-primary {
+    background: var(--color-primary);
+    color: var(--color-neutral-0);
+  }
+
+  .callout-primary strong {
+    color: var(--color-neutral-0);
+  }
+
+  .callout-warm {
+    background: var(--color-supporting-3);
+    color: var(--color-neutral-5);
+  }
+
+  .callout-warning {
+    background: #FFF3E0;
+    border-left: 4px solid var(--color-supporting-2);
+    color: var(--color-neutral-5);
+  }
+
+  .callout-red {
+    background: #FDF0F0;
+    border-left: 4px solid var(--color-primary);
+    color: var(--color-neutral-5);
+  }
+
+  /* ── Tables ── */
+  .table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: var(--radius);
+    margin-bottom: var(--space-md);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    background: white;
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  thead tr {
+    background: var(--color-neutral-5);
+    color: var(--color-neutral-0);
+  }
+
+  thead th {
+    padding: 10px 14px;
+    text-align: left;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid #f0ede8;
+  }
+
+  tbody tr:last-child {
+    border-bottom: none;
+  }
+
+  tbody tr:nth-child(even) {
+    background: #faf8f5;
+  }
+
+  tbody td {
+    padding: 10px 14px;
+    vertical-align: top;
+    line-height: 1.5;
+  }
+
+  tbody td:first-child {
+    font-weight: 700;
+    color: var(--color-supporting-1);
+    white-space: nowrap;
+  }
+
+  /* For tables where first column is NOT an entity name (e.g., pain scale) */
+  table.no-strong tbody td:first-child {
+    font-weight: 400;
+    color: var(--color-neutral-5);
+    white-space: normal;
+  }
+
+  /* ── H4-level sub-headings inside blocks ── */
+  .h4 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--color-neutral-5);
+    margin: var(--space-md) 0 var(--space-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  /* ── Schedule grid ── */
+  .schedule-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: var(--space-xs);
+    margin-bottom: var(--space-md);
+  }
+
+  .day-card {
+    border-radius: var(--radius);
+    padding: var(--space-sm);
+    background: white;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+
+  .day-card .day-label {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    color: var(--color-primary);
+    margin-bottom: 4px;
+    letter-spacing: 0.02em;
+  }
+
+  .day-card .day-desc {
+    font-size: 12px;
+    color: var(--color-neutral-5);
+    line-height: 1.4;
+  }
+
+  .day-card.rest {
+    background: #f5f3ef;
+  }
+
+  .day-card.rest .day-label {
+    color: var(--color-supporting-1);
+  }
+
+  /* ── Pain scale chips ── */
+  .pain-row td.pain-ok { color: #2E6B3E; font-weight: 700; }
+  .pain-row td.pain-hold { color: var(--color-supporting-2); font-weight: 700; }
+  .pain-row td.pain-stop { color: var(--color-primary); font-weight: 700; }
+  .pain-row td.pain-flag { color: var(--color-primary); font-weight: 700; }
+
+  /* ── Road map stages ── */
+  .roadmap {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    margin-bottom: var(--space-md);
+  }
+
+  .stage-row {
+    display: grid;
+    grid-template-columns: 90px 120px 1fr;
+    gap: var(--space-sm);
+    align-items: start;
+    background: white;
+    border-radius: var(--radius-sm);
+    padding: var(--space-sm) var(--space-md);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+
+  .stage-row.current {
+    border-left: 4px solid var(--color-primary);
+    background: #fdf5f5;
+  }
+
+  .stage-chip {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    color: var(--color-primary);
+  }
+
+  .stage-timing {
+    font-size: 12px;
+    color: var(--color-supporting-1);
+    font-weight: 700;
+  }
+
+  .stage-desc {
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  /* ── Float table ── */
+  .float-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-md);
+  }
+
+  .float-col h4 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--color-supporting-1);
+    margin-bottom: var(--space-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .float-col ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .float-col ul li {
+    font-size: 13px;
+    padding: 6px 10px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 4px;
+    line-height: 1.45;
+  }
+
+  .float-col.can-float ul li {
+    background: #f0f5f1;
+    color: #2E6B3E;
+  }
+
+  .float-col.must-stay ul li {
+    background: #fdf5f0;
+    color: var(--color-supporting-1);
+  }
+
+  /* ── Red flags list ── */
+  .red-flags-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .red-flags-list li {
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-sm);
+    margin-bottom: 6px;
+    font-size: 14px;
+    line-height: 1.5;
+    background: #fdf0f0;
+    border-left: 3px solid var(--color-primary);
+    color: var(--color-neutral-5);
+  }
+
+  /* ── Phase gate checklist ── */
+  .gate-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .gate-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-sm);
+    padding: 8px 0;
+    border-bottom: 1px solid #f0ede8;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .gate-list li:last-child { border-bottom: none; }
+
+  .gate-check {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    border: 2px solid var(--color-supporting-3);
+    margin-top: 2px;
+  }
+
+  /* ── Footer ── */
+  .doc-footer {
+    margin-top: var(--space-xl);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--color-supporting-3);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--color-supporting-1);
+  }
+
+  .doc-footer .pag-mark {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    color: var(--color-primary);
+    font-size: 13px;
+  }
+
+  /* ── Print styles ── */
+  @media print {
+    .top-nav { display: none; }
+    body { padding-top: 0; font-size: 12px; }
+    .page { max-width: 100%; padding: 16px; }
+    .program-header { page-break-after: avoid; }
+    .section { page-break-inside: avoid; }
+    .block { box-shadow: none; border: 1px solid #e0dbd4; }
+    table { font-size: 11px; }
+    thead tr { background: #2a2a2a !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .callout-primary { background: #2a2a2a !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    a { color: inherit; text-decoration: none; }
+    .doc-footer { position: fixed; bottom: 0; left: 0; right: 0; background: white; }
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 640px) {
+    .float-grid { grid-template-columns: 1fr; }
+    .stage-row { grid-template-columns: 1fr; }
+    .stage-timing { display: none; }
+    .schedule-grid { grid-template-columns: repeat(2, 1fr); }
+    .top-nav .nav-brand { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ STICKY NAV ═══════════════ -->
+<nav class="top-nav" aria-label="Section navigation">
+  <span class="nav-brand">Phase 1</span>
+  <a href="#design-logic">Design Logic</a>
+  <a href="#schedule">Schedule</a>
+  <a href="#day-a">Day A</a>
+  <a href="#day-b">Day B</a>
+  <a href="#day-c">Day C</a>
+  <a href="#daily-elbow">Daily Elbow</a>
+  <a href="#foot">Foot</a>
+  <a href="#cardio">Cardio</a>
+  <a href="#sequencing">Sequencing</a>
+  <a href="#progression">Progression</a>
+  <a href="#elbow-roadmap">Elbow Road Map</a>
+  <a href="#red-flags">Red Flags</a>
+</nav>
+
+<!-- ═══════════════ PAGE ═══════════════ -->
+<main class="page">
+
+  <!-- ── Program Header ── -->
+  <header class="program-header">
+    <p class="eyebrow">Kinec · Rehabilitation Program</p>
+    <h1>Phase 1 — Foundation and Upstream Control</h1>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <span class="label">Revised</span>
+        <span class="value">2026-06-12</span>
+      </div>
+      <div class="meta-item">
+        <span class="label">Duration</span>
+        <span class="value">4 weeks</span>
+      </div>
+      <div class="meta-item">
+        <span class="label">Designed by</span>
+        <span class="value">Kinec</span>
+      </div>
+      <div class="meta-item" style="grid-column: 1 / -1;">
+        <span class="label">Conditions</span>
+        <span class="conditions-list">
+          Bilateral patellofemoral chondrosis (L &gt; R) &nbsp;·&nbsp;
+          Right medial epicondylitis (golfer's elbow) &nbsp;·&nbsp;
+          Left elbow — lateral epicondylitis + capsular history (maintenance) &nbsp;·&nbsp;
+          Bilateral first MTP joint sensitivity (R &gt; L) &nbsp;·&nbsp;
+          Left glute medius deficit (107N vs 130N right)
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ════════════════════════════════════════
+       SECTION 1 — DESIGN LOGIC
+  ════════════════════════════════════════ -->
+  <section class="section" id="design-logic">
+    <div class="section-header">
+      <span class="section-number">01</span>
+      <h2 class="section-title">Design Logic</h2>
+    </div>
+
+    <p class="prose">Three upstream problems drive this program, in order of influence:</p>
+
+    <div class="block">
+      <p class="prose"><strong>1. Left glute medius weakness</strong> (107N vs 130N right, ~18% deficit) is the root cause of lateral patellar tracking and the knee problem. Glute activation before every knee loading session is non-negotiable.</p>
+      <p class="prose"><strong>2. Right medial epicondylitis</strong> — vascularization and eccentric tendon loading track. Left elbow maintenance on the same protocol, lighter load.</p>
+      <p class="prose"><strong>3. First MTP joint sensitivity</strong> (both feet, right worse) — systematic foot strengthening with protected progression toward rebounder and hill running.</p>
+    </div>
+
+    <div class="callout callout-primary">
+      <strong>Session invariant:</strong> Glute activation (Block 1) must precede knee loading within 20–30 minutes. This is the only non-negotiable sequence constraint. Everything else can float.
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       SECTION 2 — WEEKLY SCHEDULE
+  ════════════════════════════════════════ -->
+  <section class="section" id="schedule">
+    <div class="section-header">
+      <span class="section-number">02</span>
+      <h2 class="section-title">Weekly Schedule</h2>
+    </div>
+
+    <div class="schedule-grid">
+      <div class="day-card">
+        <div class="day-label">Monday</div>
+        <div class="day-desc">Day A — Glute activation + bilateral knee + cardio</div>
+      </div>
+      <div class="day-card">
+        <div class="day-label">Tuesday</div>
+        <div class="day-desc">Day B — Upper body + elbow rehab</div>
+      </div>
+      <div class="day-card rest">
+        <div class="day-label">Wednesday</div>
+        <div class="day-desc">Rest / active recovery</div>
+      </div>
+      <div class="day-card">
+        <div class="day-label">Thursday</div>
+        <div class="day-desc">Day C — Full body / athletic</div>
+      </div>
+      <div class="day-card">
+        <div class="day-label">Friday</div>
+        <div class="day-desc">Day B (repeat)</div>
+      </div>
+      <div class="day-card">
+        <div class="day-label">Saturday</div>
+        <div class="day-desc">Day D — Cardio + correctives</div>
+      </div>
+      <div class="day-card rest">
+        <div class="day-label">Sunday</div>
+        <div class="day-desc">Rest</div>
+      </div>
+    </div>
+
+    <div class="callout callout-warm">
+      <strong>Also daily (every day including rest days):</strong> Elbow isometric protocol + foot work (TV/floor-friendly)
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       SECTION 3 — DAY A
+  ════════════════════════════════════════ -->
+  <section class="section" id="day-a">
+    <div class="section-header">
+      <span class="section-number">03</span>
+      <h2 class="section-title">Day A — Lower Body Emphasis</h2>
+    </div>
+    <p class="block-duration">~70 minutes</p>
+
+    <!-- Block 1 -->
+    <div class="block">
+      <p class="block-title">Block 1 — Mandatory Glute Activation</p>
+      <p class="block-note">Must precede knee loading. If short on time — skip Block 2, not Block 1.</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Exercise</th>
+              <th>Sets × Reps</th>
+              <th>Equipment</th>
+              <th>Key Cues</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Mini-band Clamshell</td>
+              <td>3 × 15 LEFT / 3 × 10 RIGHT</td>
+              <td>Red mini loop band</td>
+              <td>Tempo 2-1-2. Hand on left hip bone — pelvis must not rotate. Movement from hip only, not TFL.</td>
+            </tr>
+            <tr>
+              <td>Side-lying Hip Abduction (no band)</td>
+              <td>2 × 20 LEFT</td>
+              <td>Mat</td>
+              <td>Leg slightly behind body, toes slightly down. Recruits glute medius, not TFL.</td>
+            </tr>
+            <tr>
+              <td>Single-leg Glute Bridge</td>
+              <td>3 × 12 LEFT / 2 × 12 RIGHT</td>
+              <td>Mat</td>
+              <td>Drive through heel. Hold 2 sec at peak. Can't feel left glute? Don't proceed to knee loading.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Block 2 -->
+    <div class="block">
+      <p class="block-title">Block 2 — Knee Loading (glute activation confirmed)</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Exercise</th>
+              <th>Sets × Reps / Duration</th>
+              <th>Equipment</th>
+              <th>Key Cues</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Wall Sit Isometric</td>
+              <td>3 × 30–45 sec at 60° knee flexion</td>
+              <td>—</td>
+              <td>Actively push left knee outward. Pain 0–2/10 OK; 3+/10 shorten duration, not depth.</td>
+            </tr>
+            <tr>
+              <td>Terminal Knee Extension (TKE)</td>
+              <td>3 × 15 each leg</td>
+              <td>Ankle-cuff tubing, low anchor</td>
+              <td>Full extension, feel VMO at terminal range. Control the return.</td>
+            </tr>
+            <tr>
+              <td>Lateral Step-Down</td>
+              <td>3 × 10 each leg</td>
+              <td>Yoga block or bottom stair</td>
+              <td>Stand sideways, lower opposite foot under control. Left knee tracks over 2nd toe. Valgus = stop, regardless of pain.</td>
+            </tr>
+            <tr>
+              <td>Hip Thrust</td>
+              <td>Wks 1–2: 3 × 15 BW · Wks 3–4: 4 × 12 @ 25 lb dumbbells</td>
+              <td>Bench</td>
+              <td>Drive to full hip extension, 1-sec glute squeeze at top. Actively push left knee outward throughout. Highest-EMG glute exercise.</td>
+            </tr>
+            <tr>
+              <td>Romanian Deadlift (RDL)</td>
+              <td>Wks 1–2: 3 × 10 light · Wks 3–4: 3 × 10 moderate</td>
+              <td>Dumbbells or barbell</td>
+              <td>Hip hinge. Glutes drive lockout — not low back extension. Zero knee pain expected.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Block 3 -->
+    <div class="block">
+      <p class="block-title">Block 3 — Core</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Exercise</th>
+              <th>Sets × Reps / Duration</th>
+              <th>Equipment</th>
+              <th>Key Cues</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Dead Bug</td>
+              <td>3 × 6 each side</td>
+              <td>Mat</td>
+              <td>Neutral spine. Exhale fully as limb extends. 3s extension, 2s hold, 3s return. Head flat, chin neutral. Right arm: no gripping weight while medial epicondylitis active.</td>
+            </tr>
+            <tr>
+              <td>Pallof Press</td>
+              <td>3 × 8–10 each side</td>
+              <td>Mini loop band, door anchor</td>
+              <td>Knees soft, hip width. Press from sternum, hold 2s, return. No right elbow lock-out — stop just short. Anti-rotation work, not a load exercise.</td>
+            </tr>
+            <tr>
+              <td>Roman Chair Hyperextension</td>
+              <td>3 × 12</td>
+              <td>Roman chair</td>
+              <td>Hold at current load — no progression until dead bug and pallof press are established.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Block 4 -->
+    <div class="block">
+      <p class="block-title">Block 4 — Cardio</p>
+      <p class="prose">Tunturi E455 upright bike or recumbent bike — 20 minutes, Zone 2 / conversational pace. Seat height: knee at ~25–30° at bottom of stroke.</p>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       SECTION 4 — DAY B
+  ════════════════════════════════════════ -->
+  <section class="section" id="day-b">
+    <div class="section-header">
+      <span class="section-number">04</span>
+      <h2 class="section-title">Day B — Upper Body + Elbow Rehab</h2>
+    </div>
+    <p class="block-duration">~55 minutes</p>
+
+    <!-- Block 1 -->
+    <div class="block">
+      <p class="block-title">Block 1 — Elbow Rehab — Both Arms, One Protocol</p>
+      <p class="block-note">Same exercises for both arms. Right arm uses load it tolerates per pain rules. Left arm uses lighter resistance / shorter duration. No separate tracking.</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Exercise</th>
+              <th>Sets × Reps</th>
+              <th>Equipment</th>
+              <th>Right Arm</th>
+              <th>Left Arm</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Wrist Roller</td>
+              <td>2 × full cycle each direction</td>
+              <td>Forearm/wrist roller</td>
+              <td>No added plates Wks 1–2. Palmar flexion emphasis. Pain 0–3/10.</td>
+              <td>Same but lighter / slower. Monitor lateral elbow sensation — drop if present.</td>
+            </tr>
+            <tr>
+              <td>Towel Eccentric Wrist Curl</td>
+              <td>3 × 10</td>
+              <td>Small firm towel</td>
+              <td>Tempo 2-0-4 (curl up 2, lower over 4). Wrist neutral to slight palmar flex only — not past neutral.</td>
+              <td>Same, lighter effort.</td>
+            </tr>
+            <tr>
+              <td>Finger Spring Trainer</td>
+              <td>2 × 15 per finger</td>
+              <td>Individual-finger spring trainer</td>
+              <td>Full protocol — ring and little finger emphasis.</td>
+              <td>Maintenance volume: 2 × 10 per finger.</td>
+            </tr>
+            <tr>
+              <td>Foam Ball Grip</td>
+              <td>2 × 20 squeezes</td>
+              <td>Teal or yellow ball</td>
+              <td>Start teal; if 3+/10 use yellow. Full squeeze, 1-sec hold, slow release.</td>
+              <td>Yellow ball. 2 × 15.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Block 2 -->
+    <div class="block">
+      <p class="block-title">Block 2 — Bench + Pull + Shoulders</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Exercise</th>
+              <th>Sets × Reps</th>
+              <th>Equipment</th>
+              <th>Key Cues</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Light Bench Press</td>
+              <td>3 × 12–15, RPE 5–6/10</td>
+              <td>Barbell, bench</td>
+              <td>Vascularization stimulus, not strength. Pain 0–2/10 medial elbow OK; 3+/10 reduce load.</td>
+            </tr>
+            <tr>
+              <td>Ring Rows (low angle, 30–40° from horizontal)</td>
+              <td>3 × 8–10</td>
+              <td>Gymnastics rings</td>
+              <td>Scapular retraction first, then row. Not a vertical pull. Advance angle as right elbow tolerates.</td>
+            </tr>
+            <tr>
+              <td>Dumbbell Overhead Press</td>
+              <td>3 × 10</td>
+              <td>Dumbbells</td>
+              <td>Light to moderate. Stop if elbow pain appears.</td>
+            </tr>
+            <tr>
+              <td>Band Pull-Apart (overhand)</td>
+              <td>3 × 15</td>
+              <td>Mini loop band</td>
+              <td>Posterior cuff maintenance.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Block 3 -->
+    <div class="block">
+      <p class="block-title">Block 3 — Core</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Exercise</th>
+              <th>Sets × Reps / Duration</th>
+              <th>Equipment</th>
+              <th>Key Cues</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Dead Bug</td>
+              <td>3 × 6 each side</td>
+              <td>Mat</td>
+              <td>Same as Day A. Daily frequency appropriate — not recovery-limited.</td>
+            </tr>
+            <tr>
+              <td>Swiss Ball Rollout or Plank</td>
+              <td>3 × 30–45 sec</td>
+              <td>Swiss ball or floor</td>
+              <td>Plank: if right MTP sensitive, use knees-down variant. Maintain lumbar neutral throughout.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       SECTION 5 — DAY C
+  ════════════════════════════════════════ -->
+  <section class="section" id="day-c">
+    <div class="section-header">
+      <span class="section-number">05</span>
+      <h2 class="section-title">Day C — Full Body / Athletic</h2>
+    </div>
+    <p class="block-duration">~75 minutes</p>
+
+    <!-- Block 1 -->
+    <div class="block">
+      <p class="block-title">Block 1 — Glute Activation Primer</p>
+      <p class="prose">One round only of each Day A Block 1 exercise — activation function, not additional fatigue.</p>
+    </div>
+
+    <!-- Block 2 -->
+    <div class="block">
+      <p class="block-title">Block 2 — Loaded Compound Lower</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Exercise</th>
+              <th>Sets × Reps</th>
+              <th>Equipment</th>
+              <th>Key Cues</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Goblet Squat</td>
+              <td>Wks 1–2: 3 × 10 @ 25–35 lb · Wks 3–4: 3 × 10 @ 35–45 lb</td>
+              <td>Dumbbell, yoga block under heels if needed</td>
+              <td>Drive knees out actively. Pain 0–2/10. Left knee valgus = stop.</td>
+            </tr>
+            <tr>
+              <td>Single-leg RDL</td>
+              <td>Wks 1–2: 3 × 10 BW · Wks 3–4: 3 × 10 @ 15–25 lb</td>
+              <td>Dumbbell</td>
+              <td>Keep hips level — hip hike = glute medius failing. Can float to a separate mini-session.</td>
+            </tr>
+            <tr>
+              <td>Step-up</td>
+              <td>Wks 1–2: 3 × 10 BW · Wks 3–4: 3 × 10 @ 15 lb</td>
+              <td>Bench or box, dumbbells</td>
+              <td>Drive through elevated heel. Glute of elevated leg does the work. Control the lowering. Left knee tender? Reduce step height.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Block 3 -->
+    <div class="block">
+      <p class="block-title">Block 3 — Balance / Proprioception</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Exercise</th>
+              <th>Sets × Duration</th>
+              <th>Equipment</th>
+              <th>Key Cues</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Wobble Board — Single Leg</td>
+              <td>Wks 1–2: 2 × 90 sec each leg, eyes open · Wks 3–4: 2 × 90 sec, eyes closed</td>
+              <td>Liveup wobble board</td>
+              <td>Soft knee, glute engaged. Eyes closed = major proprioceptive upgrade. Can float to evening.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Block 4 -->
+    <div class="block">
+      <p class="block-title">Block 4 — Core</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Exercise</th>
+              <th>Sets × Reps / Duration</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Roman Chair Hyperextension</td>
+              <td>3 × 12</td>
+              <td>Alternates with Day A — not both days.</td>
+            </tr>
+            <tr>
+              <td>Pallof Press</td>
+              <td>3 × 8–10 each side</td>
+              <td>Alternates with Day A — not both days.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Block 5 -->
+    <div class="block">
+      <p class="block-title">Block 5 — Cardio</p>
+      <p class="prose">20 minutes. Walk + flat run intervals, or shadow boxing (3–5 × 2-min rounds), or Tunturi bike. See <a href="#cardio" style="color: var(--color-primary);">cardio rotation</a>.</p>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       SECTION 6 — DAILY ELBOW PROTOCOL
+  ════════════════════════════════════════ -->
+  <section class="section" id="daily-elbow">
+    <div class="section-header">
+      <span class="section-number">06</span>
+      <h2 class="section-title">Daily — Elbow Isometric Protocol</h2>
+    </div>
+
+    <div class="callout callout-warm">
+      Every day including rest days. Seated, TV-friendly. 5–7 minutes.<br>
+      <strong>Equipment:</strong> Two foam grip balls (yellow = soft, teal = firm), individual-finger spring trainer.<br>
+      <strong>Position:</strong> Seated, elbow at ~90°, forearm resting on thigh or armrest.<br>
+      <strong>Both arms — same protocol. Adjust load per arm (right heavier as tolerated; left lighter).</strong>
+    </div>
+
+    <div class="block">
+      <p class="block-title">Step 1 — Wrist Isometric Holds (3 min per arm)</p>
+      <p class="block-note">Forearm resting on thigh.</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Hold</th>
+              <th>Reps / Duration</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Palm UP — palmar flexion isometric</td>
+              <td>Loose fist, press gently into thigh. Hold 10 sec × 5. Rest 5 sec between.</td>
+              <td>Loads common flexor origin (medial epicondyle). Primary hold for golfer's elbow.</td>
+            </tr>
+            <tr>
+              <td>Palm DOWN — wrist extension isometric</td>
+              <td>Forearm on thigh, palm down. Press back of hand gently up against light resistance. Hold 10 sec × 5.</td>
+              <td>Loads common extensor origin (lateral epicondyle). Primary hold for tennis elbow. Both conditions present in both arms to varying degrees.</td>
+            </tr>
+            <tr>
+              <td>Grip ball isometric</td>
+              <td>Yellow ball (start); teal when yellow is easy. Squeeze firm, hold 10 sec, release fully × 5.</td>
+              <td>Right arm: teal if 0–2/10 pain. Left arm: yellow.</td>
+            </tr>
+            <tr>
+              <td>Finger spring trainer</td>
+              <td>10 slow presses per finger, hold 2 sec at peak. Ring and little finger emphasis.</td>
+              <td>Right arm: full set. Left arm: 8 reps per finger.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="block">
+      <p class="block-title">Step 2 — Forearm Stretches (1–2 min per arm)</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Stretch</th>
+              <th>Hold</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Wrist flexor stretch (palm up)</td>
+              <td>Extend arm, palm up, pull fingers back gently with other hand. 30 sec × 2.</td>
+              <td>Right arm primary — addresses medial epicondyle.</td>
+            </tr>
+            <tr>
+              <td>Wrist extensor stretch (palm down)</td>
+              <td>Extend arm, palm down, pull hand gently downward. 30 sec × 2.</td>
+              <td>Left arm primary — addresses lateral epicondyle. Both arms benefit.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="block-note" style="margin-top: var(--space-xs);">On training days after bench press or ring rows: right arm may be more sensitive — reduce grip ball intensity that evening.</p>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       SECTION 7 — FOOT
+  ════════════════════════════════════════ -->
+  <section class="section" id="foot">
+    <div class="section-header">
+      <span class="section-number">07</span>
+      <h2 class="section-title">Foot Strengthening + First MTP Management</h2>
+    </div>
+
+    <p class="prose" style="margin-bottom: var(--space-sm);">Can be paired with daily elbow protocol. Mostly seated or standing — TV and kitchen-friendly.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Exercise</th>
+            <th>Sets × Reps</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Toe Yoga (big toe isolation)</td>
+            <td>3 × 10 alternations per foot</td>
+            <td>Lift big toe only; then press big toe, lift lesser toes. Foundational intrinsic foot work.</td>
+          </tr>
+          <tr>
+            <td>Short Foot / Foot Doming</td>
+            <td>3 × 10 holds per foot</td>
+            <td>Draw ball of foot toward heel without curling toes. Practice during wobble board standing.</td>
+          </tr>
+          <tr>
+            <td>Towel Scrunches</td>
+            <td>2 × 30 sec per foot</td>
+            <td>Toe flexion to scrunch towel. Loads flexors without MTP hyperextension.</td>
+          </tr>
+          <tr>
+            <td>Toe Resistance (mini band)</td>
+            <td>3 × 15 per foot (extra set right)</td>
+            <td>Band around toes, fixed at ball of foot. Flex toes against resistance.</td>
+          </tr>
+          <tr>
+            <td>Heel-only Calf Raise (from step)</td>
+            <td>3 × 12–15 each leg</td>
+            <td>Only heel on step edge — ball of foot and toes hang free. No toe-off MTP stress. Add weight when easy.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="block">
+      <p class="block-title">Phase 1 Progressions</p>
+      <p class="prose"><strong>Rebounder:</strong> Health bounce — two feet, low amplitude, feet flat on mat, 10 min max. Stop if any MTP pain. No toe-off intensity, no single-leg work.</p>
+      <p class="prose"><strong>Hill running:</strong> Flat and mild terrain only. Shoes with 6–8 mm+ heel drop. No sustained uphill in Phase 1.</p>
+    </div>
+
+    <div class="callout callout-red">
+      <strong>Doc flag:</strong> First MTP joint requires clinical assessment before Phase 2 rebounder and hill running. Kinec is holding Phase 2 progressions on these two modalities pending Doc's input.
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       SECTION 8 — CARDIO ROTATION
+  ════════════════════════════════════════ -->
+  <section class="section" id="cardio">
+    <div class="section-header">
+      <span class="section-number">08</span>
+      <h2 class="section-title">Cardio Rotation</h2>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Option</th>
+            <th>Phase 1 Guidance</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Walk + flat run intervals</td>
+            <td>20–40 min. Walk base, 30–60 sec run intervals on flat only. Avoid sustained uphill. Shoes with 6–8 mm+ drop for running.</td>
+          </tr>
+          <tr>
+            <td>Tunturi E455 upright bike</td>
+            <td>20–40 min, Zone 2. Best first-MTP option. Can use as training-day warm-up (10–15 min easy).</td>
+          </tr>
+          <tr>
+            <td>Recumbent bike</td>
+            <td>Zone 2. Most conservative — good for rest days or after heavy leg sessions.</td>
+          </tr>
+          <tr>
+            <td>Rebounder</td>
+            <td>Health bounce only (see foot section). 10 min max.</td>
+          </tr>
+          <tr>
+            <td>Shadow boxing</td>
+            <td>3–5 × 2-min rounds. Right arm jab/cross light and controlled. No heavy bag.</td>
+          </tr>
+          <tr>
+            <td style="color: var(--color-supporting-1);">Jump rope</td>
+            <td style="color: var(--color-supporting-1);">Deferred to Phase 2 (MTP + elbow grip load).</td>
+          </tr>
+          <tr>
+            <td style="color: var(--color-supporting-1);">Uphill running</td>
+            <td style="color: var(--color-supporting-1);">Deferred to Phase 2.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       SECTION 9 — SEQUENCING
+  ════════════════════════════════════════ -->
+  <section class="section" id="sequencing">
+    <div class="section-header">
+      <span class="section-number">09</span>
+      <h2 class="section-title">Exercise Sequencing — What Can Float</h2>
+    </div>
+
+    <div class="callout callout-primary" style="margin-bottom: var(--space-md);">
+      <strong>Non-negotiable anchor:</strong> Glute activation (Block 1) must precede knee loading within 20–30 minutes.
+    </div>
+
+    <div class="float-grid">
+      <div class="float-col can-float">
+        <h4>Can be done at any time of day</h4>
+        <ul>
+          <li>Dead Bug — morning floor, evening, anywhere with a mat</li>
+          <li>Side-lying Hip Abduction + Glute Bridge — morning floor, evening TV</li>
+          <li>Single-leg RDL (bodyweight) — kitchen, garden, anytime standing</li>
+          <li>Wobble board balance — evening news, anywhere standing</li>
+          <li>Toe yoga + short foot + towel scrunches — seated anywhere</li>
+          <li>Daily elbow isometric protocol — TV every evening</li>
+        </ul>
+      </div>
+      <div class="float-col must-stay">
+        <h4>Must stay in the training session</h4>
+        <ul>
+          <li>Hip thrusts (loaded)</li>
+          <li>Step-down / step-up (loaded)</li>
+          <li>Goblet squat</li>
+          <li>Loaded RDL</li>
+          <li>Ring rows</li>
+          <li>Bench press</li>
+          <li>Wall sit</li>
+          <li>Pallof press</li>
+          <li>Roman chair</li>
+          <li>Swiss ball rollout</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       SECTION 10 — PROGRESSION CRITERIA
+  ════════════════════════════════════════ -->
+  <section class="section" id="progression">
+    <div class="section-header">
+      <span class="section-number">10</span>
+      <h2 class="section-title">Progression Criteria</h2>
+    </div>
+
+    <p class="prose" style="margin-bottom: var(--space-sm);"><em>Peter does not experience morning-after ache. All gates use intra-session and during-activity pain as the primary signal.</em></p>
+
+    <div class="block">
+      <p class="block-title">Pain Scale</p>
+      <div class="table-wrap">
+        <table class="no-strong">
+          <thead>
+            <tr>
+              <th>Level</th>
+              <th>Response</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="pain-row">
+              <td class="pain-ok">0–2/10</td>
+              <td>Continue and progress normally</td>
+            </tr>
+            <tr class="pain-row">
+              <td class="pain-hold">3/10</td>
+              <td>Complete set, do not add load this session</td>
+            </tr>
+            <tr class="pain-row">
+              <td class="pain-stop">4/10</td>
+              <td>Stop that exercise, substitute or skip</td>
+            </tr>
+            <tr class="pain-row">
+              <td class="pain-flag">5+/10</td>
+              <td>Stop session; flag to Doc if it recurs</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="block">
+      <p class="block-title">Phase 1 → Phase 2 Gates (all must be true)</p>
+      <ul class="gate-list">
+        <li><span class="gate-check"></span><span>Left knee 0–2/10 on lateral step-down for 3 consecutive sessions, zero valgus</span></li>
+        <li><span class="gate-check"></span><span>Wall sit 45 sec pain-free</span></li>
+        <li><span class="gate-check"></span><span>Left glute firing equal to or before right in single-leg bridge</span></li>
+        <li><span class="gate-check"></span><span>Right elbow bench press 0–2/10 for 4 consecutive sessions</span></li>
+        <li><span class="gate-check"></span><span>Rebounder health bounce (10 min) produces 0/10 MTP pain</span></li>
+        <li><span class="gate-check"></span><span>Hip thrust 3 × 15 BW with 1-sec hold, no left knee valgus</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       SECTION 11 — ELBOW ROAD MAP
+  ════════════════════════════════════════ -->
+  <section class="section" id="elbow-roadmap">
+    <div class="section-header">
+      <span class="section-number">11</span>
+      <h2 class="section-title">Right Elbow Road Map</h2>
+    </div>
+
+    <div class="roadmap">
+      <div class="stage-row current">
+        <span class="stage-chip">Stage 1</span>
+        <span class="stage-timing">Phase 1, Wks 1–4</span>
+        <span class="stage-desc">Daily isometrics + towel eccentric + wrist roller BW + ring rows low angle</span>
+      </div>
+      <div class="stage-row">
+        <span class="stage-chip">Stage 2</span>
+        <span class="stage-timing">Phase 2, Wks 5–8</span>
+        <span class="stage-desc">Eccentric wrist curl → 2–5 lb dumbbell; wrist roller + 1.25 kg plate; ring rows toward horizontal; supported farmer's carry simulation</span>
+      </div>
+      <div class="stage-row">
+        <span class="stage-chip">Stage 3</span>
+        <span class="stage-timing">Phase 3, Wks 9–12</span>
+        <span class="stage-desc">Bent-arm supported hang; farmer's carry @ 15 lb; ring rows at full horizontal</span>
+      </div>
+      <div class="stage-row">
+        <span class="stage-chip">Stage 4</span>
+        <span class="stage-timing">Phase 4+</span>
+        <span class="stage-desc">Passive hang; eccentric-only pull-ups; farmer's carry progression</span>
+      </div>
+    </div>
+
+    <div class="callout callout-warning">
+      No change after 6 weeks of eccentric loading → flag to Doc (possible ulnar nerve or capsular involvement).
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       SECTION 12 — RED FLAGS
+  ════════════════════════════════════════ -->
+  <section class="section" id="red-flags">
+    <div class="section-header">
+      <span class="section-number">12</span>
+      <h2 class="section-title">Red Flags — Stop and Flag to Doc</h2>
+    </div>
+
+    <ul class="red-flags-list">
+      <li>Sharp / hot / stabbing knee pain during any exercise</li>
+      <li>New clicking, locking, or giving-way in either knee</li>
+      <li>Right elbow pain radiating toward ring/little finger, or tingling/numbness in forearm or hand</li>
+      <li>Any elbow pain above 5/10 not reducing within 10 min of stopping</li>
+      <li>First MTP pain not resolving within 24 hours, or any joint swelling</li>
+      <li>Instability or giving-way at knee or ankle</li>
+      <li>Pain at rest in any affected joint (not reported — flag immediately if it appears)</li>
+    </ul>
+  </section>
+
+  <!-- ── Footer ── -->
+  <footer class="doc-footer">
+    <span class="pag-mark">PAG</span>
+    <span>Phase 1 — Foundation and Upstream Control · Kinec · 2026-06-12</span>
+  </footer>
+
+</main>
+
+</body>
+</html>

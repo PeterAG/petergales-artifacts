@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Vantage — The Experience Spec</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;800&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ─── GL-003 Design System Tokens ─────────────────────────────────── */
+    :root {
+      /* Color palette */
+      --color-primary:       #9B2D30; /* Garnet */
+      --color-neutral-5:     #1A1A1A; /* Ebon */
+      --color-neutral-0:     #F9F7F2; /* Alabaster */
+      --color-supporting-1:  #5E3A2B; /* Deep Earth */
+      --color-supporting-2:  #D67D4E; /* Sienna */
+      --color-supporting-3:  #E8C0A3; /* Soft Sand */
+
+      /* Pillar differentiation — warm earth tones from the analogous scale */
+      --pillar-peace:        #5E3A2B; /* Deep Earth */
+      --pillar-power:        #8A6438; /* Bark — warm mid-tone */
+      --pillar-purpose:      #9B2D30; /* Garnet — primary, purposeful */
+
+      /* Foundation */
+      --foundation-bg:       #2A1F1A; /* Very deep warm brown — ground beneath all three */
+      --foundation-accent:   #E8C0A3; /* Soft Sand */
+
+      /* Spacing scale */
+      --space-xs:   8px;
+      --space-sm:   16px;
+      --space-md:   24px;
+      --space-lg:   48px;
+      --space-xl:   64px;
+      --space-2xl:  96px;
+
+      /* Radius Rule */
+      --radius:     24px;
+    }
+
+    /* ─── Reset & Base ─────────────────────────────────────────────────── */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      background: var(--color-neutral-0);
+      color: var(--color-neutral-5);
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 400;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    /* ─── Page shell ────────────────────────────────────────────────────── */
+    .page {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: var(--space-xl) var(--space-lg);
+    }
+
+    /* ─── Header ────────────────────────────────────────────────────────── */
+    .header {
+      margin-bottom: var(--space-lg);
+    }
+
+    .version-tag {
+      display: inline-block;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-primary);
+      border: 1.5px solid var(--color-primary);
+      border-radius: var(--radius);
+      padding: 4px 14px;
+      margin-bottom: var(--space-sm);
+    }
+
+    .h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 52px;
+      color: var(--color-primary);
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+      margin-bottom: var(--space-xs);
+    }
+
+    .h2-subtitle {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 500;
+      font-size: 18px;
+      color: var(--color-supporting-1);
+      line-height: 1.5;
+    }
+
+    .header-divider {
+      margin-top: var(--space-md);
+      height: 0.5px;
+      background: var(--color-supporting-3);
+      border: none;
+    }
+
+    /* ─── Intro line ─────────────────────────────────────────────────────── */
+    .intro {
+      margin-top: var(--space-md);
+      margin-bottom: var(--space-lg);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      color: var(--color-neutral-5);
+      line-height: 1.5;
+      max-width: 680px;
+      opacity: 0.7;
+    }
+
+    /* ─── Three pillars layout ───────────────────────────────────────────── */
+    .pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-sm);
+      margin-bottom: var(--space-xs);
+      align-items: stretch;
+    }
+
+    /* ─── Pillar card ────────────────────────────────────────────────────── */
+    .pillar {
+      border-radius: var(--radius) var(--radius) 0 0; /* top corners only — pillars sit on foundation */
+      padding: var(--space-md) var(--space-md) var(--space-lg);
+      background: var(--color-neutral-0);
+      border: 1.5px solid;
+      border-bottom: none;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+      position: relative;
+    }
+
+    /* Subtle top accent bar — the capital of the pillar */
+    .pillar::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+
+    .pillar--peace {
+      border-color: var(--pillar-peace);
+    }
+    .pillar--peace::before {
+      background: var(--pillar-peace);
+    }
+
+    .pillar--power {
+      border-color: var(--pillar-power);
+    }
+    .pillar--power::before {
+      background: var(--pillar-power);
+    }
+
+    .pillar--purpose {
+      border-color: var(--pillar-purpose);
+    }
+    .pillar--purpose::before {
+      background: var(--pillar-purpose);
+    }
+
+    /* ─── Pillar header ──────────────────────────────────────────────────── */
+    .pillar-header {
+      padding-top: var(--space-xs); /* breathing room below the accent bar */
+    }
+
+    .pillar-number {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      opacity: 0.45;
+      color: var(--color-neutral-5);
+      margin-bottom: 4px;
+    }
+
+    .pillar-title {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 26px;
+      line-height: 1.1;
+      margin-bottom: var(--space-xs);
+    }
+
+    .pillar--peace .pillar-title  { color: var(--pillar-peace);   }
+    .pillar--power .pillar-title  { color: var(--pillar-power);   }
+    .pillar--purpose .pillar-title { color: var(--pillar-purpose); }
+
+    .pillar-definition {
+      font-family: 'Inter', sans-serif;
+      font-size: 12.5px;
+      font-weight: 400;
+      line-height: 1.5;
+      color: var(--color-neutral-5);
+      font-style: italic;
+      opacity: 0.7;
+      padding-bottom: var(--space-xs);
+      border-bottom: 1px solid var(--color-supporting-3);
+    }
+
+    /* ─── Pillar items ───────────────────────────────────────────────────── */
+    .pillar-items {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .pillar-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--color-neutral-5);
+    }
+
+    .item-marker {
+      flex-shrink: 0;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      margin-top: 6px;
+    }
+
+    .pillar--peace   .item-marker { background: var(--pillar-peace);   }
+    .pillar--power   .item-marker { background: var(--pillar-power);   }
+    .pillar--purpose .item-marker { background: var(--pillar-purpose); }
+
+    /* ─── Foundation ─────────────────────────────────────────────────────── */
+    .foundation {
+      border-radius: 0 0 var(--radius) var(--radius);
+      background: var(--foundation-bg);
+      padding: var(--space-md) var(--space-md) var(--space-lg);
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: var(--space-md) var(--space-lg);
+      align-items: start;
+      margin-bottom: var(--space-lg);
+    }
+
+    .foundation-label-col {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+      min-width: 160px;
+    }
+
+    .foundation-eyebrow {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--foundation-accent);
+      opacity: 0.6;
+    }
+
+    .foundation-title {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      color: var(--foundation-accent);
+      line-height: 1.1;
+    }
+
+    .foundation-definition {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-style: italic;
+      color: var(--foundation-accent);
+      opacity: 0.65;
+      line-height: 1.5;
+      max-width: 160px;
+    }
+
+    .foundation-body {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--color-neutral-0);
+      opacity: 0.85;
+    }
+
+    /* ─── Benchmark section ──────────────────────────────────────────────── */
+    .benchmarks {
+      display: grid;
+      grid-template-columns: auto repeat(3, 1fr);
+      gap: var(--space-xs) var(--space-sm);
+      align-items: center;
+      margin-bottom: var(--space-lg);
+    }
+
+    .benchmark-label {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-supporting-1);
+      white-space: nowrap;
+      padding-right: var(--space-sm);
+    }
+
+    .benchmark-item {
+      background: var(--color-neutral-0);
+      border: 1.5px solid var(--color-supporting-3);
+      border-radius: var(--radius);
+      padding: var(--space-xs) var(--space-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .benchmark-horizon {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-primary);
+    }
+
+    .benchmark-date {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      color: var(--color-neutral-5);
+      font-weight: 400;
+    }
+
+    /* ─── Footer ─────────────────────────────────────────────────────────── */
+    .footer {
+      padding-top: var(--space-sm);
+      border-top: 0.5px solid var(--color-supporting-3);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-pag {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 400;
+      font-size: 13px;
+      color: var(--color-primary);
+    }
+
+    .footer-meta {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      color: var(--color-neutral-5);
+      opacity: 0.45;
+    }
+  </style>
+</head>
+
+<body>
+<div style="background:#2A1F1A;padding:9px 24px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13px;letter-spacing:0.03em;">
+  <a href="file:///Users/peteranthony/Peter%20OS%202/Deliverables/peter-os-projects-dashboard.html" style="color:#E8C0A3;text-decoration:none;">&#8592; My Projects</a>
+</div>
+
+  <div class="page">
+
+    <!-- ─── Header ──────────────────────────────────────────────────────── -->
+    <header class="header">
+      <span class="version-tag">The Experience Spec &mdash; v1 &mdash; 2026-06-17</span>
+      <h1 class="h1">Project Vantage</h1>
+      <p class="h2-subtitle">Peter's personal operating system — what it must feel like to work.</p>
+      <hr class="header-divider">
+    </header>
+
+    <p class="intro">
+      This document defines the standard, not the system. Each pillar names how the work should feel — not what is built.
+      Return at each benchmark date and score the system against this spec honestly.
+    </p>
+
+    <!-- ─── Three pillars ─────────────────────────────────────────────── -->
+    <div class="pillars-grid">
+
+      <!-- Peace -->
+      <article class="pillar pillar--peace">
+        <div class="pillar-header">
+          <div class="pillar-number">Pillar I</div>
+          <h2 class="pillar-title">Peace</h2>
+          <p class="pillar-definition">Not the absence of challenges — complete confidence in handling them, and a positive mood about them.</p>
+        </div>
+        <ul class="pillar-items">
+          <li class="pillar-item"><span class="item-marker" aria-hidden="true"></span><span>Everything handled — obligations, commitments, legal requirements tracked, anticipated, executed in time.</span></li>
+          <li class="pillar-item"><span class="item-marker" aria-hidden="true"></span><span>Active team watching on Peter's behalf, proactively flagging where to focus.</span></li>
+          <li class="pillar-item"><span class="item-marker" aria-hidden="true"></span><span>Early warning — nothing catches Peter off-guard; new developments scanned for cross-domain impact.</span></li>
+          <li class="pillar-item"><span class="item-marker" aria-hidden="true"></span><span>Stall detection — nothing slips through; stated commitments with no action are surfaced.</span></li>
+          <li class="pillar-item"><span class="item-marker" aria-hidden="true"></span><span>Wins acknowledged — progress is felt, not just problems.</span></li>
+          <li class="pillar-item"><span class="item-marker" aria-hidden="true"></span><span>Belief maintained — Peter stays in a confident, positive state.</span></li>
+          <li class="pillar-item"><span class="item-marker" aria-hidden="true"></span><span>It's working — financially, relationally, creatively.</span></li>
+        </ul>
+      </article>
+
+      <!-- Power -->
+      <article class="pillar pillar--power">
+        <div class="pillar-header">
+          <div class="pillar-number">Pillar II</div>
+          <h2 class="pillar-title">Power</h2>
+          <p class="pillar-definition">Outstanding work produced in less time. What was impossible alone becomes possible.</p>
+        </div>
+        <ul class="pillar-items">
+          <li class="pillar-item"><span class="item-marker" aria-hidden="true"></span><span>Superpowers — the team extends what Peter can do and be.</span></li>
+          <li class="pillar-item"><span class="item-marker" aria-hidden="true"></span><span>Active environmental intelligence — fed what he needs to know when he needs it.</span></li>
+          <li class="pillar-item"><span class="item-marker" aria-hidden="true"></span><span>Curated information diet — time to read, think, and produce is protected.</span></li>
+        </ul>
+      </article>
+
+      <!-- Purpose -->
+      <article class="pillar pillar--purpose">
+        <div class="pillar-header">
+          <div class="pillar-number">Pillar III</div>
+          <h2 class="pillar-title">Purpose</h2>
+          <p class="pillar-definition">Peter knows what he does. He is doing his life's work. The right people are finding him.</p>
+        </div>
+        <ul class="pillar-items">
+          <li class="pillar-item"><span class="item-marker" aria-hidden="true"></span><span>Identity answered — authentically, not rehearsed.</span></li>
+          <li class="pillar-item"><span class="item-marker" aria-hidden="true"></span><span>Mission being fulfilled — living his life's work.</span></li>
+          <li class="pillar-item"><span class="item-marker" aria-hidden="true"></span><span>Right people seeking him out — those who share his values and humour; not afraid to take anyone's call.</span></li>
+        </ul>
+      </article>
+
+    </div><!-- /pillars-grid -->
+
+    <!-- ─── Foundation ────────────────────────────────────────────────── -->
+    <div class="foundation">
+      <div class="foundation-label-col">
+        <span class="foundation-eyebrow">Foundation</span>
+        <h3 class="foundation-title">Living System</h3>
+        <p class="foundation-definition">Not a pillar — the ground all three stand on.</p>
+      </div>
+      <p class="foundation-body">
+        Self-aware, self-regulating, Peter as its primary concern. Knows itself: the vault, the apps, the models,
+        the hardware, the world outside. Learns and adapts continuously — not in response to failures Peter experiences,
+        but as a standing discipline. Gets better without Peter having to make it better.
+        Ensures Peace does not erode, Power does not plateau, and Purpose does not drift.
+      </p>
+    </div>
+
+    <!-- ─── Benchmark dates ───────────────────────────────────────────── -->
+    <div class="benchmarks">
+      <span class="benchmark-label">Review dates</span>
+
+      <div class="benchmark-item">
+        <span class="benchmark-horizon">1 Month</span>
+        <span class="benchmark-date">2026-07-17</span>
+      </div>
+
+      <div class="benchmark-item">
+        <span class="benchmark-horizon">3 Months</span>
+        <span class="benchmark-date">2026-09-17</span>
+      </div>
+
+      <div class="benchmark-item">
+        <span class="benchmark-horizon">1 Year</span>
+        <span class="benchmark-date">2027-06-17</span>
+      </div>
+    </div>
+
+    <!-- ─── Footer ───────────────────────────────────────────────────── -->
+    <footer class="footer">
+      <span class="footer-pag">PAG</span>
+      <span class="footer-meta">Project Vantage &mdash; Experience Spec &mdash; Defined 2026-06-17</span>
+    </footer>
+
+  </div><!-- /page -->
+</body>
+</html>

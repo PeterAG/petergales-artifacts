@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Vantage — Charter</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ─── GL-003 Design System Tokens ─────────────────────────────────── */
+    :root {
+      /* Core palette (GL-003 §2a) */
+      --color-primary:        #9B2D30; /* Garnet */
+      --color-neutral-5:      #1A1A1A; /* Ebon */
+      --color-neutral-0:      #F9F7F2; /* Alabaster */
+      --color-supporting-1:   #5E3A2B; /* Deep Earth */
+      --color-supporting-2:   #D67D4E; /* Sienna */
+      --color-supporting-3:   #E8C0A3; /* Soft Sand */
+      --color-foundation:     #2A1F1A; /* Old Mahogany */
+
+      /* Diagram palette (GL-003 §2b) */
+      --color-diagram-bark:   #8A6438; /* Bark */
+
+      /* Pillar fills — §11B Color-Fill Permission */
+      --pillar-peace-fill:    #5E3A2B; /* Deep Earth */
+      --pillar-power-fill:    #8A6438; /* Bark */
+      --pillar-purpose-fill:  #9B2D30; /* Garnet */
+
+      /* Spacing scale (GL-003 §4) */
+      --space-xs:   8px;
+      --space-sm:   16px;
+      --space-md:   24px;
+      --space-lg:   48px;
+      --space-xl:   64px;
+      --space-2xl:  96px;
+
+      /* Radius Rule (GL-003 §4) — 24px everywhere */
+      --radius: 24px;
+    }
+
+    /* ─── Reset & Base ─────────────────────────────────────────────────── */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    /*
+      §0 Hard Constraint — Alabaster is always the page/section background.
+      Dark fills (Old Mahogany, Ebon, Garnet) are permitted only as
+      inset structural elements — never as page or hero backgrounds.
+    */
+    html, body {
+      background: var(--color-neutral-0);
+      color: var(--color-neutral-5);
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 400;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    /* ─── Outer page shell ────────────────────────────────────────────── */
+    .page {
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       HEADER — Alabaster ground, typographic impact (GL-003 §11C Display)
+       §0 hard constraint: no dark page background anywhere.
+       Impact through type scale and weight — not fill color.
+       §11C + §3a: 88px Montserrat 800 on Alabaster = two contrast dimensions
+       (size 88px vs. 17px subtitle, weight 800 vs. 500).
+       §1A-2 Alignment: subtitle and rule share left axis with the title.
+    ═══════════════════════════════════════════════════════════════════ */
+    .header {
+      background: var(--color-neutral-0);
+      padding: var(--space-xl) var(--space-lg) 0;
+    }
+
+    .version-tag {
+      display: inline-block;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-supporting-1);
+      border: 1.5px solid var(--color-supporting-3);
+      border-radius: var(--radius);
+      padding: 4px 14px;
+      margin-bottom: var(--space-md);
+    }
+
+    /*
+      Display typography — §11C: Montserrat 800, 88px on Alabaster.
+      Brief: "Ebon or Deep Earth on Alabaster" — using Ebon for maximum contrast.
+      §3a type hierarchy: size (88px vs 17px) + weight (800 vs 500) = two dimensions satisfied.
+    */
+    .display-title {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 88px;
+      color: var(--color-neutral-5); /* Ebon */
+      line-height: 1.0;
+      letter-spacing: -0.02em;
+      margin-bottom: var(--space-sm);
+    }
+
+    .header-subtitle {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 500;
+      font-size: 17px;
+      color: var(--color-supporting-1); /* Deep Earth — H2 per GL-003 §3 */
+      line-height: 1.5;
+      max-width: 620px;
+      margin-bottom: var(--space-md);
+    }
+
+    /*
+      Garnet horizontal rule — full-width accent element anchoring the header zone.
+      §11C + §1A-2: spans the full column width; left-aligned to the title.
+      Impact comes from the color and full span, not from height.
+    */
+    .header-rule {
+      width: 100%;
+      height: 3px;
+      background: var(--color-primary); /* Garnet */
+      border: none;
+      margin-bottom: var(--space-lg);
+    }
+
+    /* ─── Tab navigation — on Alabaster, no dark bar ──────────────────── */
+    /*
+      Active tab: Garnet text + 3px Garnet bottom border.
+      Inactive: Ebon at 40% opacity per brief.
+      §1A-4 Contrast: active vs. inactive is decisive — one color vs. muted.
+    */
+    .tab-nav {
+      display: flex;
+      gap: 0;
+      border-bottom: 1.5px solid var(--color-supporting-3);
+      margin-top: 0;
+    }
+
+    .tab-btn {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-neutral-5);
+      opacity: 0.40; /* Ebon at 40% per brief */
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      padding: 16px 32px 14px;
+      cursor: pointer;
+      position: relative;
+      bottom: -1.5px;
+      transition: opacity 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    }
+
+    .tab-btn:hover {
+      opacity: 0.6;
+    }
+
+    .tab-btn.active {
+      opacity: 1;
+      color: var(--color-primary);                /* Garnet text — active tab */
+      border-bottom-color: var(--color-primary);  /* 3px Garnet bottom border */
+    }
+
+    /* ─── Tab content panels ─────────────────────────────────────────── */
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    /* Tab content body — Alabaster throughout per §0 */
+    .tab-body {
+      background: var(--color-neutral-0);
+      padding: var(--space-lg) var(--space-lg) var(--space-xl);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       TAB 1 — THE EXPERIENCE
+       §1A-1 Proximity: pillar cards tightly grouped; clear space from
+       header (above) and foundation slab (below, flush joint).
+       §1A-2 Alignment: all pillars share top edge and bottom edge via stretch.
+       §11B Color-Fill Permission: pillar cards are structural elements — not
+       status indicators. Full fill correct here.
+    ═══════════════════════════════════════════════════════════════════ */
+
+    /* ─── Intro line ─────────────────────────────────────────────────── */
+    .intro {
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      color: var(--color-neutral-5);
+      line-height: 1.5;
+      max-width: 680px;
+      opacity: 0.65;
+      margin-bottom: var(--space-lg);
+    }
+
+    /* ─── Section eyebrow ────────────────────────────────────────────── */
+    .section-eyebrow {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-supporting-1);
+      margin-bottom: var(--space-md);
+    }
+
+    /* ─── Three pillars layout ──────────────────────────────────────── */
+    /*
+      §11B Color-Fill Permission: pillar cards are large structural elements
+      sitting on Alabaster. Bold fills on a light ground — correct per §11B.
+      §1A-2: all three pillars share the same top and bottom edges via stretch.
+      §1A-1: gap between pillars (var(--space-sm)) is visibly tighter than
+      the space separating the pillar group from header above and foundation below.
+    */
+    .pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-sm);
+      margin-bottom: 0;
+      align-items: stretch;
+    }
+
+    /*
+      Pillar cards: top corners rounded per Radius Rule, bottom corners flush
+      to the foundation slab — creates a unified structural unit.
+    */
+    .pillar {
+      border-radius: var(--radius) var(--radius) 0 0;
+      padding: var(--space-md) var(--space-md) var(--space-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    /* §11B Color-Fill Permission: structural fills on Alabaster page */
+    .pillar--peace   { background: var(--pillar-peace-fill);   } /* Deep Earth */
+    .pillar--power   { background: var(--pillar-power-fill);   } /* Bark */
+    .pillar--purpose { background: var(--pillar-purpose-fill); } /* Garnet */
+
+    /* ─── Pillar header ─────────────────────────────────────────────── */
+    .pillar-number {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-neutral-0);
+      opacity: 0.45;
+      margin-bottom: 6px;
+    }
+
+    /*
+      §11C Display Typography at pillar scale — 40px Montserrat 800 reversed-out.
+      §11B non-negotiable: Alabaster text on any dark fill card.
+    */
+    .pillar-title {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 40px;
+      line-height: 1.0;
+      letter-spacing: -0.01em;
+      color: var(--color-neutral-0); /* Alabaster — reversed-out per §11B */
+      margin-bottom: var(--space-xs);
+    }
+
+    /* Italic definition — Soft Sand on dark fill per §11A secondary text rule */
+    .pillar-definition {
+      font-family: 'Inter', sans-serif;
+      font-size: 12.5px;
+      font-weight: 400;
+      line-height: 1.5;
+      color: var(--color-supporting-3); /* Soft Sand — secondary text on dark */
+      font-style: italic;
+      padding-bottom: var(--space-sm);
+      border-bottom: 1px solid rgba(232, 192, 163, 0.25);
+    }
+
+    /* ─── Pillar items ──────────────────────────────────────────────── */
+    .pillar-items {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .pillar-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--color-neutral-0); /* Alabaster body text — §11B reversed-out rule */
+    }
+
+    .item-marker {
+      flex-shrink: 0;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--color-supporting-3);
+      margin-top: 7px;
+      opacity: 0.6;
+    }
+
+    .pillar-item--metric {
+      color: var(--color-supporting-3);
+      font-style: italic;
+    }
+
+    /* ─── Foundation slab — Old Mahogany, flush beneath pillars ──────── */
+    /*
+      §11A Dark Panel Pattern: contained structural element — not a page background.
+      Occupies ~30% of the composition when combined with pillar height.
+      Bottom corners rounded (Radius Rule); top corners flush to pillar bottoms —
+      reads as the ground the three pillars stand on.
+      Text: Alabaster body (non-negotiable), Soft Sand for secondary labels (§11A).
+    */
+    .foundation {
+      border-radius: 0 0 var(--radius) var(--radius);
+      background: var(--color-foundation); /* Old Mahogany — §11A inset structural element */
+      padding: var(--space-md) var(--space-md) var(--space-lg);
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: var(--space-md) var(--space-lg);
+      align-items: start;
+      margin-bottom: var(--space-lg);
+    }
+
+    .foundation-label-col {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+
+    .foundation-eyebrow {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-supporting-3);
+      opacity: 0.55;
+    }
+
+    .foundation-title {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 22px;
+      color: var(--color-supporting-3); /* Soft Sand — secondary text on Old Mahogany */
+      line-height: 1.1;
+    }
+
+    .foundation-definition {
+      font-family: 'Inter', sans-serif;
+      font-size: 11.5px;
+      font-style: italic;
+      color: var(--color-supporting-3);
+      opacity: 0.55;
+      line-height: 1.5;
+    }
+
+    /* §11A: Alabaster body text on Old Mahogany — non-negotiable */
+    .foundation-body {
+      font-family: 'Inter', sans-serif;
+      font-size: 13.5px;
+      line-height: 1.65;
+      color: var(--color-neutral-0); /* Alabaster — §11A reversed-out text rule */
+      opacity: 0.82;
+    }
+
+    /* ─── Benchmark review dates — Tab 1 ─────────────────────────────── */
+    .benchmarks-wrap {
+      padding-top: var(--space-md);
+      border-top: 1px solid rgba(94, 58, 43, 0.2);
+    }
+
+    .benchmarks-eyebrow {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-supporting-1);
+      margin-bottom: var(--space-sm);
+    }
+
+    .benchmarks {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-sm);
+    }
+
+    /* Review date items — lightweight Alabaster cards, Soft Sand border */
+    .benchmark-item {
+      background: var(--color-neutral-0);
+      border: 1.5px solid var(--color-supporting-3);
+      border-radius: var(--radius);
+      padding: var(--space-sm) var(--space-md);
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .benchmark-horizon {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-primary); /* Garnet — focal point color per §2a */
+    }
+
+    .benchmark-date {
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--color-neutral-5); /* Ebon */
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       TAB 2 — THE BUILD
+       GL-003 §12 Pattern A (Badge-Centric) applied in full.
+       Two-variable rule (§12a): position = spine line + P1/P2/P3/P4 numbering;
+       status = badge only (color + icon + text — §12f Redundancy Rule).
+       Full-fill anti-pattern (§12e) deliberately avoided throughout.
+       Same status = same treatment: P3 and P4 identical (§12b Gestalt failure avoided).
+    ═══════════════════════════════════════════════════════════════════ */
+
+    /* ─── Build section heading ────────────────────────────────────── */
+    .build-section-head {
+      margin-bottom: var(--space-lg);
+    }
+
+    .build-intro {
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      color: var(--color-neutral-5);
+      line-height: 1.5;
+      max-width: 680px;
+      opacity: 0.65;
+    }
+
+    /* ─── Timeline container ───────────────────────────────────────── */
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin-bottom: var(--space-xl);
+      position: relative;
+    }
+
+    /*
+      Vertical spine — encodes position in sequence (§12a).
+      Color: Soft Sand at low opacity — structural, not status.
+    */
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 27px;
+      top: 28px;
+      bottom: 28px;
+      width: 2px;
+      background: var(--color-supporting-3);
+      opacity: 0.4;
+      z-index: 0;
+    }
+
+    /* ─── Phase block ──────────────────────────────────────────────── */
+    .phase {
+      display: grid;
+      grid-template-columns: 56px 1fr;
+      gap: var(--space-md);
+      padding-bottom: var(--space-md);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ─── Phase node (spine dot) ──────────────────────────────────── */
+    .phase-node {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding-top: 4px;
+    }
+
+    /*
+      Phase dots encode position in sequence — not status (§12a).
+      Complete (P1): Deep Earth solid — grounded, done.
+      Next (P2): Garnet solid — primary accent, maximum color emphasis.
+      Upcoming (P3/P4): Alabaster fill, Soft Sand border — correctly receded.
+    */
+    .phase-dot {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      position: relative;
+      z-index: 2;
+    }
+
+    .phase-dot--complete {
+      background: var(--color-supporting-1); /* Deep Earth */
+      color: var(--color-neutral-0);
+    }
+
+    .phase-dot--next {
+      background: var(--color-primary); /* Garnet — maximum emphasis on active step */
+      color: var(--color-neutral-0);
+    }
+
+    .phase-dot--upcoming {
+      background: var(--color-neutral-0); /* Alabaster — receded */
+      color: var(--color-neutral-5);
+      border: 2px solid var(--color-supporting-3); /* Soft Sand border */
+      opacity: 0.7;
+    }
+
+    /* ─── Phase card — Pattern A (Badge-Centric) §12d ────────────── */
+    /*
+      Card surface stays Alabaster across all four states (§12d Pattern A).
+      Status lives entirely in the badge, not the card fill (§12e avoided).
+
+      Complete (P1): Alabaster card + Deep Earth 4px left border.
+      Next (P2):     Alabaster card + Garnet 4px left border. Primary accent.
+      Upcoming (P3): Alabaster card + Soft Sand 1px border. De-emphasized.
+      Upcoming (P4): Identical to P3 — same status = same treatment (§12b).
+                     Card boundaries read clearly from P3/P4 numbering + spacing.
+    */
+    .phase-card {
+      border-radius: var(--radius);
+      padding: var(--space-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+      margin-bottom: var(--space-xs);
+    }
+
+    .phase-card--complete {
+      background: var(--color-neutral-0);
+      border-left: 4px solid var(--color-supporting-1); /* Deep Earth border */
+      box-shadow: 0 1px 4px rgba(94, 58, 43, 0.08);
+    }
+
+    .phase-card--next {
+      background: var(--color-neutral-0);
+      border-left: 4px solid var(--color-primary); /* Garnet border — maximum color emphasis */
+      box-shadow: 0 2px 8px rgba(155, 45, 48, 0.10);
+    }
+
+    .phase-card--upcoming {
+      background: var(--color-neutral-0);
+      border: 1px solid var(--color-supporting-3); /* Soft Sand border — de-emphasized */
+    }
+
+    /* ─── Phase header ─────────────────────────────────────────────── */
+    .phase-meta {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      margin-bottom: 6px;
+    }
+
+    .phase-number-label {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-neutral-5);
+      opacity: 0.35;
+    }
+
+    /*
+      Phase titles — Montserrat 700, 30px, Ebon on Alabaster.
+      §1A-4 Contrast: 30px Montserrat 700 vs. 13px Inter 400 session text —
+      decisive difference on three dimensions (size + weight + family).
+      §3a: satisfies two-dimension minimum for adjacent heading levels.
+    */
+    .phase-title {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 30px;
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+      color: var(--color-neutral-5); /* Ebon — consistent across all Alabaster cards */
+    }
+
+    /* ─── Status badges — §12d Pattern A + §12f Redundancy Rule ──────── */
+    /*
+      §12f: every badge uses color + icon + text label.
+      Two of three channels (color + icon + text) — satisfies WCAG colorblind requirement.
+    */
+    .phase-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.10em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: var(--radius);
+      flex-shrink: 0;
+    }
+
+    .badge-icon {
+      flex-shrink: 0;
+      width: 12px;
+      height: 12px;
+    }
+
+    /* Complete: Deep Earth fill + Alabaster text + check icon — §12f */
+    .badge--complete {
+      background: var(--color-supporting-1);
+      color: var(--color-neutral-0);
+    }
+
+    /* Next: Garnet fill + Alabaster text + arrow icon — §12f */
+    .badge--next {
+      background: var(--color-primary);
+      color: var(--color-neutral-0);
+    }
+
+    /* Upcoming: Soft Sand fill + Ebon text + clock icon — §12f */
+    .badge--upcoming {
+      background: var(--color-supporting-3);
+      color: var(--color-neutral-5);
+    }
+
+    /* ─── Phase sessions ─────────────────────────────────────────── */
+    .phase-sessions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .session-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .session-dot {
+      flex-shrink: 0;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--color-supporting-1);
+      margin-top: 7px;
+      opacity: 0.3;
+    }
+
+    .session-label {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--color-supporting-1);
+      opacity: 0.65;
+      flex-shrink: 0;
+      padding-top: 1px;
+    }
+
+    .session-desc {
+      flex: 1;
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--color-neutral-5);
+      opacity: 0.72;
+    }
+
+    /* ─── Benchmark checkpoint cards — bottom of Tab 2 ────────────── */
+    /*
+      §11B Color-Fill Permission: these are informational landmark cards,
+      NOT sequential status items. §12 restrictions (Pattern A, full-fill
+      anti-pattern §12e) do NOT apply here — these are structural uses of
+      color per §11B, not status encoding.
+      Three distinct landmark moments: 1-month, 3-month, 1-year.
+      Deep Earth / Bark / Garnet = differentiated structural fills.
+      All text reversed-out per §11B table.
+    */
+    .checkpoints-section {
+      margin-top: 0;
+    }
+
+    .checkpoints-eyebrow {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-supporting-1);
+      margin-bottom: var(--space-md);
+    }
+
+    .checkpoints-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-sm);
+    }
+
+    /* §11B full structural color fills — informational, not status */
+    .checkpoint-card {
+      border-radius: var(--radius);
+      padding: var(--space-md);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .checkpoint-card--1m { background: var(--color-supporting-1);  } /* Deep Earth — §11B */
+    .checkpoint-card--3m { background: var(--color-diagram-bark);   } /* Bark — §11B */
+    .checkpoint-card--1y { background: var(--color-primary);        } /* Garnet — §11B */
+
+    .checkpoint-head {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(232, 192, 163, 0.22);
+    }
+
+    /* Soft Sand — secondary text on dark fill per §11A */
+    .checkpoint-horizon {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-supporting-3);
+      opacity: 0.65;
+    }
+
+    /* Alabaster — primary text on dark fill per §11B reversed-out rule */
+    .checkpoint-date {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--color-neutral-0);
+      letter-spacing: -0.01em;
+      line-height: 1.0;
+    }
+
+    .checkpoint-signals {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .checkpoint-signal {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 12.5px;
+      line-height: 1.5;
+      color: var(--color-neutral-0); /* Alabaster body on dark fill — §11B */
+      opacity: 0.85;
+    }
+
+    /* Small chip — Alabaster at 15% alpha on dark fill, Soft Sand text */
+    .signal-pillar-tag {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      flex-shrink: 0;
+      padding: 2px 7px;
+      border-radius: 4px;
+      margin-top: 2px;
+      background: rgba(249, 247, 242, 0.15);
+      color: var(--color-supporting-3);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       FOOTER — GL-003 §8
+       Soft Sand 0.5pt top divider.
+       PAG: Montserrat 400 (Regular), Garnet. NOT bold — §8 hard rule.
+    ═══════════════════════════════════════════════════════════════════ */
+    .footer {
+      background: var(--color-neutral-0);
+      padding: var(--space-sm) var(--space-lg) var(--space-md);
+      border-top: 0.5px solid var(--color-supporting-3); /* Soft Sand divider — §8 */
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* §8: Montserrat 400 (Regular), Garnet. Never bold. */
+    .footer-pag {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 400;
+      font-size: 13px;
+      color: var(--color-primary); /* Garnet */
+    }
+
+    .footer-meta {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      color: var(--color-neutral-5);
+      opacity: 0.4;
+    }
+
+    /* ─── Mobile breakpoint ─────────────────────────────────────────── */
+    @media (max-width: 720px) {
+      .header {
+        padding: var(--space-lg) var(--space-md) 0;
+      }
+
+      .tab-body {
+        padding: var(--space-md) var(--space-md) var(--space-lg);
+      }
+
+      .display-title {
+        font-size: 52px;
+      }
+
+      .pillars-grid {
+        grid-template-columns: 1fr;
+      }
+
+      /* On mobile, pillars are standalone — all four corners rounded */
+      .pillar {
+        border-radius: var(--radius);
+        margin-bottom: var(--space-xs);
+      }
+
+      .foundation {
+        grid-template-columns: 1fr;
+        border-radius: var(--radius);
+        margin-top: var(--space-xs);
+      }
+
+      .benchmarks {
+        grid-template-columns: 1fr;
+      }
+
+      .checkpoints-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .timeline::before {
+        display: none;
+      }
+
+      .phase {
+        grid-template-columns: 1fr;
+      }
+
+      .phase-node {
+        display: none;
+      }
+
+      .footer {
+        padding: var(--space-sm) var(--space-md);
+      }
+    }
+  </style>
+</head>
+
+<body>
+<div style="background:#2A1F1A;padding:9px 24px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13px;letter-spacing:0.03em;">
+  <a href="file:///Users/peteranthony/Peter%20OS%202/Deliverables/peter-os-projects-dashboard.html" style="color:#E8C0A3;text-decoration:none;">&#8592; My Projects</a>
+</div>
+
+  <div class="page">
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         HEADER — Alabaster ground, typographic statement.
+         §0: no dark page background anywhere in this document.
+         Impact: 88px Montserrat 800 Ebon on Alabaster.
+         Full-width Garnet horizontal rule below title = accent, not fill.
+    ═══════════════════════════════════════════════════════════════════ -->
+    <header class="header">
+      <span class="version-tag">Living Charter &mdash; v5 &mdash; June 2026</span>
+
+      <!-- §11C Display Typography: Montserrat 800, 88px, Ebon on Alabaster -->
+      <h1 class="display-title">Project Vantage</h1>
+      <p class="header-subtitle">Peter's personal operating system — mission, experience, and build plan.</p>
+
+      <!-- Full-width Garnet horizontal rule — accent element anchoring the header zone -->
+      <hr class="header-rule" aria-hidden="true">
+
+      <!-- Tab nav on Alabaster: active = Garnet + 3px bottom border; inactive = Ebon 40% opacity -->
+      <nav class="tab-nav" role="tablist" aria-label="Charter sections">
+        <button class="tab-btn active" role="tab" aria-selected="true"  aria-controls="panel-experience" id="tab-experience">The Experience</button>
+        <button class="tab-btn"        role="tab" aria-selected="false" aria-controls="panel-build"      id="tab-build">The Build</button>
+      </nav>
+    </header>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         TAB 1 — THE EXPERIENCE
+         Three pillar cards on Alabaster page (§11B structural fills).
+         Foundation slab: Old Mahogany inset structural element (§11A).
+         §1A-1 Proximity: pillar group has tighter internal gap than external
+         space separating it from header above and content below.
+         §1A-2 Alignment: all pillars share the same top and bottom edges.
+    ═══════════════════════════════════════════════════════════════════ -->
+    <section class="tab-panel active" id="panel-experience" role="tabpanel" aria-labelledby="tab-experience">
+      <div class="tab-body">
+
+        <p class="intro">
+          This document defines the standard, not the system. Each pillar names how the work should feel — not what is built.
+          Return at each benchmark date and score the system against this spec honestly.
+        </p>
+
+        <div class="section-eyebrow">Three Pillars</div>
+
+        <!-- §11B Color-Fill Permission: structural fills on Alabaster page.
+             §1A-1: internal gap (--space-sm) tighter than space above and below the group.
+             §1A-2: all three pillars share top and bottom edges via align-items: stretch. -->
+        <div class="pillars-grid">
+
+          <!-- Peace — Deep Earth fill, Alabaster text (§11B) -->
+          <article class="pillar pillar--peace">
+            <div>
+              <div class="pillar-number">Pillar I</div>
+              <h2 class="pillar-title">Peace</h2>
+              <p class="pillar-definition">Not the absence of challenges — complete confidence in handling them, and a positive mood about them.</p>
+            </div>
+            <ul class="pillar-items">
+              <li class="pillar-item"><span class="item-marker" aria-hidden="true"></span><span>Everything handled — obligations, commitments, legal requirements tracked, anticipated, executed in time.</span></li>
+              <li class="pillar-item"><span class="item-marker" aria-hidden="true"></span><span>Active team watching on Peter's behalf, proactively flagging where to focus.</span></li>
+              <li class="pillar-item"><span class="item-marker" aria-hidden="true"></span><span>Early warning — nothing catches Peter off-guard; new developments scanned for cross-domain impact.</span></li>
+              <li class="pillar-item"><span class="item-marker" aria-hidden="true"></span><span>Stall detection — nothing slips through; stated commitments with no action are surfaced.</span></li>
+              <li class="pillar-item"><span class="item-marker" aria-hidden="true"></span><span>Wins acknowledged — progress is felt, not just problems.</span></li>
+              <li class="pillar-item"><span class="item-marker" aria-hidden="true"></span><span>Belief maintained — Peter stays in a confident, positive state.</span></li>
+              <li class="pillar-item"><span class="item-marker" aria-hidden="true"></span><span>It's working — financially, relationally, creatively.</span></li>
+            </ul>
+          </article>
+
+          <!-- Power — Bark fill, Alabaster text (§11B) -->
+          <article class="pillar pillar--power">
+            <div>
+              <div class="pillar-number">Pillar II</div>
+              <h2 class="pillar-title">Power</h2>
+              <p class="pillar-definition">Outstanding work produced in less time. What was impossible alone becomes possible.</p>
+            </div>
+            <ul class="pillar-items">
+              <li class="pillar-item"><span class="item-marker" aria-hidden="true"></span><span>Superpowers — the team extends what Peter can do and be.</span></li>
+              <li class="pillar-item"><span class="item-marker" aria-hidden="true"></span><span>Active environmental intelligence — fed what he needs to know when he needs it.</span></li>
+              <li class="pillar-item"><span class="item-marker" aria-hidden="true"></span><span>Curated information diet — time to read, think, and produce is protected.</span></li>
+              <li class="pillar-item pillar-item--metric"><span class="item-marker" aria-hidden="true"></span><span>Things produced that I couldn't have done — even with a dedicated human team — in the time it took.</span></li>
+            </ul>
+          </article>
+
+          <!-- Purpose — Garnet fill, Alabaster text (§11B) -->
+          <article class="pillar pillar--purpose">
+            <div>
+              <div class="pillar-number">Pillar III</div>
+              <h2 class="pillar-title">Purpose</h2>
+              <p class="pillar-definition">Peter knows what he does. He is doing his life's work. The right people are finding him.</p>
+            </div>
+            <ul class="pillar-items">
+              <li class="pillar-item"><span class="item-marker" aria-hidden="true"></span><span>Identity answered — authentically, not rehearsed.</span></li>
+              <li class="pillar-item"><span class="item-marker" aria-hidden="true"></span><span>Mission being fulfilled — living his life's work.</span></li>
+              <li class="pillar-item"><span class="item-marker" aria-hidden="true"></span><span>Right people seeking him out — those who share his values and humour; not afraid to take anyone's call.</span></li>
+            </ul>
+          </article>
+
+        </div><!-- /pillars-grid -->
+
+        <!-- Foundation slab — Old Mahogany contained inset structural element (§11A).
+             NOT the page background. Bottom corners rounded; top corners flush to pillars.
+             Body text: Alabaster (non-negotiable per §11A). Secondary labels: Soft Sand. -->
+        <div class="foundation">
+          <div class="foundation-label-col">
+            <span class="foundation-eyebrow">Foundation</span>
+            <h3 class="foundation-title">Living System</h3>
+            <p class="foundation-definition">Not a pillar — the ground all three stand on.</p>
+          </div>
+          <p class="foundation-body">
+            Self-aware, self-regulating, Peter as its primary concern. Knows itself: the vault, the apps, the models,
+            the hardware, the world outside. Learns and adapts continuously — not in response to failures Peter experiences,
+            but as a standing discipline. Gets better without Peter having to make it better.
+            Ensures Peace does not erode, Power does not plateau, and Purpose does not drift.
+          </p>
+        </div>
+
+        <!-- Benchmark review dates — lightweight Alabaster cards, Soft Sand border -->
+        <div class="benchmarks-wrap">
+          <div class="benchmarks-eyebrow">Review Dates</div>
+          <div class="benchmarks">
+            <div class="benchmark-item">
+              <span class="benchmark-horizon">1 Month</span>
+              <span class="benchmark-date">2026-07-17</span>
+            </div>
+            <div class="benchmark-item">
+              <span class="benchmark-horizon">3 Months</span>
+              <span class="benchmark-date">2026-09-17</span>
+            </div>
+            <div class="benchmark-item">
+              <span class="benchmark-horizon">1 Year</span>
+              <span class="benchmark-date">2027-06-17</span>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /tab-body -->
+    </section><!-- /panel-experience -->
+
+    <!-- ═══════════════════════════════════════════════════════════════
+         TAB 2 — THE BUILD
+         §12 Pattern A (Badge-Centric) applied in full.
+         Two variables: position (spine + P1/P2/P3/P4 numbering) / status (badge).
+         Full-fill anti-pattern (§12e) avoided: card fills = Alabaster throughout.
+         Same status = same treatment: P3 and P4 identical (§12b).
+    ═══════════════════════════════════════════════════════════════════ -->
+    <section class="tab-panel" id="panel-build" role="tabpanel" aria-labelledby="tab-build">
+      <div class="tab-body">
+
+        <div class="build-section-head">
+          <div class="section-eyebrow">Phased Roadmap</div>
+          <p class="build-intro">
+            How Project Vantage gets built, session by session. Each phase is a distinct deliverable;
+            each session has a concrete artifact or decision as its output.
+          </p>
+        </div>
+
+        <div class="timeline">
+
+          <!-- ─── Phase 1 — Foundation (Complete) ─────────────────────────
+               §12d Pattern A: Alabaster card. Badge: Deep Earth fill + check icon + "COMPLETE".
+               Deep Earth 4px left border on card.
+               Position encoded by "P1" spine dot and timeline spine.
+               §12f Redundancy Rule: badge = color + icon + text (all three channels). -->
+          <div class="phase">
+            <div class="phase-node">
+              <div class="phase-dot phase-dot--complete">P1</div>
+            </div>
+            <div>
+              <div class="phase-card phase-card--complete">
+                <div>
+                  <div class="phase-meta">
+                    <span class="phase-number-label">Phase 1</span>
+                    <span class="phase-status-badge badge--complete">
+                      <svg class="badge-icon" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                        <circle cx="6" cy="6" r="5.5" stroke="rgba(249,247,242,0.4)" stroke-width="1"/>
+                        <path d="M3 6l2.2 2.2L9 4" stroke="#F9F7F2" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                      Complete
+                    </span>
+                  </div>
+                  <h3 class="phase-title">Foundation</h3>
+                </div>
+                <div class="phase-sessions">
+                  <div class="session-item">
+                    <span class="session-dot" aria-hidden="true"></span>
+                    <span class="session-label">Session 1</span>
+                    <span class="session-desc">Experience spec confirmed — Peace / Power / Purpose + Living System foundation.</span>
+                  </div>
+                  <div class="session-item">
+                    <span class="session-dot" aria-hidden="true"></span>
+                    <span class="session-label">Session 2</span>
+                    <span class="session-desc">Benchmark defined — checkpoint signals at 1 month, 3 months, 1 year; Power metric established.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ─── Phase 2 — Dashboard (Next) ───────────────────────────────
+               §12d Pattern A: Alabaster card. Badge: Garnet fill + arrow icon + "NEXT".
+               Garnet 4px left border — maximum color emphasis in the sequence.
+               One card with strong color accent — §12c limit respected. -->
+          <div class="phase">
+            <div class="phase-node">
+              <div class="phase-dot phase-dot--next">P2</div>
+            </div>
+            <div>
+              <div class="phase-card phase-card--next">
+                <div>
+                  <div class="phase-meta">
+                    <span class="phase-number-label">Phase 2</span>
+                    <span class="phase-status-badge badge--next">
+                      <svg class="badge-icon" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                        <path d="M2 6h8M7 3.5L9.5 6 7 8.5" stroke="#F9F7F2" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                      Next
+                    </span>
+                  </div>
+                  <h3 class="phase-title">Dashboard</h3>
+                </div>
+                <div class="phase-sessions">
+                  <div class="session-item">
+                    <span class="session-dot" aria-hidden="true"></span>
+                    <span class="session-label">Pre&nbsp;S3</span>
+                    <span class="session-desc">Craft project import — Peter adds missing projects from Craft so Charta has a full dataset.</span>
+                  </div>
+                  <div class="session-item">
+                    <span class="session-dot" aria-hidden="true"></span>
+                    <span class="session-label">Session 3</span>
+                    <span class="session-desc">Project dashboard build — interactive HTML artifact; all projects sortable by priority / domain / client / deadline / status; click-through to per-project detail view with phase history, blockers, and target dates.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ─── Phase 3 — Visibility (Upcoming) ──────────────────────────
+               §12d Pattern A: Alabaster card. Badge: Soft Sand fill + Ebon text + clock + "UPCOMING".
+               1px Soft Sand border — de-emphasized. No strong accent.
+               §12b: card boundary reads from "P3" number + spacing. -->
+          <div class="phase">
+            <div class="phase-node">
+              <div class="phase-dot phase-dot--upcoming">P3</div>
+            </div>
+            <div>
+              <div class="phase-card phase-card--upcoming">
+                <div>
+                  <div class="phase-meta">
+                    <span class="phase-number-label">Phase 3</span>
+                    <span class="phase-status-badge badge--upcoming">
+                      <svg class="badge-icon" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                        <circle cx="6" cy="6" r="4.5" stroke="#1A1A1A" stroke-width="1.2" opacity="0.5"/>
+                        <path d="M6 3.5V6l1.5 1.5" stroke="#1A1A1A" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+                      </svg>
+                      Upcoming
+                    </span>
+                  </div>
+                  <h3 class="phase-title">Visibility</h3>
+                </div>
+                <div class="phase-sessions">
+                  <div class="session-item">
+                    <span class="session-dot" aria-hidden="true"></span>
+                    <span class="session-label">Session 4</span>
+                    <span class="session-desc">Proactive Visibility design — map current system state against the spec; design system self-audit mechanism; close gaps.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ─── Phase 4 — Expansion (Upcoming) ───────────────────────────
+               Identical treatment to Phase 3. Same status = same treatment (§12b).
+               §12b: P3 and P4 boundaries are structurally clear from numbering,
+               spacing, and spine — Gestalt grouping failure (§12b) avoided. -->
+          <div class="phase">
+            <div class="phase-node">
+              <div class="phase-dot phase-dot--upcoming">P4</div>
+            </div>
+            <div>
+              <div class="phase-card phase-card--upcoming">
+                <div>
+                  <div class="phase-meta">
+                    <span class="phase-number-label">Phase 4</span>
+                    <!-- Identical badge to P3 — same status, same treatment -->
+                    <span class="phase-status-badge badge--upcoming">
+                      <svg class="badge-icon" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                        <circle cx="6" cy="6" r="4.5" stroke="#1A1A1A" stroke-width="1.2" opacity="0.5"/>
+                        <path d="M6 3.5V6l1.5 1.5" stroke="#1A1A1A" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+                      </svg>
+                      Upcoming
+                    </span>
+                  </div>
+                  <h3 class="phase-title">Expansion</h3>
+                </div>
+                <div class="phase-sessions">
+                  <div class="session-item">
+                    <span class="session-dot" aria-hidden="true"></span>
+                    <span class="session-label">Session 5</span>
+                    <span class="session-desc">Roles and expansions — identify agent gaps; expand existing roles before hiring new.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /timeline -->
+
+        <!-- ─── Benchmark checkpoint cards ──────────────────────────────────
+             §11B structural color fills — informational landmark elements.
+             NOT sequential status cards. §12 restrictions do not apply.
+             Deep Earth (1-month) / Bark (3-month) / Garnet (1-year).
+             All text reversed-out per §11B table (Alabaster body, Soft Sand captions).
+        ─────────────────────────────────────────────────────────────────── -->
+        <div class="checkpoints-section">
+          <div class="checkpoints-eyebrow">Benchmark Checkpoints</div>
+
+          <div class="checkpoints-grid">
+
+            <!-- 1 month — Deep Earth fill (§11B) -->
+            <div class="checkpoint-card checkpoint-card--1m">
+              <div class="checkpoint-head">
+                <span class="checkpoint-horizon">1 Month</span>
+                <span class="checkpoint-date">2026-07-17</span>
+              </div>
+              <ul class="checkpoint-signals">
+                <li class="checkpoint-signal">
+                  <span class="signal-pillar-tag">Peace</span>
+                  <span>Nothing important caught Peter off-guard. Team surfaced at least one thing he would have missed.</span>
+                </li>
+                <li class="checkpoint-signal">
+                  <span class="signal-pillar-tag">Power</span>
+                  <span>Working project dashboard live. All active projects visible, sortable, and clickable to full status.</span>
+                </li>
+                <li class="checkpoint-signal">
+                  <span class="signal-pillar-tag">Purpose</span>
+                  <span>Not yet measurable at one month.</span>
+                </li>
+              </ul>
+            </div>
+
+            <!-- 3 months — Bark fill (§11B) -->
+            <div class="checkpoint-card checkpoint-card--3m">
+              <div class="checkpoint-head">
+                <span class="checkpoint-horizon">3 Months</span>
+                <span class="checkpoint-date">2026-09-17</span>
+              </div>
+              <ul class="checkpoint-signals">
+                <li class="checkpoint-signal">
+                  <span class="signal-pillar-tag">Peace</span>
+                  <span>No obligation risking legal trouble or missed commitment went unaddressed. System flagged with options first.</span>
+                </li>
+                <li class="checkpoint-signal">
+                  <span class="signal-pillar-tag">Power</span>
+                  <span>At least one thing produced Peter couldn't have done — even with a full human team — in the time it took. He noticed.</span>
+                </li>
+                <li class="checkpoint-signal">
+                  <span class="signal-pillar-tag">Purpose</span>
+                  <span>At least one conversation where "what do you do?" came out clearly and felt true.</span>
+                </li>
+              </ul>
+            </div>
+
+            <!-- 1 year — Garnet fill (§11B) -->
+            <div class="checkpoint-card checkpoint-card--1y">
+              <div class="checkpoint-head">
+                <span class="checkpoint-horizon">1 Year</span>
+                <span class="checkpoint-date">2027-06-17</span>
+              </div>
+              <ul class="checkpoint-signals">
+                <li class="checkpoint-signal">
+                  <span class="signal-pillar-tag">Peace</span>
+                  <span>All three pillars felt, not just present.</span>
+                </li>
+                <li class="checkpoint-signal">
+                  <span class="signal-pillar-tag">Power</span>
+                  <span>System has self-audited and suggested at least one improvement.</span>
+                </li>
+                <li class="checkpoint-signal">
+                  <span class="signal-pillar-tag">Purpose</span>
+                  <span>Max has brought at least one opportunity Peter acted on.</span>
+                </li>
+              </ul>
+            </div>
+
+          </div><!-- /checkpoints-grid -->
+        </div><!-- /checkpoints-section -->
+
+      </div><!-- /tab-body -->
+    </section><!-- /panel-build -->
+
+    <!-- ─── Footer — GL-003 §8 ──────────────────────────────────────────
+         §8: Soft Sand 0.5pt top divider. PAG in Garnet, Montserrat 400. Not bold.
+    ──────────────────────────────────────────────────────────────────── -->
+    <footer class="footer">
+      <span class="footer-pag">PAG</span>
+      <span class="footer-meta">Project Vantage Charter &middot; v5 &middot; June 2026</span>
+    </footer>
+
+  </div><!-- /page -->
+
+  <!-- ─── Tab switching ────────────────────────────────────────────── -->
+  <script>
+    (function () {
+      var tabs   = document.querySelectorAll('.tab-btn');
+      var panels = document.querySelectorAll('.tab-panel');
+
+      tabs.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var target = btn.getAttribute('aria-controls');
+
+          tabs.forEach(function (b) {
+            b.classList.remove('active');
+            b.setAttribute('aria-selected', 'false');
+          });
+          panels.forEach(function (p) {
+            p.classList.remove('active');
+          });
+
+          btn.classList.add('active');
+          btn.setAttribute('aria-selected', 'true');
+          document.getElementById(target).classList.add('active');
+        });
+      });
+    })();
+  </script>
+
+</body>
+</html>

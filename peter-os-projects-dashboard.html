@@ -1346,8 +1346,8 @@ const projectData = [
       'Assess Customer Journey Manager formalisation timeline'
     ],
     artifacts: [
-      { label: 'Customer Journey Project Overview', url: 'file:///Users/peteranthony/Peter%20OS%202/Deliverables/ceal-green-customer-journey-project-overview.html' },
-      { label: 'Guiding Narrative Spine v0.6', url: 'file:///Users/peteranthony/Peter%20OS%202/PKM/Clients/ceal-green-guiding-narrative.md' }
+      { label: 'Customer Journey Project Overview', url: 'https://peterag.github.io/morevida-artifacts/ceal-green-customer-journey-project-overview.html' },
+      { label: 'Guiding Narrative Spine v0.6', url: '#', title: 'Local file — not published' }
     ]
   },
   {
@@ -1640,8 +1640,8 @@ const projectData = [
       'Clarify scope of ODW / ERP integration with the agentic layer'
     ],
     artifacts: [
-      { label: 'Customer Journey Overview', url: 'file:///Users/peteranthony/Peter%20OS%202/Deliverables/ceal-green-customer-journey-project-overview.html' },
-      { label: 'Visual Identity Spec', url: 'file:///Users/peteranthony/Peter%20OS%202/Deliverables/2026-06-09-ceal-green-vis-id-spec/' }
+      { label: 'Customer Journey Overview', url: 'https://peterag.github.io/morevida-artifacts/ceal-green-customer-journey-project-overview.html' },
+      { label: 'Visual Identity Spec', url: 'https://peterag.github.io/morevida-artifacts/ceal-green-visual-identity-spec-v1.html' }
     ]
   },
   {
@@ -1662,8 +1662,8 @@ const projectData = [
       'Feed audit findings into the content strategy and customer journey work'
     ],
     artifacts: [
-      { label: 'Website Audit', url: 'file:///Users/peteranthony/Peter%20OS%202/Deliverables/2026-06-10-ceal-green-website-audit/' },
-      { label: 'Developer Action Sheet', url: 'file:///Users/peteranthony/Peter%20OS%202/Deliverables/2026-06-15-ceal-green-developer-action-sheet.xlsx' }
+      { label: 'Website Audit', url: 'https://peterag.github.io/morevida-artifacts/ceal-green-website-audit-v2.html' },
+      { label: 'Developer Action Sheet', url: '#', title: 'Local file — not published' }
     ]
   },
   {
@@ -2326,8 +2326,8 @@ const projectData = [
       'Track project approvals — note which projects have been reviewed and confirmed correct'
     ],
     artifacts: [
-      { label: 'Experience Spec', url: 'file:///Users/peteranthony/Peter%20OS%202/Deliverables/2026-06-17-project-vantage-experience-spec.html' },
-      { label: 'Charter', url: 'file:///Users/peteranthony/Peter%20OS%202/Deliverables/project-vantage-charter.html' }
+      { label: 'Experience Spec', url: 'https://peterag.github.io/petergales-artifacts/2026-06-17-project-vantage-experience-spec.html' },
+      { label: 'Charter', url: 'https://peterag.github.io/petergales-artifacts/project-vantage-charter.html' }
     ]
   },
   {
@@ -2897,7 +2897,7 @@ function openModal(id) {
       <div class="modal-section-title">Artifacts</div>
       <div class="artifact-list">`;
     for (const a of p.artifacts) {
-      bodyHTML += `<a class="artifact-link" href="${a.url}" target="_blank">${a.label}</a>`;
+      bodyHTML += `<a class="artifact-link" href="${a.url}"${a.title ? ` title="${a.title}"` : ''} target="_blank">${a.label}</a>`;
     }
     bodyHTML += `</div></div>`;
   }
@@ -2948,7 +2948,7 @@ applyFilters();
 // ============================================================
 const artifactsData = [
   { title: 'CEAL Green Website Audit Brief', date: '2026-06-10', author: 'Max', purpose: 'Audit brief for Cass — CEAL Green website full evaluation. All 4 intake items complete, scope defined, pre-fetch protocol, HTML-at-URL output path. Ready for execution session.', file: '2026-06-10-ceal-green-website-audit-brief', type: 'Markdown', url: null, project: 'CEAL Green Audit', client: 'CEAL Green', domain: 'work' },
-  { title: 'CEAL Green Visual Identity Spec v1', date: '2026-06-09', author: 'Charta', purpose: 'Living HTML version of the CEAL Green Visual Identity Specification v1.0 — renders actual colours, typefaces, wordmark, buttons, and all 6 spec sections. Self-contained; requires internet for Google Fonts.', file: '2026-06-09-ceal-green-vis-id-spec/ceal-green-visual-identity-spec-v1', type: 'HTML', url: null, project: 'CEAL Green', client: 'CEAL Green', domain: 'work' },
+  { title: 'CEAL Green Visual Identity Spec v1', date: '2026-06-09', author: 'Charta', purpose: 'Living HTML version of the CEAL Green Visual Identity Specification v1.0 — renders actual colours, typefaces, wordmark, buttons, and all 6 spec sections. Self-contained; requires internet for Google Fonts.', file: '2026-06-09-ceal-green-vis-id-spec/ceal-green-visual-identity-spec-v1', type: 'HTML', url: 'https://peterag.github.io/morevida-artifacts/ceal-green-visual-identity-spec-v1.html', project: 'CEAL Green', client: 'CEAL Green', domain: 'work' },
   { title: 'Public Speaking Emotional Regulation', date: '2026-06-09', author: 'Rees', purpose: 'Research brief on emotional regulation techniques for public speaking — pain-interrupt mechanism, invisible body-based techniques, mechanical discreet devices. Mirrored to Craft (Speakwrite folder).', file: 'rees-public-speaking-emotional-regulation', type: 'Markdown', url: null, project: 'Public Speaking', client: 'Personal', domain: 'self' },
   { title: 'Ming Craft Research', date: '2026-05-30', author: 'Rees', purpose: 'Craft capabilities research for Ming\'s contract — data model, MCP tools, REST API, limitations, update cadence. Required reading before Ming activation.', file: '2026-05-30-ming-craft-research', type: 'Markdown', url: null, project: 'Ming / Craft', client: 'Personal', domain: 'self' },
   { title: 'Leslie LeeFook Research', date: '2026-05-30', author: 'Rees', purpose: 'Due-diligence on Leslie LeeFook (Incus) ahead of dinner. Background, professional reputation, AI positioning in T&T, mutual benefit angles.', file: '2026-05-30-leslie-leefook-research', type: 'Markdown', url: null, project: 'System', client: 'Personal', domain: 'self' },
@@ -3002,9 +3002,9 @@ const artifactsData = [
   { title: 'Doc: Calvert Myelofibrosis Prognosis', date: '2026-06-17', author: 'Doc', purpose: 'Clinical prognosis assessment for Calvert Craigg — asymptomatic MF diagnosed 2026-06-09 by Dr. Moosai. Five key questions for the haematologist; DIPSS tier survival ranges; fibrosis grade significance; natural history; monitoring protocol.', file: 'doc-calvert-myelofibrosis-prognosis-20260617', type: 'Markdown', url: null, project: 'System', client: 'Personal', domain: 'body' },
   { title: 'Maraval Dredging Contacts', date: '2026-06-17', author: 'Rees', purpose: 'Maraval River dredging contact directory for Andalusia Residents Association. Correct authority: DMBC (not "Diego Martin East"). Correct councillor: Damian Fournillier (Moka/Boissiere #2). Government change May 2025 flagged.', file: '2026-06-17-maraval-dredging-contacts', type: 'Markdown', url: null, project: 'ARA', client: 'ARA', domain: 'membership' },
   { title: 'Andalusia Dredging Email Draft', date: '2026-06-18', author: 'Will + Max', purpose: 'Formal email draft — urgent dredging request to DMBC CEO Ms. Beverly Haywood. Copies: Mayor Glasgow-Warner, Councillor Fournillier, Colm Imbert MP, Ministry of Works. Ready to send pending Minister Jearlean John\'s email address confirmation.', file: '2026-06-17-andalusia-dredging-email-draft', type: 'Markdown', url: null, project: 'ARA', client: 'ARA', domain: 'membership' },
-  { title: 'Project Vantage Experience Spec', date: '2026-06-17', author: 'Charta', purpose: 'Project Vantage experience spec — Peace / Power / Purpose + Living System. Self-contained HTML using GL-003 design system. Three-pillar architecture with open-bottom pillars on foundation slab. Benchmark review dates: 2026-07-17, 2026-09-17, 2027-06-17.', file: '2026-06-17-project-vantage-experience-spec', type: 'HTML', url: null, project: 'Project Vantage', client: 'Personal', domain: 'self' },
+  { title: 'Project Vantage Experience Spec', date: '2026-06-17', author: 'Charta', purpose: 'Project Vantage experience spec — Peace / Power / Purpose + Living System. Self-contained HTML using GL-003 design system. Three-pillar architecture with open-bottom pillars on foundation slab. Benchmark review dates: 2026-07-17, 2026-09-17, 2027-06-17.', file: '2026-06-17-project-vantage-experience-spec', type: 'HTML', url: 'https://peterag.github.io/petergales-artifacts/2026-06-17-project-vantage-experience-spec.html', project: 'Project Vantage', client: 'Personal', domain: 'self' },
   { title: 'Graphic Design Principles Brief', date: '2026-06-18', author: 'Rees', purpose: 'Robin Williams CRAP/PARC canon + color-in-sequential-layouts research. Grounds GL-003 and Charta/Iris contracts in established doctrine. 8 specific GL-003 recommendations.', file: '2026-06-18-rees-graphic-design-principles-brief', type: 'Markdown', url: null, project: 'System', client: 'Personal', domain: 'self' },
-  { title: 'Project Vantage Charter', date: '2026-06-18', author: 'Charta', purpose: 'Project Vantage two-tab HTML charter (v5). Tab 1: Peace/Power/Purpose + Living System experience spec. Tab 2: phased build plan (Phases 1–4) with benchmark checkpoint cards. Alabaster ground, badge-centric status encoding, GL-003 Williams canon applied.', file: 'project-vantage-charter', type: 'HTML', url: null, project: 'Project Vantage', client: 'Personal', domain: 'self' },
+  { title: 'Project Vantage Charter', date: '2026-06-18', author: 'Charta', purpose: 'Project Vantage two-tab HTML charter (v5). Tab 1: Peace/Power/Purpose + Living System experience spec. Tab 2: phased build plan (Phases 1–4) with benchmark checkpoint cards. Alabaster ground, badge-centric status encoding, GL-003 Williams canon applied.', file: 'project-vantage-charter', type: 'HTML', url: 'https://peterag.github.io/petergales-artifacts/project-vantage-charter.html', project: 'Project Vantage', client: 'Personal', domain: 'self' },
   { title: 'Projects Dashboard', date: '2026-06-20', author: 'Charta', purpose: 'Living projects dashboard — all PKM projects in a sortable/filterable table. Row-click opens modal with Next Action callout, Steps (numbered/sequential), Action Points (parallel), Completed Steps toggle, document links, metadata grid, completeness bar. 40+ projects loaded. Live at https://peterag.github.io/petergales-artifacts/peter-os-projects-dashboard.html', file: 'peter-os-projects-dashboard', type: 'HTML', url: 'https://peterag.github.io/petergales-artifacts/peter-os-projects-dashboard.html', project: 'Project Vantage', client: 'Personal', domain: 'self' },
 ];
 

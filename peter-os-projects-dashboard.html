@@ -1213,7 +1213,7 @@
 <!-- PAG Footer -->
 <footer class="pag-footer">
   <span class="pag-marker">PAG</span>
-  <span class="pag-meta">Peter OS 2 · Project Vantage · Dashboard v1.0 · 2026-06-20</span>
+  <span class="pag-meta">Peter OS 2 · Project Vantage · Dashboard v1.0 · 2026-06-21</span>
 </footer>
 
 <!-- ============================================================
@@ -2905,8 +2905,8 @@ let currentView = 'projects';
 
 function switchView(view) {
   currentView = view;
-  document.getElementById('projectsView').style.display  = view === 'projects'  ? '' : 'none';
-  document.getElementById('artifactsView').style.display = view === 'artifacts' ? '' : 'none';
+  document.getElementById('projectsView').style.display  = view === 'projects'  ? 'block' : 'none';
+  document.getElementById('artifactsView').style.display = view === 'artifacts' ? 'block' : 'none';
   document.getElementById('btnProjects').classList.toggle('active',  view === 'projects');
   document.getElementById('btnArtifacts').classList.toggle('active', view === 'artifacts');
   if (view === 'artifacts') renderArtifacts();

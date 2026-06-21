@@ -1,0 +1,2991 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Projects — Peter OS 2</title>
+<style>
+  /* ============================================================
+     DESIGN TOKENS — sourced from GL-003-design-system.md
+     Primary: Garnet #9B2D30 | Neutral-5: Ebon #1A1A1A
+     Neutral-0: Alabaster #F9F7F2 | Supporting-1: Deep Earth #5E3A2B
+     Supporting-2: Sienna #D67D4E | Supporting-3: Soft Sand #E8C0A3
+     Foundation: Old Mahogany #2A1F1A
+     Radius Rule: 24px everywhere
+     Type: Montserrat (headings) + Inter (body)
+     Base unit: 8px
+  ============================================================ */
+
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;800&family=Inter:wght@400;700&display=swap');
+
+  :root {
+    --color-primary: #9B2D30;
+    --color-neutral-5: #1A1A1A;
+    --color-neutral-0: #F9F7F2;
+    --color-supporting-1: #5E3A2B;
+    --color-supporting-2: #D67D4E;
+    --color-supporting-3: #E8C0A3;
+    --color-foundation: #2A1F1A;
+
+    /* Domain colors — GL-003 §13a (Iris, 2026-06-20) */
+    --color-body:        #4A6741; /* Fern */
+    --color-education:   #476070; /* River Stone */
+    --color-family:      #E8C0A3; /* Soft Sand — Ebon text */
+    --color-membership:  #4A4540; /* Stone */
+    --color-money:       #8A6438; /* Bark */
+    --color-play:        #D67D4E; /* Sienna — Ebon text */
+    --color-self:        #5C4472; /* Dusk */
+    --color-sociability: #5E3A2B; /* Deep Earth */
+    --color-spirituality:#6B3D24; /* Umber */
+    --color-work:        #9B2D30; /* Garnet */
+
+    /* Status colors — GL-003 §13b (Iris, 2026-06-20) */
+    --status-active-bg:   #9B2D30; --status-active-text:   #F9F7F2; /* Garnet / Alabaster */
+    --status-planning-bg: #4A6741; --status-planning-text: #F9F7F2; /* Fern / Alabaster */
+    --status-on-hold-bg:  #8A6438; --status-on-hold-text:  #F9F7F2; /* Bark / Alabaster */
+    --status-parked-bg:   #4A4540; --status-parked-text:   #F9F7F2; /* Stone / Alabaster */
+    --status-closed-bg:   #E8C0A3; --status-closed-text:   #1A1A1A; /* Soft Sand / Ebon */
+
+    /* Priority */
+    --priority-high: #9B2D30;
+    --priority-medium: #B45309;
+    --priority-low: #6b7280;
+
+    /* Spacing */
+    --space-xs: 8px;
+    --space-sm: 16px;
+    --space-md: 24px;
+    --space-lg: 48px;
+    --space-xl: 64px;
+    --radius: 24px;
+    --radius-sm: 8px;
+    --radius-xs: 4px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--color-neutral-5);
+    background: #EDEBE5;
+    min-height: 100vh;
+  }
+
+  /* ============================================================
+     HEADER — Old Mahogany dark panel (§11A Dark Panel Pattern)
+  ============================================================ */
+  .dashboard-header {
+    background: var(--color-foundation);
+    padding: var(--space-xl) var(--space-xl) var(--space-lg);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .dashboard-header::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 320px; height: 100%;
+    background: linear-gradient(135deg, transparent 40%, rgba(155,45,48,0.15) 100%);
+    pointer-events: none;
+  }
+
+  .header-eyebrow {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-supporting-3);
+    margin-bottom: var(--space-sm);
+    opacity: 0.8;
+  }
+
+  .header-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 56px;
+    font-weight: 800;
+    color: var(--color-neutral-0);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: var(--space-xs);
+  }
+
+  .header-title span {
+    color: var(--color-primary);
+  }
+
+  .header-tagline {
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--color-supporting-3);
+    margin-bottom: var(--space-lg);
+    line-height: 1.5;
+  }
+
+  .header-meta {
+    font-size: 11px;
+    color: rgba(232, 192, 163, 0.5);
+    font-weight: 400;
+    letter-spacing: 0.05em;
+  }
+
+  /* ============================================================
+     STATS ROW
+  ============================================================ */
+  .stats-row {
+    display: flex;
+    gap: var(--space-sm);
+    margin-top: var(--space-lg);
+    flex-wrap: wrap;
+  }
+
+  .stat-card {
+    background: rgba(249,247,242,0.07);
+    border: 1px solid rgba(232,192,163,0.15);
+    border-radius: var(--radius-sm);
+    padding: var(--space-sm) var(--space-md);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+  }
+
+  .stat-card:hover {
+    background: rgba(249,247,242,0.12);
+    border-color: rgba(232,192,163,0.3);
+  }
+
+  .stat-card.active-filter {
+    background: rgba(155,45,48,0.25);
+    border-color: rgba(155,45,48,0.5);
+  }
+
+  .stat-number {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--color-neutral-0);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-supporting-3);
+    opacity: 0.7;
+  }
+
+  /* ============================================================
+     MAIN CONTENT AREA
+  ============================================================ */
+  .main {
+    padding: var(--space-lg) var(--space-xl);
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  /* ============================================================
+     FILTER BAR
+  ============================================================ */
+  .filter-bar {
+    background: var(--color-neutral-0);
+    border-radius: var(--radius);
+    padding: var(--space-md) var(--space-lg);
+    margin-bottom: var(--space-md);
+    display: flex;
+    gap: var(--space-md);
+    align-items: center;
+    flex-wrap: wrap;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+  }
+
+  .filter-group {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    flex-wrap: wrap;
+  }
+
+  .filter-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-supporting-1);
+    white-space: nowrap;
+    margin-right: 2px;
+  }
+
+  .filter-chip {
+    padding: 5px 12px;
+    border-radius: var(--radius-xs);
+    border: 1.5px solid #D1CBC1;
+    background: transparent;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: #7a6b5f;
+    cursor: pointer;
+    transition: all 0.12s ease;
+    white-space: nowrap;
+  }
+
+  .search-input {
+    width: 200px;
+    cursor: text;
+  }
+  .search-input::placeholder {
+    color: #9a8f86;
+    font-style: italic;
+  }
+
+  .chip-count {
+    font-size: 11px;
+    font-weight: 400;
+    opacity: 0.7;
+    margin-left: 2px;
+  }
+
+  .filter-chip:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    background: rgba(155,45,48,0.04);
+  }
+
+  .filter-chip.active {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--color-neutral-0);
+  }
+
+  .filter-divider {
+    width: 1px;
+    height: 28px;
+    background: #D1CBC1;
+    flex-shrink: 0;
+  }
+
+  .filter-select {
+    padding: 5px 10px;
+    border-radius: var(--radius-xs);
+    border: 1.5px solid #D1CBC1;
+    background: transparent;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: #7a6b5f;
+    cursor: pointer;
+    appearance: none;
+    padding-right: 24px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%237a6b5f' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+  }
+
+  .filter-select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+  }
+
+  /* ============================================================
+     PROJECT TABLE
+  ============================================================ */
+  .table-wrapper {
+    background: var(--color-neutral-0);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+  }
+
+  .table-header {
+    display: grid;
+    grid-template-columns: 2.4fr 1fr 0.9fr 0.85fr 0.7fr 0.9fr 0.6fr 36px;
+    gap: 0;
+    padding: 0 var(--space-md);
+    border-bottom: 1px solid #E0D9D0;
+    background: #F2EFE8;
+  }
+
+  .table-header-cell {
+    padding: 10px var(--space-xs);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--color-supporting-1);
+    white-space: nowrap;
+  }
+
+  .table-header-cell.sortable {
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .table-header-cell.sortable:hover {
+    color: var(--color-primary);
+  }
+
+  .table-header-cell.sorted {
+    color: var(--color-primary);
+  }
+
+  .project-row {
+    display: grid;
+    grid-template-columns: 2.4fr 1fr 0.9fr 0.85fr 0.7fr 0.9fr 0.6fr;
+    gap: 0;
+    padding: 0 var(--space-md);
+    border-bottom: 1px solid #EDE9E3;
+    align-items: center;
+    transition: background 0.1s;
+    cursor: pointer;
+  }
+
+  .project-row:hover {
+    background: #FAF8F4;
+  }
+
+  .project-row:last-child {
+    border-bottom: none;
+  }
+
+  .project-row.hidden {
+    display: none;
+  }
+
+  .project-cell {
+    padding: 11px var(--space-xs);
+    font-size: 13px;
+    color: var(--color-neutral-5);
+  }
+
+  .project-name {
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--color-neutral-5);
+    line-height: 1.3;
+  }
+
+  .project-name-sub {
+    font-size: 11px;
+    color: #9a8f86;
+    font-weight: 400;
+    margin-top: 1px;
+    line-height: 1.3;
+  }
+
+  /* ============================================================
+     BADGES
+  ============================================================ */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 8px;
+    border-radius: var(--radius-xs);
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+
+  .badge-status-active   { background: var(--status-active-bg);   color: var(--status-active-text); }
+  .badge-status-planning { background: var(--status-planning-bg);  color: var(--status-planning-text); }
+  .badge-status-on-hold  { background: var(--status-on-hold-bg);   color: var(--status-on-hold-text); }
+  .badge-status-parked   { background: var(--status-parked-bg);    color: var(--status-parked-text); }
+  .badge-status-closed   { background: var(--status-closed-bg);    color: var(--status-closed-text); }
+
+  .badge-priority-high   { background: rgba(155,45,48,0.12); color: var(--color-primary); border: 1px solid rgba(155,45,48,0.25); }
+  .badge-priority-medium { background: rgba(180,83,9,0.10);  color: #B45309; border: 1px solid rgba(180,83,9,0.22); }
+  .badge-priority-low    { background: rgba(107,114,128,0.10); color: #6b7280; border: 1px solid rgba(107,114,128,0.2); }
+
+  .domain-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 8px;
+    border-radius: var(--radius-xs);
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  /* ============================================================
+     COMPLETENESS INDICATOR
+  ============================================================ */
+  .completeness-dots {
+    display: flex;
+    gap: 3px;
+    align-items: center;
+    flex-wrap: nowrap;
+  }
+
+  .completeness-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .completeness-dot.filled {
+    background: var(--color-primary);
+    opacity: 0.7;
+  }
+
+  .completeness-dot.empty {
+    background: #D1CBC1;
+  }
+
+  /* ============================================================
+     INFO BUTTON
+  ============================================================ */
+  .info-btn {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1.5px solid #C2B9AF;
+    background: transparent;
+    color: #9a8f86;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.12s ease;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+
+  .info-btn:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    background: rgba(155,45,48,0.06);
+  }
+
+  /* ============================================================
+     EMPTY STATE
+  ============================================================ */
+  .empty-state {
+    padding: var(--space-xl) var(--space-md);
+    text-align: center;
+    color: #9a8f86;
+    font-size: 14px;
+  }
+
+  .empty-state-icon {
+    font-size: 32px;
+    margin-bottom: var(--space-sm);
+    opacity: 0.4;
+  }
+
+  /* ============================================================
+     MODAL OVERLAY
+  ============================================================ */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(26,16,12,0.6);
+    backdrop-filter: blur(3px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-md);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .modal-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .modal {
+    background: var(--color-neutral-0);
+    border-radius: var(--radius);
+    width: 100%;
+    max-width: 680px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.25), 0 8px 24px rgba(0,0,0,0.12);
+    transform: translateY(12px);
+    transition: transform 0.2s ease;
+  }
+
+  .modal-overlay.open .modal {
+    transform: translateY(0);
+  }
+
+  .modal-header {
+    padding: var(--space-lg) var(--space-lg) var(--space-md);
+    border-bottom: 1px solid #E0D9D0;
+    position: relative;
+  }
+
+  .modal-header-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-xs);
+  }
+
+  .modal-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--color-neutral-5);
+    line-height: 1.2;
+    flex: 1;
+  }
+
+  .modal-close {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1.5px solid #D1CBC1;
+    background: transparent;
+    color: #9a8f86;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.12s;
+    line-height: 1;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .modal-close:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    background: rgba(155,45,48,0.06);
+  }
+
+  .modal-meta-row {
+    display: flex;
+    gap: var(--space-xs);
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: var(--space-xs);
+  }
+
+  .modal-body {
+    padding: var(--space-md) var(--space-lg);
+  }
+
+  .modal-section {
+    margin-bottom: var(--space-md);
+  }
+
+  .modal-section:last-child {
+    margin-bottom: 0;
+  }
+
+  .modal-section-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-supporting-1);
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #EDE9E3;
+  }
+
+  .modal-section-content {
+    font-size: 13px;
+    color: var(--color-neutral-5);
+    line-height: 1.6;
+  }
+
+  .modal-section-content.muted {
+    color: #9a8f86;
+    font-style: italic;
+  }
+
+  .modal-metadata-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-sm);
+    margin-bottom: var(--space-md);
+    background: #F5F2EC;
+    border-radius: var(--radius-sm);
+    padding: var(--space-sm);
+  }
+
+  .meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .meta-item-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #9a8f86;
+  }
+
+  .meta-item-value {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--color-neutral-5);
+  }
+
+  /* Completeness bar in modal */
+  .completeness-bar-wrap {
+    background: #F5F2EC;
+    border-radius: var(--radius-sm);
+    padding: var(--space-sm);
+    margin-bottom: var(--space-md);
+  }
+
+  .completeness-bar-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+
+  .completeness-bar-title {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #9a8f86;
+  }
+
+  .completeness-bar-pct {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--color-primary);
+  }
+
+  .completeness-track {
+    height: 6px;
+    background: #D1CBC1;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .completeness-fill {
+    height: 100%;
+    background: var(--color-primary);
+    border-radius: 3px;
+    transition: width 0.4s ease;
+  }
+
+  /* Action points list */
+  .action-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .action-list li {
+    font-size: 13px;
+    color: var(--color-neutral-5);
+    line-height: 1.5;
+    padding-left: 16px;
+    position: relative;
+  }
+
+  .action-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 7px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    opacity: 0.6;
+  }
+
+  .steps-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    counter-reset: step-counter;
+  }
+
+  .steps-list li {
+    font-size: 13px;
+    color: var(--color-neutral-5);
+    line-height: 1.5;
+    padding-left: 22px;
+    position: relative;
+    counter-increment: step-counter;
+  }
+
+  .steps-list li::before {
+    content: counter(step-counter);
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-size: 11px;
+    font-weight: 700;
+    color: #9B2D30;
+    line-height: 1.5;
+    min-width: 14px;
+  }
+
+  .step-note-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 15px;
+    height: 15px;
+    border: 1.5px solid #9a8f86;
+    border-radius: 50%;
+    font-size: 9px;
+    font-weight: 700;
+    color: #9a8f86;
+    background: none;
+    cursor: pointer;
+    margin-left: 5px;
+    vertical-align: middle;
+    line-height: 1;
+    padding: 0;
+    position: relative;
+    top: -1px;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .step-note-btn:hover { border-color: #9B2D30; color: #9B2D30; }
+
+  .step-note-popover {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    background: #1A1A1A;
+    color: #F9F7F2;
+    font-size: 12px;
+    line-height: 1.6;
+    padding: 10px 14px;
+    border-radius: 6px;
+    max-width: 280px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+    font-family: var(--font-body);
+  }
+
+  .completed-steps-toggle {
+    margin-top: 10px;
+    font-size: 11px;
+    color: #9a8f86;
+  }
+  .completed-steps-toggle summary {
+    cursor: pointer;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    list-style: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    user-select: none;
+  }
+  .completed-steps-toggle summary::-webkit-details-marker { display: none; }
+  .completed-steps-toggle summary::before {
+    content: '▸';
+    font-size: 10px;
+    transition: transform 0.15s;
+  }
+  .completed-steps-toggle[open] summary::before { transform: rotate(90deg); }
+  .completed-steps-toggle ul {
+    margin-top: 8px;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding-left: 12px;
+    border-left: 2px solid #E8E3DC;
+  }
+  .completed-steps-toggle li {
+    font-size: 12px;
+    color: #9a8f86;
+    text-decoration: line-through;
+    line-height: 1.5;
+  }
+
+  /* Tags list */
+  .tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .tag {
+    padding: 2px 8px;
+    background: #EDE9E3;
+    border-radius: var(--radius-xs);
+    font-size: 11px;
+    color: #7a6b5f;
+    font-weight: 400;
+  }
+
+  /* Artifact links */
+  .artifact-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .artifact-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--color-primary);
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(155,45,48,0.15);
+    transition: border-color 0.12s;
+  }
+
+  .artifact-link:hover {
+    border-bottom-color: var(--color-primary);
+  }
+
+  .artifact-link::before {
+    content: '→';
+    font-size: 12px;
+  }
+
+  /* People pills */
+  .people-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+
+  .person-pill {
+    padding: 3px 10px;
+    background: rgba(94,58,43,0.08);
+    border-radius: var(--radius-xs);
+    font-size: 12px;
+    color: var(--color-supporting-1);
+    font-weight: 400;
+  }
+
+  /* Footer PAG marker */
+  .pag-footer {
+    padding: var(--space-md) var(--space-xl);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .pag-marker {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--color-primary);
+  }
+
+  .pag-meta {
+    font-size: 11px;
+    color: #9a8f86;
+  }
+
+  /* Scrollbar styling */
+  .modal::-webkit-scrollbar { width: 6px; }
+  .modal::-webkit-scrollbar-track { background: transparent; }
+  .modal::-webkit-scrollbar-thumb { background: #D1CBC1; border-radius: 3px; }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .dashboard-header { padding: var(--space-lg) var(--space-md); }
+    .main { padding: var(--space-md); }
+    .header-title { font-size: 36px; }
+    .table-header { display: none; }
+    .project-row {
+      grid-template-columns: 1fr;
+      padding: var(--space-sm);
+      gap: var(--space-xs);
+    }
+    .modal-metadata-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* Utility */
+  .no-results {
+    display: none;
+    padding: var(--space-xl);
+    text-align: center;
+    color: #9a8f86;
+    font-size: 14px;
+  }
+
+  .sort-arrow { margin-left: 3px; opacity: 0.6; font-size: 9px; }
+
+  /* ============================================================
+     VIEW TOGGLE — Projects / Artifacts
+  ============================================================ */
+  .view-toggle {
+    display: flex;
+    gap: 4px;
+    background: rgba(249,247,242,0.07);
+    border: 1px solid rgba(232,192,163,0.15);
+    border-radius: var(--radius-sm);
+    padding: 3px;
+  }
+
+  .view-toggle-btn {
+    padding: 6px 18px;
+    border-radius: 5px;
+    border: none;
+    background: transparent;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: rgba(232,192,163,0.6);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    white-space: nowrap;
+  }
+
+  .view-toggle-btn.active {
+    background: var(--color-primary);
+    color: var(--color-neutral-0);
+  }
+
+  .view-toggle-btn:not(.active):hover {
+    color: var(--color-supporting-3);
+  }
+
+  /* ============================================================
+     ARTIFACTS TABLE
+  ============================================================ */
+  #artifactsView { display: none; }
+
+  .artifacts-table-header {
+    display: grid;
+    grid-template-columns: 2.6fr 0.65fr 0.75fr 3fr;
+    gap: 0;
+    padding: 0 var(--space-md);
+    border-bottom: 1px solid #E0D9D0;
+    background: #F2EFE8;
+  }
+
+  .artifact-row {
+    display: grid;
+    grid-template-columns: 2.6fr 0.65fr 0.75fr 3fr;
+    gap: 0;
+    padding: 0 var(--space-md);
+    border-bottom: 1px solid #EDE9E3;
+    align-items: start;
+    transition: background 0.1s;
+  }
+
+  .artifact-row:hover { background: #FAF8F4; }
+  .artifact-row:last-child { border-bottom: none; }
+
+  .artifact-cell {
+    padding: 11px var(--space-xs);
+    font-size: 13px;
+    color: var(--color-neutral-5);
+  }
+
+  .artifact-title {
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--color-neutral-5);
+    line-height: 1.3;
+  }
+
+  .artifact-purpose {
+    font-size: 12px;
+    color: #7a6b5f;
+    line-height: 1.5;
+  }
+
+  .artifact-author-chip {
+    display: inline-flex;
+    padding: 2px 7px;
+    border-radius: var(--radius-xs);
+    font-size: 11px;
+    font-weight: 700;
+    background: rgba(94,58,43,0.10);
+    color: var(--color-supporting-1);
+    white-space: nowrap;
+  }
+
+  @media (max-width: 900px) {
+    .artifacts-table-header { display: none; }
+    .artifact-row {
+      grid-template-columns: 1fr;
+      padding: var(--space-sm);
+      gap: 4px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     HEADER
+============================================================ -->
+<header class="dashboard-header">
+  <p class="header-eyebrow">Peter OS 2 · Project Vantage</p>
+  <h1 class="header-title">My <span>Projects</span></h1>
+  <p class="header-tagline">A commanding view — every project, every domain</p>
+
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-top:24px;">
+    <p class="header-meta">Last updated: 2026-06-21 &nbsp;·&nbsp; <span id="totalCount">0</span> projects</p>
+    <div class="view-toggle" role="group" aria-label="Switch view">
+      <button class="view-toggle-btn active" id="btnProjects" onclick="switchView('projects')">Projects</button>
+      <button class="view-toggle-btn" id="btnArtifacts" onclick="switchView('artifacts')">Artifacts</button>
+    </div>
+  </div>
+</header>
+
+<!-- ============================================================
+     MAIN
+============================================================ -->
+<main class="main">
+
+  <!-- ===== PROJECTS VIEW ===== -->
+  <div id="projectsView">
+
+  <!-- Filter Bar -->
+  <div class="filter-bar">
+    <div class="filter-group">
+      <span class="filter-label">Status</span>
+      <button class="filter-chip active" data-filter-type="status" data-filter-value="all" onclick="handleStatusFilter('all')">All <span class="chip-count" id="count-all"></span></button>
+      <button class="filter-chip" data-filter-type="status" data-filter-value="active" onclick="handleStatusFilter('active')">Active <span class="chip-count" id="count-active"></span></button>
+      <button class="filter-chip" data-filter-type="status" data-filter-value="planning" onclick="handleStatusFilter('planning')">Planning <span class="chip-count" id="count-planning"></span></button>
+      <button class="filter-chip" data-filter-type="status" data-filter-value="on-hold" onclick="handleStatusFilter('on-hold')">On Hold <span class="chip-count" id="count-on-hold"></span></button>
+      <button class="filter-chip" data-filter-type="status" data-filter-value="parked" onclick="handleStatusFilter('parked')">Parked <span class="chip-count" id="count-parked"></span></button>
+      <button class="filter-chip" data-filter-type="status" data-filter-value="closed" onclick="handleStatusFilter('closed')">Closed <span class="chip-count" id="count-closed"></span></button>
+    </div>
+
+    <div class="filter-divider"></div>
+
+    <div class="filter-group">
+      <span class="filter-label">Sort</span>
+      <select class="filter-select" id="sortSelect" onchange="applySort(this.value)">
+        <option value="priority">Priority</option>
+        <option value="domain">Domain</option>
+        <option value="client">Client</option>
+        <option value="deadline">Deadline</option>
+        <option value="status">Status</option>
+        <option value="name">Name</option>
+      </select>
+    </div>
+
+    <div class="filter-divider"></div>
+
+    <div class="filter-group">
+      <span class="filter-label">Domain</span>
+      <select class="filter-select" id="domainSelect" onchange="applyFilters()">
+        <option value="all">All domains</option>
+        <option value="body">Body</option>
+        <option value="education">Education</option>
+        <option value="family">Family</option>
+        <option value="membership">Membership</option>
+        <option value="money">Money</option>
+        <option value="play">Play</option>
+        <option value="self">Self</option>
+        <option value="sociability">Sociability</option>
+        <option value="spirituality">Spirituality</option>
+        <option value="work">Work</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <span class="filter-label">Client</span>
+      <select class="filter-select" id="clientSelect" onchange="applyFilters()">
+        <option value="all">All clients</option>
+        <option value="Personal">Personal</option>
+        <option value="CEAL Green">CEAL Green</option>
+        <option value="ARA">ARA</option>
+        <option value="Jamaica Observer">Jamaica Observer</option>
+        <option value="Family">Family</option>
+      </select>
+    </div>
+
+    <div class="filter-divider"></div>
+
+    <div class="filter-group">
+      <span class="filter-label">Search</span>
+      <div style="position:relative;display:inline-flex;align-items:center;">
+        <input type="text" class="filter-select search-input" id="searchInput"
+               placeholder="Name, domain, client…"
+               oninput="applyFilters(); document.getElementById('searchClear').style.display = this.value ? 'flex' : 'none';"
+               autocomplete="off" style="padding-right:28px;">
+        <button id="searchClear"
+                onclick="document.getElementById('searchInput').value=''; document.getElementById('searchClear').style.display='none'; applyFilters(); document.getElementById('searchInput').focus();"
+                style="display:none;position:absolute;right:6px;border:none;background:none;cursor:pointer;color:#9a8f86;font-size:14px;line-height:1;padding:0;width:18px;height:18px;align-items:center;justify-content:center;"
+                title="Clear search">&#x2715;</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="table-wrapper">
+    <div class="table-header">
+      <div class="table-header-cell sortable sorted" data-col="name" onclick="applySort('name')">Project <span class="sort-arrow" id="sort-name">▲</span></div>
+      <div class="table-header-cell">Domain</div>
+      <div class="table-header-cell">Client</div>
+      <div class="table-header-cell">Status</div>
+      <div class="table-header-cell">Priority</div>
+      <div class="table-header-cell sortable" data-col="deadline" onclick="applySort('deadline')">Target <span class="sort-arrow" id="sort-deadline"></span></div>
+      <div class="table-header-cell">Fields</div>
+    </div>
+    <div id="projectTableBody">
+      <!-- Rows injected by JS -->
+    </div>
+    <div class="no-results" id="noResults">
+      <div class="empty-state-icon">◎</div>
+      <p>No projects match the current filters.</p>
+    </div>
+  </div>
+
+  </div><!-- /#projectsView -->
+
+  <!-- ===== ARTIFACTS VIEW ===== -->
+  <div id="artifactsView">
+
+    <!-- Artifacts filter bar (search only — reuses existing search state) -->
+    <div class="filter-bar">
+      <div class="filter-group">
+        <span class="filter-label">Sort</span>
+        <select class="filter-select" id="artifactSortSelect" onchange="renderArtifacts()">
+          <option value="date-desc">Date — newest first</option>
+          <option value="date-asc">Date — oldest first</option>
+          <option value="title">Title A–Z</option>
+          <option value="author">Author A–Z</option>
+        </select>
+      </div>
+      <div class="filter-divider"></div>
+      <div class="filter-group">
+        <span class="filter-label">Search</span>
+        <div style="position:relative;display:inline-flex;align-items:center;">
+          <input type="text" class="filter-select search-input" id="artifactSearch"
+                 placeholder="Title, author, purpose…"
+                 oninput="renderArtifacts(); document.getElementById('artifactSearchClear').style.display = this.value ? 'flex' : 'none';"
+                 autocomplete="off" style="padding-right:28px;">
+          <button id="artifactSearchClear"
+                  onclick="document.getElementById('artifactSearch').value=''; document.getElementById('artifactSearchClear').style.display='none'; renderArtifacts(); document.getElementById('artifactSearch').focus();"
+                  style="display:none;position:absolute;right:6px;border:none;background:none;cursor:pointer;color:#9a8f86;font-size:14px;line-height:1;padding:0;width:18px;height:18px;align-items:center;justify-content:center;"
+                  title="Clear search">&#x2715;</button>
+        </div>
+      </div>
+      <div style="margin-left:auto;">
+        <span class="filter-label" style="white-space:nowrap;"><span id="artifactCount">0</span> artifacts</span>
+      </div>
+    </div>
+
+    <!-- Artifacts table -->
+    <div class="table-wrapper">
+      <div class="artifacts-table-header">
+        <div class="table-header-cell">Title</div>
+        <div class="table-header-cell">Date</div>
+        <div class="table-header-cell">Author</div>
+        <div class="table-header-cell">Purpose</div>
+      </div>
+      <div id="artifactsTableBody"></div>
+      <div class="no-results" id="artifactsNoResults">
+        <div class="empty-state-icon">◎</div>
+        <p>No artifacts match your search.</p>
+      </div>
+    </div>
+
+  </div><!-- /#artifactsView -->
+
+</main>
+
+<!-- PAG Footer -->
+<footer class="pag-footer">
+  <span class="pag-marker">PAG</span>
+  <span class="pag-meta">Peter OS 2 · Project Vantage · Dashboard v1.0 · 2026-06-20</span>
+</footer>
+
+<!-- ============================================================
+     MODAL
+============================================================ -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <div class="modal-header-top">
+        <h2 class="modal-title" id="modalTitle">Project Name</h2>
+        <button class="modal-close" onclick="closeModal()" aria-label="Close">×</button>
+      </div>
+      <div class="modal-meta-row" id="modalMetaRow"></div>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+
+<!-- ============================================================
+     DATA LAYER — edit only the projectData array below
+     Fields: id, name, status, domain, client, priority,
+             target_date, closed_date, linked_goals,
+             linked_people, tags, why, action_points, artifacts
+============================================================ -->
+<script>
+// ============================================================
+// PROJECT DATA
+// ============================================================
+const projectData = [
+  {
+    id: 'ceal-green-customer-journey',
+    name: 'CEAL Green Customer Journey',
+    status: 'active',
+    domain: 'work',
+    client: 'CEAL Green',
+    priority: 'high',
+    target_date: '2026-12-31',
+    closed_date: null,
+    linked_goals: ['own-a-category-and-100k-tt-2026'],
+    linked_people: ['ryan-roper'],
+    tags: ['ceal-green','customer-journey','strategy'],
+    why: 'Peter is leading the full CEAL Green customer journey design — the arc from first prospect encounter to sustained advocacy — across three phases and all four business models.',
+    next_action: 'Receive and process Ryan\'s feedback on Content Strategy v0.5',
+    action_points: [
+      'Receive and process Ryan\'s feedback on Content Strategy v0.5 (sent 2026-05-28)',
+      'Review CG Digital Transformation Roadmap and Ethniv\'s feedback session',
+      'Begin Phase 2 experience design — touchpoint mapping from first active step to commitment',
+      'Define handoff protocols between Phase 1 and Phase 2',
+      'Assess Customer Journey Manager formalisation timeline'
+    ],
+    artifacts: [
+      { label: 'Customer Journey Project Overview', url: 'file:///Users/peteranthony/Peter%20OS%202/Deliverables/ceal-green-customer-journey-project-overview.html' },
+      { label: 'Guiding Narrative Spine v0.6', url: 'file:///Users/peteranthony/Peter%20OS%202/PKM/Clients/ceal-green-guiding-narrative.md' }
+    ]
+  },
+  {
+    id: 'ai-and-i-podcast',
+    name: 'AI&I Podcast',
+    status: 'planning',
+    domain: 'work',
+    client: 'Personal',
+    priority: 'low',
+    target_date: '2027-06-30',
+    closed_date: null,
+    linked_goals: [],
+    linked_people: [],
+    tags: ['podcast','ai','content','jamaican-voice'],
+    why: 'A podcast with an AI co-host — exploring AI and humanity, with a distinct Jamaican-accent personality, asking the questions few others are asking.',
+    next_action: 'Choose AI co-host name and personality brief',
+    action_points: [
+      'Choose AI co-host name and personality brief',
+      'Open ElevenLabs account and test Jamaican voice options',
+      'Draft first episode script or concept',
+      'Connect to Remembering App chatbot development work'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'ai-audit-offer',
+    name: 'AI Audit Offer',
+    status: 'planning',
+    domain: 'work',
+    client: 'Personal',
+    priority: 'low',
+    target_date: '2027-03-31',
+    closed_date: null,
+    linked_goals: ['build-ai-knowledge-and-offer'],
+    linked_people: [],
+    tags: ['income','offer','ai','consulting'],
+    why: 'A structured business offer — AI Opportunity Assessments — to identify where AI can reduce friction for clients, connecting to income clarity.',
+    next_action: 'Create the structure for the AI Audit / Opportunity Assessment offer',
+    action_points: [
+      'Create the structure for the AI Audit / Opportunity Assessment offer',
+      'Review the "Launching AI Initiatives" PDF',
+      'Review Kamil Blanc\'s framework for moving from free advice to premium projects'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'ai-human-question-workshop-series',
+    name: 'AI & Human Question Workshop',
+    status: 'active',
+    domain: 'work',
+    client: 'Personal',
+    priority: 'medium',
+    target_date: '2026-12-31',
+    closed_date: null,
+    linked_goals: [],
+    linked_people: [],
+    tags: ['workshop','ai','chamber-of-commerce','ai-human-connection'],
+    why: 'Five-session Chamber of Commerce workshop series asking the questions before tools — purpose, people, and what kind of businesses we want to build.',
+    next_action: 'Schedule the first workshop session and confirm the format',
+    action_points: [
+      'Deliver series independently (Rudolph Hanamji collaboration ended)',
+      'Find a new co-presenter or develop delivery as solo facilitator',
+      'Define pricing model and marketing approach for the Chamber'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'ai-intro-video',
+    name: 'AI Intro Video',
+    status: 'planning',
+    domain: 'work',
+    client: 'Personal',
+    priority: 'low',
+    target_date: '2027-03-31',
+    closed_date: null,
+    linked_goals: [],
+    linked_people: [],
+    tags: ['ai','video','speaking','marketing'],
+    why: 'A 1.5–2 minute pitch video positioning Peter as a guide for leaders navigating AI — his personality, voice, and value on camera.',
+    next_action: 'Assess whether to consolidate content from AI Projects and Follow-Ups into this project',
+    action_points: [
+      'Choose the final opening and structure for the script',
+      'Record a rough cut for review',
+      'Decide on distribution channels (LinkedIn, website, YouTube)'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'ai-roundtable-mastermind',
+    name: 'AI Roundtable / Mastermind',
+    status: 'parked',
+    domain: 'membership',
+    client: 'Personal',
+    priority: 'low',
+    target_date: null,
+    closed_date: null,
+    linked_goals: [],
+    linked_people: [],
+    tags: ['ai','mastermind','community','revenue'],
+    why: 'A structured AI-focused mastermind: idea-sharing, skill-building, revenue generation, and network-building — demonstrating how to run a mastermind.',
+    action_points: [
+      'Define audience and format',
+      'Determine whether to pilot as a free or paid group first',
+      'Explore connection to existing Chamber workshop audience'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'ai-thought-leadership-summit',
+    name: 'AI Thought Leadership Summit',
+    status: 'parked',
+    domain: 'work',
+    client: 'Personal',
+    priority: 'low',
+    target_date: null,
+    closed_date: null,
+    linked_goals: [],
+    linked_people: [],
+    tags: ['ai','event','thought-leadership','trinidad','community','positioning'],
+    why: 'A large-scale platform launch — positioning Peter as Trinidad\'s leading voice in AI and human-centered innovation, with a national AI survey.',
+    action_points: [
+      'Confirm whether this is still an active intention or a parked idea',
+      'Define target date (Q3 2026 or later?)',
+      'Identify lead for sponsorship outreach',
+      'Draft event brief and vision statement',
+      'Design the national AI survey'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'ara-accounts-reconciliation',
+    name: 'ARA Accounts Reconciliation',
+    status: 'active',
+    domain: 'membership',
+    client: 'ARA',
+    priority: 'medium',
+    target_date: '2026-12-31',
+    closed_date: null,
+    linked_goals: [],
+    linked_people: ['keith-downes','thomas-inkim','derek-decaires','josh-fransen'],
+    tags: ['ara','community'],
+    why: 'Reconciling and publishing Andalusia estate accounts going back to 2022 — essential for community trust and transparent governance.',
+    next_action: 'Peter to write a narrative to accompany the published end-of-year accounts going back to ~2022 — urgent',
+    action_points: [
+      'URGENT: Peter to write a narrative to accompany the published end-of-year accounts going back to ~2022',
+      'Help Keith identify suspense account allocations with Area Reps'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'ara-automatic-gate',
+    name: 'ARA Automatic Gate',
+    status: 'active',
+    domain: 'membership',
+    client: 'ARA',
+    priority: 'medium',
+    target_date: '2026-12-31',
+    closed_date: null,
+    linked_goals: [],
+    linked_people: ['keith-downes','kenroy-mcfarlane','keith-lou-hing','jamie-mclachlan','cynthia-downes'],
+    tags: ['ara','community','security'],
+    why: 'Replacing the night security guard with an automatic gate — reducing costs, improving reliability, and providing enforceable access logs.',
+    next_action: 'Provide financing options summary to the community (Provide Funding Options to Gem)',
+    action_points: [
+      'Provide financing options summary to the community',
+      'Request apples-to-apples comparison framework for evaluating vendor quotes',
+      'Get breakdown of latest keyless entry systems',
+      'Decide on vendor and financing approach pending community consultation'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'ara-leasehold-freehold-conversion',
+    name: 'ARA Leasehold → Freehold Conversion',
+    status: 'active',
+    domain: 'membership',
+    client: 'ARA',
+    priority: 'medium',
+    target_date: '2027-06-30',
+    closed_date: null,
+    linked_goals: [],
+    linked_people: ['keith-downes','thomas-inkim','shivanand-garcia','mark-laquis','ray-sumairsingh'],
+    tags: ['ara','andalusia','legal','property'],
+    why: 'Converting Andalusia leaseholders to freehold title — removing lessor dependency on sales, transfers, and mortgages. 39 households interested.',
+    next_action: 'Open a session to identify the current blocker and next step',
+    action_points: [
+      'Secure formal written agreement from Shivanand and Danny at $1/sq ft',
+      'Confirm meeting with Mark LaQuis',
+      'Clarify status of blocked leasehold transfers (Fransen, Dass, Grosberg, Farnum, Govia)',
+      'Obtain official receipt for December 2025 peppercorn payments from Shivanand'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'ara-road-repair',
+    name: 'ARA Road Repair — WASA Damage',
+    status: 'closed',
+    domain: 'membership',
+    client: 'ARA',
+    priority: 'low',
+    target_date: null,
+    closed_date: '2026-03-24',
+    linked_goals: [],
+    linked_people: ['anson-marshall','latoya-smith-greaves'],
+    tags: ['ara','community','infrastructure'],
+    why: 'Tracking and communicating WASA road damage locations to the Ministry of Works for restoration. Damage map sent, project closed March 2026.',
+    next_action: 'Open a session to identify the current blocker and next step',
+    action_points: [],
+    artifacts: []
+  },
+  {
+    id: 'accessory-electronics-assessment',
+    name: 'Accessory & Electronics Assessment',
+    status: 'planning',
+    domain: 'money',
+    client: 'Personal',
+    priority: 'low',
+    target_date: '2027-06-30',
+    closed_date: null,
+    linked_goals: [],
+    linked_people: [],
+    tags: ['electronics','declutter','inventory'],
+    why: 'Evaluating old electronics, accessories, and cables — deciding what to keep, donate, recycle, or discard.',
+    action_points: [
+      'Submit images of electronics items (grouped by drawer or box) for assessment',
+      'Review all items: keep, donate, recycle, or discard',
+      'Log any items to keep in the inventory'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'bilateral-pfps',
+    name: 'Bilateral PFPS Rehab',
+    status: 'active',
+    domain: 'body',
+    client: 'Personal',
+    priority: 'high',
+    target_date: '2026-07-12',
+    closed_date: null,
+    linked_goals: ['achieve-running-jumping-fitness'],
+    linked_people: [],
+    tags: ['body','rehab','knees','pfps'],
+    why: 'Bilateral patellofemoral chondrosis confirmed by MRI — the primary limiter on running, skipping, jumping. Phase 1 programme active Jun 15–Jul 12.',
+    next_action: 'Doc assessment of first MTP joint sensitivity before Phase 2',
+    action_points: [
+      'Doc assessment of first MTP joint sensitivity before Phase 2',
+      'Phase 2 planning session with Kinec (when Phase 1 criteria met)',
+      'Continue Phase 1: glute-priority, foot/ankle strengthening, core, Tunturi bike'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'canadian-passport-renewal',
+    name: 'Canadian Passport Renewal',
+    status: 'planning',
+    domain: 'self',
+    client: 'Personal',
+    priority: 'medium',
+    target_date: '2026-09-30',
+    closed_date: null,
+    linked_goals: [],
+    linked_people: [],
+    tags: ['passport','canada','documents','identity'],
+    why: 'Valid Canadian passport may be needed for travel and banking. Expiry date and renewal status not yet confirmed in vault.',
+    next_action: 'Confirm current Canadian passport expiry date',
+    action_points: [
+      'Confirm current Canadian passport expiry date',
+      'Determine if renewal is urgent or can be planned',
+      'Route to Harvey if any citizenship documentation considerations apply'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'ceal-green-agentic-platform',
+    name: 'CEAL Green Agentic Platform',
+    status: 'active',
+    domain: 'work',
+    client: 'CEAL Green',
+    priority: 'high',
+    target_date: '2026-12-31',
+    closed_date: null,
+    linked_goals: [],
+    linked_people: ['mark-incus','cecl-george'],
+    tags: ['ceal-green','agentic','ai'],
+    why: 'Building an agentic AI system to execute CEAL Green\'s business operations — a proof of concept for Peter\'s broader AI consulting offer.',
+    next_action: 'Working group session: Mark, Cecil, Peter — scope customer journey agentic build',
+    action_points: [
+      'Working group session: Mark, Cecil, Peter — scope customer journey agentic build',
+      'Define Peter\'s specific deliverables for the customer journey layer',
+      'Clarify scope of ODW / ERP integration with the agentic layer'
+    ],
+    artifacts: [
+      { label: 'Customer Journey Overview', url: 'file:///Users/peteranthony/Peter%20OS%202/Deliverables/ceal-green-customer-journey-project-overview.html' },
+      { label: 'Visual Identity Spec', url: 'file:///Users/peteranthony/Peter%20OS%202/Deliverables/2026-06-09-ceal-green-vis-id-spec/' }
+    ]
+  },
+  {
+    id: 'ceal-green-website-audit',
+    name: 'CEAL Green Website Audit',
+    status: 'closed',
+    domain: 'work',
+    client: 'CEAL Green',
+    priority: 'low',
+    target_date: '2026-06-11',
+    closed_date: '2026-06-20',
+    linked_goals: ['create-customer-journey-ceal-green'],
+    linked_people: ['ryan-roper'],
+    tags: ['ceal-green','website','audit'],
+    why: 'Cass-led audit evaluating the CEAL Green website — informing content strategy and identifying gaps between brand guidelines and live web presence.',
+    action_points: [
+      'Review findings against ceal-green-brand-guidelines and ceal-green-content-strategy',
+      'Feed audit findings into the content strategy and customer journey work'
+    ],
+    artifacts: [
+      { label: 'Website Audit', url: 'file:///Users/peteranthony/Peter%20OS%202/Deliverables/2026-06-10-ceal-green-website-audit/' },
+      { label: 'Developer Action Sheet', url: 'file:///Users/peteranthony/Peter%20OS%202/Deliverables/2026-06-15-ceal-green-developer-action-sheet.xlsx' }
+    ]
+  },
+  {
+    id: 'cg-digital-transformation-roadmap',
+    name: 'CG Digital Transformation Roadmap',
+    status: 'active',
+    domain: 'work',
+    client: 'CEAL Green',
+    priority: 'high',
+    target_date: '2026-12-31',
+    closed_date: null,
+    linked_goals: [],
+    linked_people: [],
+    tags: ['ceal-green','digital-transformation','customer-journey','ryan'],
+    why: 'Peter must understand this roadmap (Ryan\'s) to connect customer journey work to the right CEAL Green business processes.',
+    action_points: [
+      'Read the CG Digital Transformation Roadmap 2026 PDF',
+      'Watch Ethniv\'s feedback on the roadmap',
+      'Identify which business processes connect to the customer journey work'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'computershare-pearly-payments',
+    name: 'Computershare Payments for Pearly',
+    status: 'active',
+    domain: 'family',
+    client: 'Family',
+    priority: 'medium',
+    target_date: '2026-09-30',
+    closed_date: null,
+    linked_goals: [],
+    linked_people: ['pearl-phillips','cindel-webb'],
+    tags: ['finances','family','usa'],
+    why: 'Uncashed Computershare cheques in Peter\'s desk drawer — need to redirect payments to Pearly\'s Chase account or transfer to Cindel Webb.',
+    next_action: 'Warren to advise on Computershare payment redirection or transfer process',
+    action_points: [
+      'Warren to advise on Computershare payment redirection or transfer process',
+      'Peter to count and tally cheques in desk drawer',
+      'Determine which option (Chase redirect vs. transfer to Cindel) is more practical'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'content-calendar',
+    name: 'Content Calendar',
+    status: 'planning',
+    domain: 'work',
+    client: 'Personal',
+    priority: 'low',
+    target_date: '2026-12-31',
+    closed_date: null,
+    linked_goals: [],
+    linked_people: [],
+    tags: ['content','ai','curation','writing'],
+    why: 'A forward-looking content schedule — matching curated AI news and human stories to publication slots, reducing blank-page anxiety.',
+    next_action: 'Test Perplexity Pro with sample queries on human AI stories and education topics',
+    action_points: [
+      'Test Perplexity Pro with sample queries on human AI stories and education topics',
+      'Set up Zapier automation for weekly digest to Google Docs',
+      'Define first content calendar period (next 3–4 weeks)'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'content-curation-creation-system',
+    name: 'Content Curation & Creation System',
+    status: 'closed',
+    domain: 'work',
+    client: 'Personal',
+    priority: 'low',
+    target_date: '2026-12-31',
+    closed_date: null,
+    linked_goals: [],
+    linked_people: [],
+    tags: ['content','writing','system','ai','craft'],
+    why: 'Operational infrastructure for capturing, organizing, and publishing content — superseded by Will (Content Manager). Design reference retained.',
+    next_action: 'Open a session to define the current scope and next step',
+    action_points: [],
+    artifacts: []
+  },
+  {
+    id: 'convert-ny-license-fl',
+    name: 'Convert NY License to Florida',
+    status: 'on-hold',
+    domain: 'self',
+    client: 'Personal',
+    priority: 'low',
+    target_date: null,
+    closed_date: null,
+    linked_goals: [],
+    linked_people: [],
+    tags: ['admin','florida','license','usa'],
+    why: 'Converting expired NY license to Florida — on hold pending a decision on whether pursuing it is worth the residency complexity.',
+    action_points: [
+      'Make the call: is it worth doing given the expired NY license and residency complexity?',
+      'If proceeding: confirm FL DMV requirements and gather two FL address proofs'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'craft-migration',
+    name: 'Craft Migration',
+    status: 'active',
+    domain: 'self',
+    client: 'Personal',
+    priority: 'medium',
+    target_date: '2026-09-30',
+    closed_date: null,
+    linked_goals: [],
+    linked_people: [],
+    tags: ['system','craft','ssot'],
+    why: 'Migrating Craft content into Peter OS 2 vault — establishing a clear SSOT across tools before committing files to their final homes.',
+    action_points: [
+      'Peter runs Craft content audit using the routing guide (delete stale, then categorise by type)',
+      'Second pass on flagged documents',
+      'Apply final routing: Personal Life → vault; Educational → keep in Craft; Mission Control → keep in Craft'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'dutch-citizenship',
+    name: 'Dutch Citizenship Documentation',
+    status: 'active',
+    domain: 'self',
+    client: 'Personal',
+    priority: 'medium',
+    target_date: '2027-06-30',
+    closed_date: null,
+    linked_goals: [],
+    linked_people: [],
+    tags: ['citizenship','netherlands','legal','identity','harvey'],
+    why: 'Peter may be eligible for Dutch citizenship through Galesloot family heritage — providing EU citizenship and freedom of movement.',
+    next_action: 'Submit birth certificate to Team Inbox',
+    action_points: [
+      'Submit birth certificate to Team Inbox',
+      'Harvey to advise on documentation requirements for citizenship claim',
+      'Research eligibility criteria for citizenship through Galesloot parentage'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'fiduciary-team-onboarding',
+    name: 'Fiduciary Team Onboarding',
+    status: 'active',
+    domain: 'money',
+    client: 'Personal',
+    priority: 'high',
+    target_date: '2026-09-30',
+    closed_date: null,
+    linked_goals: [],
+    linked_people: [],
+    tags: ['fiduciary','compliance','legal','tax'],
+    why: 'Warren, Ernst, and Harvey completed first-engagement review. Strategy: compliance going forward; quantify IRS exposure risk for prior years.',
+    next_action: 'Open a session to define next onboarding milestone',
+    action_points: [
+      'Ernst + Harvey: quantify IRS exposure risk for prior years',
+      'Apply the structured review model to the body domain (next phase)'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'file-management',
+    name: 'File Management',
+    status: 'on-hold',
+    domain: 'work',
+    client: 'Personal',
+    priority: 'low',
+    target_date: null,
+    closed_date: null,
+    linked_goals: [],
+    linked_people: [],
+    tags: ['mac','files','storage','ming','organization'],
+    why: 'Building a rock-solid file and cloud foundation — messy folders, no backup strategy, and duplicate files across Mac and cloud storage.',
+    next_action: 'Continue Documents folder organisation using Documents_Organization_Plan.txt',
+    action_points: [
+      'Continue Documents folder organisation using Documents_Organization_Plan.txt',
+      'Permanently delete Deleted_Duplicates folder (2.1GB recovery)',
+      'Finish Downloads cleanup',
+      'Create Finder Smart Folders'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'gales-signature-speech',
+    name: 'Gales Signature Speech',
+    status: 'on-hold',
+    domain: 'work',
+    client: 'Personal',
+    priority: 'low',
+    target_date: null,
+    closed_date: null,
+    linked_goals: [],
+    linked_people: [],
+    tags: ['public-speaking','ai','human-connection','spirituality'],
+    why: 'Peter\'s foundational narrative speech — rooted in human connection, spiritual logic ("I AM"), and AI\'s role in experienced human connection.',
+    action_points: [
+      'Prerequisite: complete positioning conversation with Jude (what do you do?)',
+      'Gather and consolidate all existing elements (notes, fragments, prior talks)',
+      'Map the argument: "I AM" → presence → connection → AI\'s role'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'golfers-elbow',
+    name: 'Golfer\'s Elbow Rehab (Right)',
+    status: 'active',
+    domain: 'body',
+    client: 'Personal',
+    priority: 'high',
+    target_date: '2026-09-30',
+    closed_date: null,
+    linked_goals: ['achieve-running-jumping-fitness'],
+    linked_people: [],
+    tags: ['body','rehab','elbow'],
+    why: 'Medial epicondylitis — the primary limiter on grip and pulling work. Blocking passive hangs, pull-ups, and farmer\'s carries.',
+    next_action: 'Get Body Team assessment of current light-loading protocol',
+    action_points: [
+      'Get Body Team assessment of current light-loading protocol',
+      'Consider physio consult to confirm or revise approach',
+      'Track whether aggravation symptoms decrease over next 2–4 weeks'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'happiness-is-np45',
+    name: 'Happiness Is NP45',
+    status: 'active',
+    domain: 'money',
+    client: 'Personal',
+    priority: 'medium',
+    target_date: '2026-12-31',
+    closed_date: null,
+    linked_goals: [],
+    linked_people: ['neil-marquez','camille-ojar'],
+    tags: ['home','np45','trinidad','property'],
+    why: 'Ongoing maintenance, improvements, tenancy, and issues at 45 Ness Place — Peter\'s primary property in Andalusia.',
+    next_action: 'Open a session to define the next physical action',
+    action_points: [
+      'Confirm tenancy status and whether lease was executed',
+      'Formalize gas range installation decision',
+      'Add outdoor camera and Bluetooth speakers to insurance contents schedule at next renewal'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'house-renovation',
+    name: 'House Renovation',
+    status: 'planning',
+    domain: 'money',
+    client: 'Personal',
+    priority: 'medium',
+    target_date: '2027-12-31',
+    closed_date: null,
+    linked_goals: [],
+    linked_people: ['tyrel-olivier','donna-woon-sam'],
+    tags: ['home','renovation','trinidad'],
+    why: 'Restoring the family home built in the 1970s — meaningful both practically and symbolically. Scope and contractor management to be defined.',
+    next_action: 'Create a full list of needed repairs and improvements',
+    action_points: [
+      'Create a full list of needed repairs and improvements',
+      'Consult with Tyrel on scope',
+      'Research costs and sequencing'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'human-alignment-thesis',
+    name: 'Human Alignment Thesis',
+    status: 'active',
+    domain: 'work',
+    client: 'Personal',
+    priority: 'high',
+    target_date: '2027-06-30',
+    closed_date: null,
+    linked_goals: [],
+    linked_people: [],
+    tags: ['human-alignment','thesis','speaking','keynote','content-platform'],
+    why: 'The intellectual spine of Peter\'s practice — arguing human alignment is the prerequisite for AI alignment and a flourishing future. Five-beat v3 complete.',
+    next_action: 'Open a session to define the next writing or research step',
+    action_points: [
+      'Complete Sentence 5 (the AI/opportunity beat) in Peter\'s own spoken words',
+      'Define what a Human Alignment Strategist actually does (the specific moves)',
+      'HA Thesis Session (~90 min) — extract 3–5 core sentences, then stress-test',
+      'Elevator pitch — three 60-second versions, said aloud'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'income-and-offer-clarity',
+    name: 'Income and Offer Clarity',
+    status: 'planning',
+    domain: 'work',
+    client: 'Personal',
+    priority: 'low',
+    target_date: '2026-09-30',
+    closed_date: null,
+    linked_goals: ['own-a-category-and-100k-tt-2026','build-ai-knowledge-and-offer'],
+    linked_people: [],
+    tags: ['income','offer','positioning','strategy'],
+    why: 'The repeatedly deferred question of how Peter earns money — what offer, what structure, what path. Named as a major concern on 2026-06-15.',
+    next_action: 'Resume human-connection-and-alignment strategy sessions with Jude',
+    action_points: [
+      'Resume human-connection-and-alignment strategy sessions with Jude',
+      'Decide whether a new income-strategy agent is warranted or Jude\'s scope expands',
+      'Surface prior thinking on offer design from old OS system via Ming'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'jamaica-observer-ai-adoption',
+    name: 'Jamaica Observer AI Advisory',
+    status: 'active',
+    domain: 'work',
+    client: 'Jamaica Observer',
+    priority: 'medium',
+    target_date: '2026-12-31',
+    closed_date: null,
+    linked_goals: [],
+    linked_people: ['dominic-beaubrun','leslie-leefook'],
+    tags: ['ai-education','advisory','consulting'],
+    why: 'Advisory role with Dominic Beaubrun on AI training design and strategy at the Jamaica Observer. Stalled pending Dom\'s AI strategy document.',
+    next_action: 'Review Observer AI strategy document (Dom to send)',
+    action_points: [
+      'Review Observer AI strategy document (Dom to send — this is the blocker)',
+      'Investigate Leslie LeeFook\'s Incus hub platform as potential training resource',
+      'Share details of the agentic system Peter is developing with Dom'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'landcomtt-ai-invoicing',
+    name: 'LandcomTT AI Invoicing',
+    status: 'parked',
+    domain: 'work',
+    client: 'Personal',
+    priority: 'low',
+    target_date: null,
+    closed_date: null,
+    linked_goals: [],
+    linked_people: ['tyrel-olivier'],
+    tags: ['ai','automation','consulting'],
+    why: 'AI-driven invoicing automation for Tyrel Olivier\'s company LandcomTT — a learning ground for practical AI application.',
+    action_points: [
+      'Have a scoping conversation with Tyrel about invoicing pain points',
+      'Identify which AI or automation tools would fit',
+      'Determine engagement terms (pro-bono, paid, or mutual-value exchange)'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'little-amazon-onboarding',
+    name: 'Little Amazon Onboarding System',
+    status: 'on-hold',
+    domain: 'work',
+    client: 'Personal',
+    priority: 'low',
+    target_date: null,
+    closed_date: null,
+    linked_goals: [],
+    linked_people: ['azard-mohammed'],
+    tags: ['consulting','ai','onboarding','client','trinidad'],
+    why: 'Systematised staff onboarding system (video, knowledge hub, AI chatbot) for Azard Mohammed\'s pet store — reducing retraining burden.',
+    action_points: [
+      'Stalled — Azard has not provided Phase 1 voice memos since March 23',
+      'Decide: re-engage, re-pitch, or let this sit?'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'make-tnt-sweet-again',
+    name: 'Make T&T Sweet Again',
+    status: 'active',
+    domain: 'work',
+    client: 'Personal',
+    priority: 'low',
+    target_date: '2027-06-30',
+    closed_date: null,
+    linked_goals: [],
+    linked_people: ['tyrel-olivier'],
+    tags: ['video','content','trinidad','tnt','public-platform'],
+    why: 'A short-form video series on the 25 daily irritants in T&T — constructive and positive, framed around "Do you care?" and Herzberg\'s hygiene theory.',
+    action_points: [
+      'Develop topic sequence: Intro, beach cleanup, passport office, broken tail light',
+      'Finish first video draft',
+      'Define action(s) you want viewers to take',
+      'Articulate purpose and opportunities more clearly'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'making-integrity-sexy',
+    name: 'Making Integrity Sexy',
+    status: 'parked',
+    domain: 'work',
+    client: 'Personal',
+    priority: 'low',
+    target_date: null,
+    closed_date: null,
+    linked_goals: [],
+    linked_people: [],
+    tags: ['manuscript','writing','integrity','speakwrite'],
+    why: 'Manuscript reframing integrity as being whole and complete — connected to Human Alignment Thesis. Enrollment at Manuscripts active; placement awaiting restructure.',
+    action_points: [
+      'Resolve the reframe: wrap the integrity thesis in the AI context',
+      'Return to Manuscripts cohort once restructured'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'monthly-checklist-workflow',
+    name: 'Monthly Checklist Workflow',
+    status: 'closed',
+    domain: 'money',
+    client: 'Personal',
+    priority: 'low',
+    target_date: null,
+    closed_date: '2026-06-13',
+    linked_goals: [],
+    linked_people: [],
+    tags: ['finance','automation','monthly'],
+    why: 'Monthly accounts process (banks, statements, Google Sheets). Python processor script built by Mack. Target time 20–30 min. Closed June 13.',
+    action_points: [],
+    artifacts: []
+  },
+  {
+    id: 'moxie-storage',
+    name: 'Moxie Storage',
+    status: 'active',
+    domain: 'work',
+    client: 'Personal',
+    priority: 'low',
+    target_date: '2026-12-31',
+    closed_date: null,
+    linked_goals: [],
+    linked_people: [],
+    tags: ['mac','storage','moxie','hardware'],
+    why: 'M1 MacBook Air (Moxie) and SanDisk 2TB SSD both full — blocking file management and daily work.',
+    action_points: [
+      'Check other disks to see if Apple Music is already stored elsewhere',
+      'Run CleanMyMac to identify large old files for deletion',
+      'Decide on long-term storage solution for Apple Music'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'netherlands-visit-sep-2026',
+    name: 'Netherlands Visit Sep 2026',
+    status: 'active',
+    domain: 'family',
+    client: 'Personal',
+    priority: 'high',
+    target_date: '2026-09-08',
+    closed_date: null,
+    linked_goals: [],
+    linked_people: ['camille-ojar'],
+    tags: ['travel','netherlands','camy','urgent'],
+    why: 'Peter and Camy travelling to the Netherlands in September 2026 — KLM booked. Coordination window with Walter and Geert is approx Sep 8–24.',
+    next_action: 'Alert Walter and Geert of specific arrival/departure dates — URGENT',
+    action_points: [
+      'URGENT: Alert Walter and Geert of specific arrival/departure dates',
+      'URGENT: Coordinate days with both so the visit feels effortless',
+      'Confirm travel dates and update target_date',
+      'Lock accommodation',
+      'Verify ASN Bank account is active and accessible while abroad'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'observer-ai-article-series',
+    name: 'Observer AI Article Series',
+    status: 'active',
+    domain: 'work',
+    client: 'Jamaica Observer',
+    priority: 'low',
+    target_date: '2026-12-31',
+    closed_date: null,
+    linked_goals: [],
+    linked_people: ['dominic-beaubrun'],
+    tags: ['writing','ai-literacy','jamaica','content'],
+    why: 'Five-article series "What AI Means for Us in the Caribbean" pitched to the Jamaica Observer on March 5, 2026 — no response yet.',
+    next_action: 'Follow up with Dom on article series status',
+    action_points: [
+      'Follow up with Dom on article series status',
+      'Determine if series can be pitched elsewhere (Trinidad Guardian, Caribbean publications) if Observer does not respond'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'paint-front-wall',
+    name: 'Paint Front Wall, Gates & Fences',
+    status: 'active',
+    domain: 'money',
+    client: 'Personal',
+    priority: 'low',
+    target_date: '2026-12-31',
+    closed_date: null,
+    linked_goals: [],
+    linked_people: ['calvert-craigg'],
+    tags: ['home','painting','renovation','trinidad'],
+    why: 'Repainting front wall, iron fence, gates, and gazebo metalwork. Running total TTD 3,683.98. Expanded to side and back gates June 17.',
+    next_action: 'Tally final costs and determine what to do with leftover paint',
+    action_points: [
+      'Tally final costs and determine paint left over',
+      'Confirm whether front wall top is complete or still in progress'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'pearly-tax-withholding-review',
+    name: 'Pearly Tax Withholding Review',
+    status: 'planning',
+    domain: 'family',
+    client: 'Family',
+    priority: 'medium',
+    target_date: '2026-09-30',
+    closed_date: null,
+    linked_goals: [],
+    linked_people: ['pearl-phillips'],
+    tags: ['tax','family','usa','army-pension'],
+    why: 'Assessing whether too much tax is withheld from Pearl\'s Army pension (~$645/mo) and Social Security (~$400/mo) as a non-US resident.',
+    next_action: 'Harvey and Ernst to advise on withholding rules applicable to Pearl\'s situation',
+    action_points: [
+      'Harvey and Ernst to advise on withholding rules for non-resident pension/SS beneficiaries',
+      'Determine if a W-8BEN or similar form should be filed to reduce withholding',
+      'Determine if any prior overpayments are recoverable'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'peter-os-scaffold-setup',
+    name: 'Peter OS — Scaffold Setup',
+    status: 'closed',
+    domain: 'self',
+    client: 'Personal',
+    priority: 'low',
+    target_date: '2026-07-01',
+    closed_date: '2026-06-17',
+    linked_goals: [],
+    linked_people: [],
+    tags: ['system','onboarding','closed'],
+    why: 'Foundation setup for Peter OS 2 — Domains, Goals, Projects, CRM, agent team, SOPs, guidelines. Closed June 17.',
+    next_action: 'Load foundational content from Craft via Ming and Penn (after structures in place)',
+    action_points: [],
+    artifacts: []
+  },
+  {
+    id: 'pgp-workshop',
+    name: 'PGP Workshop',
+    status: 'active',
+    domain: 'work',
+    client: 'Personal',
+    priority: 'low',
+    target_date: '2026-12-31',
+    closed_date: null,
+    linked_goals: [],
+    linked_people: [],
+    tags: ['pgp','personal-guiding-philosophy','workshop','offer','human-alignment'],
+    why: 'A workshop helping individuals define their Personal Guiding Philosophy — both a personal practice and a commercial offer, feeding the Remembering App.',
+    action_points: [
+      'Develop the workshop curriculum structure',
+      'Determine format: live workshop, online course, or hybrid',
+      'Pricing strategy relative to existing market ($105–$995 range)',
+      'How does the PGP connect to the Remembering App commercially?'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'positioning-what-do-you-do',
+    name: '"What do you do?" — Positioning',
+    status: 'active',
+    domain: 'work',
+    client: 'Personal',
+    priority: 'high',
+    target_date: '2026-09-30',
+    closed_date: null,
+    linked_goals: [],
+    linked_people: ['jude'],
+    tags: ['identity','positioning','jude'],
+    why: 'Peter\'s most important work — arriving at a clear, confident answer to "What do you do?" Restarted with Jude on 2026-06-17.',
+    next_action: 'Resume sessions with Jude — next session to follow 2026-06-17 kickoff',
+    action_points: [
+      'Resume sessions with Jude — first session restarted 2026-06-17',
+      'Document the draft answer as it emerges',
+      'Connect findings to income-and-offer-clarity'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'proactive-visibility-system',
+    name: 'Proactive Visibility System',
+    status: 'active',
+    domain: 'self',
+    client: 'Personal',
+    priority: 'medium',
+    target_date: '2027-03-31',
+    closed_date: null,
+    linked_goals: [],
+    linked_people: ['jude'],
+    tags: ['system-design','max','agents'],
+    why: 'The system that gives Peter project visibility, proactive surfacing, and a domain overview — the three experiences the OS must deliver.',
+    next_action: 'Open fresh session — Session 1: Define the experience (ready to start)',
+    action_points: [
+      'Session 1: Test and validate the three experience specs',
+      'Session 2: Map current state against the spec, close gaps',
+      'Decide: Max\'s expanded role or a dedicated specialist?'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'process-mothers-cabinet-files',
+    name: 'Process Mother\'s Cabinet Files',
+    status: 'planning',
+    domain: 'family',
+    client: 'Family',
+    priority: 'low',
+    target_date: '2027-03-31',
+    closed_date: null,
+    linked_goals: [],
+    linked_people: ['pearl-phillips'],
+    tags: ['files','family','organisation'],
+    why: 'Cabinets of unprocessed physical files left by Peter\'s mother — avoided for years. Meaningful but deferred.',
+    next_action: 'Assess volume and location of cabinets',
+    action_points: [
+      'Assess volume and location of cabinets',
+      'Schedule a first session to begin sorting',
+      'Decide disposition categories: keep, scan, discard'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'project-vantage',
+    name: 'Project Vantage',
+    status: 'active',
+    domain: 'self',
+    client: 'Personal',
+    priority: 'high',
+    lastUpdated: '2026-06-21',
+    target_date: '2027-06-17',
+    closed_date: null,
+    linked_goals: [],
+    linked_people: [],
+    tags: ['mission','peter-os','system-design'],
+    why: 'Build and evolve a personal OS — powered by AI agents — giving a commanding view of everything that matters, surfacing what needs attention before Peter has to ask.',
+    next_action: 'Session 4 (in progress, started 2026-06-21): Proactive Visibility design — map current state and identify gaps',
+    steps: [
+      { text: 'Session 4 (current): Proactive Visibility design — map current state, close gaps', note: 'Started 2026-06-21. Define the three visibility experiences; assess current Max capability against spec.' },
+      'Session 5: Roles and expansions — expand existing roles before hiring new'
+    ],
+    completed_steps: [
+      'Pre-Session 1: Define scope and build Experience Spec',
+      'Pre-Session 2: Migrate all projects to PKM and consolidate domain taxonomy',
+      'Pre-Session 3: Craft project import — confirm full project list before dashboard build',
+      'Session 1: Dashboard brief and data structure defined',
+      'Session 2: Dashboard built and all projects imported',
+      'Session 3: Dashboard approved — design signed off and session-close hook wired'
+    ],
+    action_points: [
+      'Review every project card and give feedback on priority, next action, and action points',
+      'Track project approvals — note which projects have been reviewed and confirmed correct'
+    ],
+    artifacts: [
+      { label: 'Experience Spec', url: 'file:///Users/peteranthony/Peter%20OS%202/Deliverables/2026-06-17-project-vantage-experience-spec.html' },
+      { label: 'Charter', url: 'file:///Users/peteranthony/Peter%20OS%202/Deliverables/project-vantage-charter.html' }
+    ]
+  },
+  {
+    id: 'projects-dashboard',
+    name: 'Projects Dashboard',
+    status: 'planning',
+    domain: 'self',
+    client: 'Personal',
+    priority: 'low',
+    target_date: '2026-06-30',
+    closed_date: null,
+    linked_goals: [],
+    linked_people: [],
+    tags: ['system','dashboard','visibility'],
+    why: 'A single view showing all active projects, priorities, and practice targets — named as a clear need on 2026-06-15.',
+    next_action: 'Decide format and owner',
+    action_points: [],
+    artifacts: []
+  },
+  {
+    id: 'receipts-capture',
+    name: 'Receipts Capture System',
+    status: 'parked',
+    domain: 'work',
+    client: 'Personal',
+    priority: 'low',
+    target_date: null,
+    closed_date: null,
+    linked_goals: [],
+    linked_people: [],
+    tags: ['receipts','finance','automation','workflow'],
+    why: 'Digital capture workflow for receipts — paper fades, folders are unsearchable. Potential product offer.',
+    action_points: [
+      'Document exactly what Peter wants to do with receipts',
+      'Research available apps for receipt scanning and OCR-to-spreadsheet',
+      'Decide: personal workflow vs. product concept'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'remembering-app',
+    name: 'Remembering App',
+    status: 'active',
+    domain: 'self',
+    client: 'Personal',
+    priority: 'high',
+    lastUpdated: '2026-06-21',
+    target_date: '2027-03-31',
+    closed_date: null,
+    linked_goals: ['practice-meditation-and-remembering'],
+    linked_people: ['camille-ojar'],
+    tags: ['self','identity','design','iris','pgp','integrity'],
+    why: 'A daily practice of returning to centre — screensavers and audio reminders of who Peter is, using personalized voice. Personal R&D and future commercial product.',
+    action_points: [
+      'Rate existing affirmation statements 1–10 in the content Google Sheet',
+      'Define the content scope: whose words, what themes',
+      'Brief Iris on the visual treatment',
+      'Build a small quote bank to seed the first screensavers'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'replacement-maintenance-tracker',
+    name: 'Replacement & Maintenance Tracker',
+    status: 'planning',
+    domain: 'money',
+    client: 'Personal',
+    priority: 'low',
+    target_date: '2027-06-30',
+    closed_date: null,
+    linked_goals: [],
+    linked_people: [],
+    tags: ['maintenance','home','automation','silas'],
+    why: 'Log and alert system for household item replacements and maintenance tasks — no current system exists.',
+    next_action: 'Define the full list of items to track (batteries, water filters, appliances, etc.)',
+    action_points: [
+      'Define the full list of items to track (batteries, water filters, appliances)',
+      'Design the data structure — likely a Silas database project',
+      'Build the tracker with alert capability'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'tt-news-summary',
+    name: 'T&T News Summary',
+    status: 'parked',
+    domain: 'work',
+    client: 'Personal',
+    priority: 'low',
+    target_date: null,
+    closed_date: null,
+    linked_goals: [],
+    linked_people: [],
+    tags: ['trinidad-and-tobago','news','ai','automation','workflow'],
+    why: 'AI-powered weekly digest of T&T news (Guardian) — structured summary of past 7 days across 6 classified categories.',
+    action_points: [
+      'Define the delivery mechanism (Google Doc, email digest, Craft page?)',
+      'Set up the Gemini-based extraction workflow',
+      'Test against a sample Guardian edition and validate classification accuracy'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'website-update',
+    name: 'Website Update',
+    status: 'active',
+    domain: 'work',
+    client: 'Personal',
+    priority: 'low',
+    target_date: '2027-03-31',
+    closed_date: null,
+    linked_goals: [],
+    linked_people: [],
+    tags: ['website','marketing','brand'],
+    why: 'Keeping peteranthonygales.com aligned with the Human Alignment Strategist positioning. Updated on Carrd April 21 — custom design next.',
+    action_points: [
+      'Brief Charta on a custom-designed website concept',
+      'Define pages and content sections needed',
+      'Decide on platform (Carrd vs. GitHub Pages vs. other)'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'what-kind-of-a-person-are-you',
+    name: 'What Kind of a Person Are You',
+    status: 'parked',
+    domain: 'work',
+    client: 'Personal',
+    priority: 'low',
+    target_date: null,
+    closed_date: null,
+    linked_goals: [],
+    linked_people: [],
+    tags: ['manuscript','writing','character','integrity','speakwrite'],
+    why: 'Manuscript exploring the foundational character question — linked to Making Integrity Sexy and Wise While Wrong as potential chapters of one book.',
+    action_points: [],
+    artifacts: []
+  },
+  {
+    id: 'wise-while-wrong',
+    name: 'Wise While Wrong',
+    status: 'parked',
+    domain: 'work',
+    client: 'Personal',
+    priority: 'low',
+    target_date: null,
+    closed_date: null,
+    linked_goals: [],
+    linked_people: [],
+    tags: ['manuscript','writing','epistemic-humility','speakwrite'],
+    why: 'The epistemic stance that makes integrity liveable — being wrong should feel like relief. Earlier drafts written 2022–2023. Parked at concept stage.',
+    action_points: [],
+    artifacts: []
+  }
+];
+
+// ============================================================
+// DOMAIN COLOR MAP
+// ============================================================
+const domainColors = {
+  body:        { bg: '#4A6741', text: '#F9F7F2' }, // Fern
+  education:   { bg: '#476070', text: '#F9F7F2' }, // River Stone
+  family:      { bg: '#E8C0A3', text: '#1A1A1A' }, // Soft Sand — Ebon text
+  membership:  { bg: '#4A4540', text: '#F9F7F2' }, // Stone
+  money:       { bg: '#8A6438', text: '#F9F7F2' }, // Bark
+  play:        { bg: '#D67D4E', text: '#1A1A1A' }, // Sienna — Ebon text
+  self:        { bg: '#5C4472', text: '#F9F7F2' }, // Dusk
+  sociability: { bg: '#5E3A2B', text: '#F9F7F2' }, // Deep Earth
+  spirituality:{ bg: '#6B3D24', text: '#F9F7F2' }, // Umber
+  work:        { bg: '#9B2D30', text: '#F9F7F2' }, // Garnet
+};
+
+const priorityOrder = { high: 0, medium: 1, low: 2 };
+const statusOrder   = { active: 0, planning: 1, 'on-hold': 2, parked: 3, closed: 4 };
+
+// ============================================================
+// STATE
+// ============================================================
+let activeStatuses = new Set(['active','planning','on-hold','parked','closed']);
+let activeDomain   = 'all';
+let activeClient   = 'all';
+let activeSort     = 'priority';
+let searchTerm     = '';
+let activeStatusChip = 'all'; // tracks which chip is selected
+let sortDir        = 1; // 1 = asc, -1 = desc
+
+// ============================================================
+// COMPLETENESS SCORE (out of 6 fields)
+// Fields: name, domain, client, priority, target_date, linked_goals
+// ============================================================
+function completenessScore(p) {
+  let score = 0;
+  if (p.name) score++;
+  if (p.domain) score++;
+  if (p.client) score++;
+  if (p.priority) score++;
+  if (p.target_date) score++;
+  if (p.linked_goals && p.linked_goals.length > 0) score++;
+  return score;
+}
+
+// ============================================================
+// RENDER HELPERS
+// ============================================================
+function statusBadge(status) {
+  const label = status === 'on-hold' ? 'On Hold' : status.charAt(0).toUpperCase() + status.slice(1);
+  return `<span class="badge badge-status-${status}">${label}</span>`;
+}
+
+function priorityBadge(priority) {
+  if (!priority) return '<span style="color:#9a8f86;font-size:12px;">—</span>';
+  return `<span class="badge badge-priority-${priority}">${priority.toUpperCase()}</span>`;
+}
+
+function domainChip(domain) {
+  const c = domainColors[domain] || { bg: '#4A4540', text: '#F9F7F2' };
+  const label = domain ? domain.charAt(0).toUpperCase() + domain.slice(1) : '—';
+  return `<span class="domain-chip" style="background:${c.bg};color:${c.text};">${label}</span>`;
+}
+
+function completenessDotsHTML(score, total = 6) {
+  let html = '<div class="completeness-dots">';
+  for (let i = 0; i < total; i++) {
+    html += `<div class="completeness-dot ${i < score ? 'filled' : 'empty'}"></div>`;
+  }
+  html += '</div>';
+  return html;
+}
+
+function formatDate(d) {
+  if (!d) return '—';
+  const parts = d.split('-');
+  if (parts.length < 3) return d;
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${parseInt(parts[2])} ${months[parseInt(parts[1])-1]} ${parts[0]}`;
+}
+
+function formatPeople(arr) {
+  if (!arr || arr.length === 0) return '<span class="modal-section-content muted">None recorded</span>';
+  return '<div class="people-list">' + arr.map(p => {
+    const label = p.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+    return `<span class="person-pill">${label}</span>`;
+  }).join('') + '</div>';
+}
+
+function formatGoals(arr) {
+  if (!arr || arr.length === 0) return '<span class="modal-section-content muted">None recorded</span>';
+  return arr.map(g => `<span class="tag">${g.replace(/-/g, ' ')}</span>`).join(' ');
+}
+
+// ============================================================
+// BUILD STATS — counts into filter chips
+// ============================================================
+function buildStats() {
+  const counts = {};
+  for (const p of projectData) {
+    counts[p.status] = (counts[p.status] || 0) + 1;
+  }
+  document.getElementById('totalCount').textContent = projectData.length;
+
+  const total = projectData.length;
+  const el = id => document.getElementById(id);
+  if (el('count-all'))      el('count-all').textContent      = `(${total})`;
+  if (el('count-active'))   el('count-active').textContent   = `(${counts['active']   || 0})`;
+  if (el('count-planning')) el('count-planning').textContent = `(${counts['planning'] || 0})`;
+  if (el('count-on-hold'))  el('count-on-hold').textContent  = `(${counts['on-hold']  || 0})`;
+  if (el('count-parked'))   el('count-parked').textContent   = `(${counts['parked']   || 0})`;
+  if (el('count-closed'))   el('count-closed').textContent   = `(${counts['closed']   || 0})`;
+}
+
+// ============================================================
+// FILTER LOGIC
+// ============================================================
+function handleStatusFilter(value) {
+  activeStatusChip = value;
+  if (value === 'all') {
+    activeStatuses = new Set(['active','planning','on-hold','parked','closed']);
+  } else {
+    activeStatuses = new Set([value]);
+  }
+  document.querySelectorAll('[data-filter-type="status"]').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.filterValue === value);
+  });
+  applyFilters();
+}
+
+function applySort(col) {
+  if (activeSort === col) {
+    sortDir = sortDir === 1 ? -1 : 1;
+  } else {
+    activeSort = col;
+    sortDir = 1;
+  }
+  document.getElementById('sortSelect').value = col;
+
+  // Update header arrows
+  document.querySelectorAll('.sort-arrow').forEach(el => el.textContent = '');
+  const arrow = document.getElementById('sort-' + col);
+  if (arrow) arrow.textContent = sortDir === 1 ? '▲' : '▼';
+  document.querySelectorAll('.table-header-cell.sortable').forEach(el => {
+    el.classList.toggle('sorted', el.dataset.col === col);
+  });
+
+  applyFilters();
+}
+
+function applyFilters() {
+  activeDomain = document.getElementById('domainSelect').value;
+  activeClient = document.getElementById('clientSelect').value;
+  searchTerm   = (document.getElementById('searchInput').value || '').toLowerCase().trim();
+
+  // Filter
+  let filtered = projectData.filter(p => {
+    if (!activeStatuses.has(p.status)) return false;
+    if (activeDomain !== 'all' && p.domain !== activeDomain) return false;
+    if (activeClient !== 'all' && p.client !== activeClient) return false;
+    if (searchTerm) {
+      const haystack = [
+        p.name, p.domain, p.client, p.why,
+        (p.action_points || []).join(' '),
+        (p.tags || []).join(' ')
+      ].join(' ').toLowerCase();
+      if (!haystack.includes(searchTerm)) return false;
+    }
+    return true;
+  });
+
+  // Sort
+  filtered.sort((a, b) => {
+    let va, vb;
+    switch (activeSort) {
+      case 'priority':
+        va = priorityOrder[a.priority] ?? 9;
+        vb = priorityOrder[b.priority] ?? 9;
+        break;
+      case 'domain':
+        va = a.domain || 'zzz';
+        vb = b.domain || 'zzz';
+        break;
+      case 'client':
+        va = a.client || 'zzz';
+        vb = b.client || 'zzz';
+        break;
+      case 'deadline':
+        va = a.target_date || '9999-99-99';
+        vb = b.target_date || '9999-99-99';
+        break;
+      case 'status':
+        va = statusOrder[a.status] ?? 9;
+        vb = statusOrder[b.status] ?? 9;
+        break;
+      case 'name':
+        va = a.name.toLowerCase();
+        vb = b.name.toLowerCase();
+        break;
+      default:
+        va = 0; vb = 0;
+    }
+    if (va < vb) return -1 * sortDir;
+    if (va > vb) return 1 * sortDir;
+    return 0;
+  });
+
+  renderTable(filtered);
+  buildStats();
+}
+
+// ============================================================
+// RENDER TABLE
+// ============================================================
+function renderTable(projects) {
+  const tbody = document.getElementById('projectTableBody');
+  const noResults = document.getElementById('noResults');
+
+  if (projects.length === 0) {
+    tbody.innerHTML = '';
+    noResults.style.display = 'block';
+    return;
+  }
+  noResults.style.display = 'none';
+
+  let html = '';
+  for (const p of projects) {
+    const score = completenessScore(p);
+    const clientLabel = p.client || '—';
+    html += `
+    <div class="project-row" data-id="${p.id}" onclick="openModal('${p.id}')">
+      <div class="project-cell">
+        <div class="project-name">${p.name}</div>
+        ${p.why ? `<div class="project-name-sub">${p.why.substring(0, 72)}${p.why.length > 72 ? '…' : ''}</div>` : ''}
+      </div>
+      <div class="project-cell">${domainChip(p.domain)}</div>
+      <div class="project-cell" style="font-size:12px;color:#5E3A2B;font-weight:700;">${clientLabel}</div>
+      <div class="project-cell">${statusBadge(p.status)}</div>
+      <div class="project-cell">${priorityBadge(p.priority)}</div>
+      <div class="project-cell" style="font-size:12px;color:#7a6b5f;">${formatDate(p.target_date)}</div>
+      <div class="project-cell">${completenessDotsHTML(score)}</div>
+    </div>`;
+  }
+  tbody.innerHTML = html;
+}
+
+// ============================================================
+// MODAL
+// ============================================================
+function openModal(id) {
+  const p = projectData.find(x => x.id === id);
+  if (!p) return;
+
+  document.getElementById('modalTitle').textContent = p.name;
+
+  // Meta row
+  let metaHTML = statusBadge(p.status) + ' ';
+  metaHTML += priorityBadge(p.priority) + ' ';
+  if (p.domain) metaHTML += domainChip(p.domain) + ' ';
+  document.getElementById('modalMetaRow').innerHTML = metaHTML;
+
+  // Body
+  const score = completenessScore(p);
+  const pct = Math.round((score / 6) * 100);
+  const pctLabel = pct === 100 ? 'Complete' : `${pct}% complete`;
+
+  let bodyHTML = '';
+
+  // Next Action callout
+  if (p.next_action) {
+    bodyHTML += `
+    <div style="border-left:3px solid #9B2D30;background:rgba(155,45,48,0.05);padding:12px 16px;border-radius:0 4px 4px 0;margin-bottom:20px;">
+      <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#9B2D30;margin-bottom:5px;">Next Action</div>
+      <div style="font-size:14px;color:#1A1A1A;line-height:1.5;">${p.next_action}</div>
+    </div>`;
+  } else {
+    bodyHTML += `
+    <div style="border-left:3px solid #c8beb7;background:rgba(200,190,183,0.07);padding:12px 16px;border-radius:0 4px 4px 0;margin-bottom:20px;">
+      <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#9a8f86;margin-bottom:5px;">Next Action</div>
+      <div style="font-size:13px;color:#9a8f86;font-style:italic;">Not recorded — open a session to define the next step.</div>
+    </div>`;
+  }
+
+  // Metadata grid
+  bodyHTML += `
+  <div class="modal-metadata-grid">
+    <div class="meta-item">
+      <span class="meta-item-label">Domain</span>
+      <span class="meta-item-value">${p.domain ? p.domain.charAt(0).toUpperCase() + p.domain.slice(1) : '—'}</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-item-label">Client</span>
+      <span class="meta-item-value">${p.client || '—'}</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-item-label">Closed</span>
+      <span class="meta-item-value">${formatDate(p.closed_date)}</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-item-label" style="color:#9B2D30;">Last Updated</span>
+      <span class="meta-item-value">${p.lastUpdated ? formatDate(p.lastUpdated) : '—'}</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-item-label">Target Date</span>
+      <span class="meta-item-value">${formatDate(p.target_date)}</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-item-label">Priority</span>
+      <span class="meta-item-value">${p.priority ? p.priority.charAt(0).toUpperCase() + p.priority.slice(1) : '—'}</span>
+    </div>
+  </div>`;
+
+  // Completeness bar
+  bodyHTML += `
+  <div class="completeness-bar-wrap">
+    <div class="completeness-bar-label">
+      <span class="completeness-bar-title">Field completeness</span>
+      <span class="completeness-bar-pct">${pctLabel}</span>
+    </div>
+    <div class="completeness-track">
+      <div class="completeness-fill" style="width:${pct}%"></div>
+    </div>
+  </div>`;
+
+  // Why this matters
+  bodyHTML += `
+  <div class="modal-section">
+    <div class="modal-section-title">Why this matters</div>
+    <div class="modal-section-content">${p.why || '<span style="color:#9a8f86;font-style:italic;">Not recorded.</span>'}</div>
+  </div>`;
+
+  // Steps (sequential) + Action Points (parallel)
+  const hasSteps     = p.steps && p.steps.length > 0;
+  const hasDoneSteps = p.completed_steps && p.completed_steps.length > 0;
+  const hasAPs       = p.action_points && p.action_points.length > 0;
+
+  function renderItem(item) {
+    const text = typeof item === 'string' ? item : item.text;
+    const note = typeof item === 'object' && item.note ? item.note : null;
+    const noteBtn = note
+      ? `<button class="step-note-btn" onclick="event.stopPropagation();showStepNote(this,'${note.replace(/'/g,"\\'")}')" title="More detail">i</button>`
+      : '';
+    return text + noteBtn;
+  }
+
+  if (hasSteps || hasDoneSteps) {
+    bodyHTML += `<div class="modal-section"><div class="modal-section-title">Steps <span style="font-size:10px;font-weight:400;color:#9a8f86;letter-spacing:0;text-transform:none;">— in order</span></div>`;
+    if (hasSteps) {
+      bodyHTML += '<ol class="steps-list">';
+      for (const s of p.steps) { bodyHTML += `<li>${renderItem(s)}</li>`; }
+      bodyHTML += '</ol>';
+    }
+    if (hasDoneSteps) {
+      bodyHTML += `<details class="completed-steps-toggle"><summary>${p.completed_steps.length} completed</summary><ul>`;
+      for (const s of p.completed_steps) { bodyHTML += `<li>${typeof s === 'string' ? s : s.text}</li>`; }
+      bodyHTML += '</ul></details>';
+    }
+    bodyHTML += '</div>';
+  }
+
+  bodyHTML += `<div class="modal-section"><div class="modal-section-title">Action Points <span style="font-size:10px;font-weight:400;color:#9a8f86;letter-spacing:0;text-transform:none;">— any time</span></div>`;
+  if (hasAPs) {
+    bodyHTML += '<ul class="action-list">';
+    for (const ap of p.action_points) { bodyHTML += `<li>${renderItem(ap)}</li>`; }
+    bodyHTML += '</ul>';
+  } else {
+    bodyHTML += '<span class="modal-section-content muted">None recorded.</span>';
+  }
+  bodyHTML += '</div>';
+
+  // Linked Goals
+  bodyHTML += `
+  <div class="modal-section">
+    <div class="modal-section-title">Linked Goals</div>
+    <div class="modal-section-content">${p.linked_goals && p.linked_goals.length > 0 ? '<div class="tag-list">' + formatGoals(p.linked_goals) + '</div>' : '<span class="muted" style="color:#9a8f86;font-style:italic;font-size:13px;">None recorded</span>'}</div>
+  </div>`;
+
+  // Linked People
+  bodyHTML += `
+  <div class="modal-section">
+    <div class="modal-section-title">Linked People</div>
+    ${formatPeople(p.linked_people)}
+  </div>`;
+
+  // Tags
+  if (p.tags && p.tags.length > 0) {
+    bodyHTML += `
+    <div class="modal-section">
+      <div class="modal-section-title">Tags</div>
+      <div class="tag-list">${p.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+    </div>`;
+  }
+
+  // Artifacts
+  if (p.artifacts && p.artifacts.length > 0) {
+    bodyHTML += `
+    <div class="modal-section">
+      <div class="modal-section-title">Artifacts</div>
+      <div class="artifact-list">`;
+    for (const a of p.artifacts) {
+      bodyHTML += `<a class="artifact-link" href="${a.url}" target="_blank">${a.label}</a>`;
+    }
+    bodyHTML += `</div></div>`;
+  }
+
+  document.getElementById('modalBody').innerHTML = bodyHTML;
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(event) {
+  if (event && event.target !== document.getElementById('modalOverlay')) return;
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    document.getElementById('modalOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+});
+
+// ============================================================
+// INIT
+// ============================================================
+buildStats();
+applyFilters();
+
+// ============================================================
+// ARTIFACTS DATA — sourced from Deliverables/INDEX.md (2026-06-21)
+// ============================================================
+const artifactsData = [
+  { title: 'CEAL Green Website Audit Brief', date: '2026-06-10', author: 'Max', purpose: 'Audit brief for Cass — CEAL Green website full evaluation. All 4 intake items complete, scope defined, pre-fetch protocol, HTML-at-URL output path. Ready for execution session.', file: '2026-06-10-ceal-green-website-audit-brief' },
+  { title: 'CEAL Green Visual Identity Spec v1', date: '2026-06-09', author: 'Charta', purpose: 'Living HTML version of the CEAL Green Visual Identity Specification v1.0 — renders actual colours, typefaces, wordmark, buttons, and all 6 spec sections. Self-contained; requires internet for Google Fonts.', file: '2026-06-09-ceal-green-vis-id-spec/ceal-green-visual-identity-spec-v1' },
+  { title: 'Public Speaking Emotional Regulation', date: '2026-06-09', author: 'Rees', purpose: 'Research brief on emotional regulation techniques for public speaking — pain-interrupt mechanism, invisible body-based techniques, mechanical discreet devices. Mirrored to Craft (Speakwrite folder).', file: 'rees-public-speaking-emotional-regulation' },
+  { title: 'Ming Craft Research', date: '2026-05-30', author: 'Rees', purpose: 'Craft capabilities research for Ming\'s contract — data model, MCP tools, REST API, limitations, update cadence. Required reading before Ming activation.', file: '2026-05-30-ming-craft-research' },
+  { title: 'Leslie LeeFook Research', date: '2026-05-30', author: 'Rees', purpose: 'Due-diligence on Leslie LeeFook (Incus) ahead of dinner. Background, professional reputation, AI positioning in T&T, mutual benefit angles.', file: '2026-05-30-leslie-leefook-research' },
+  { title: 'Marketing Strategist Hire Research', date: '2026-05-30', author: 'Rees', purpose: 'World-class research for the Marketing & Business Strategist role — now informs Jude\'s contract. Inside-out positioning method, framework selection, anti-patterns.', file: '2026-05-30-marketing-strategist-hire-research' },
+  { title: 'Life & Business Coach Hire Research', date: '2026-05-30', author: 'Rees', purpose: 'World-class research for the Life & Business Coach role — now informs Jude\'s contract. Evidence-dossier method, minimal-viable accountability, motivational interviewing.', file: '2026-05-30-life-business-coach-hire-research' },
+  { title: 'Mack GDrive MCP Setup', date: '2026-05-31', author: 'Mack', purpose: 'Step-by-step Google Drive MCP setup instructions. Peter has not yet completed the Google Cloud Console setup or OAuth authorization.', file: '2026-05-31-mack-gdrive-mcp-setup' },
+  { title: 'Mack Gmail API MCP Setup', date: '2026-06-01', author: 'Mack', purpose: 'Direct Gmail API MCP setup guide using @klodr/gmail-mcp. Tabled — security/privacy review triggered; revisit when Peter is ready.', file: '2026-06-01-mack-gmail-api-mcp-setup' },
+  { title: 'Shinzo Labs Gmail MCP Trust Assessment', date: '2026-06-01', author: 'Rees', purpose: 'Trust and privacy assessment of shinzo-labs/gmail-mcp. Verdict: use with caution. Telemetry on by default; broad OAuth scopes. @klodr/gmail-mcp identified as better alternative.', file: '2026-06-01-rees-shinzolabs-gmail-mcp-trust-assessment' },
+  { title: 'Digital Experience Critic Hire Research', date: '2026-06-01', author: 'Rees', purpose: 'World-class research for the Digital Experience Critic role — now Cass (Creative Strategist). Heuristic frameworks, anti-patterns, findings-register format, boundaries, name candidates.', file: '2026-06-01-digital-experience-critic-hire-research' },
+  { title: 'Cass SOP-014 Opus Review', date: '2026-06-01', author: 'Max (Opus)', purpose: 'SOP-014 three-phase contract review of Cass. 1 Block + 7 Flags + Phase 3; all resolved at hire close. Reference for the rationale behind Cass\'s dual-axis rating and own-brand voice dimensions.', file: '2026-06-01-cass-sop-014-opus-review' },
+  { title: 'Content Manager Hire Research', date: '2026-06-01', author: 'Rees', purpose: 'World-class research for the Content Manager role — now informs Will\'s contract. Voice-fidelity as primary failure mode, ghostwriting frameworks, editorial workflow patterns, anti-patterns.', file: '2026-06-01-content-manager-hire-research' },
+  { title: 'Digital Performance Analyst Hire Research', date: '2026-06-01', author: 'Rees', purpose: 'World-class research for the Digital Performance Analyst role — now informs Sable\'s contract. Signal + narrative + recommendation as the quality bar; anti-patterns: vanity metrics, reporting without recommending, scope creep into creative judgment.', file: '2026-06-01-digital-performance-analyst-hire-research' },
+  { title: 'MD Hire Research', date: '2026-06-01', author: 'Rees', purpose: 'World-class research for Nathan (General Practitioner / MD). Translation-not-interpretation mandate; false reassurance as primary risk; escalation design as load-bearing contract requirement.', file: '2026-06-01-md-hire-research' },
+  { title: 'Physiotherapist Hire Research', date: '2026-06-01', author: 'Rees', purpose: 'World-class research for Thera (Physiotherapist). Corrective exercise purgatory as the primary anti-pattern; red-flag triage protocol; assess-hypothesize-intervene-retest cycle.', file: '2026-06-01-physiotherapist-hire-research' },
+  { title: 'Fitness Instructor Hire Research', date: '2026-06-01', author: 'Rees', purpose: 'World-class research for Forge (Fitness Instructor). "Gravitating to the mean" as primary AI coaching failure mode; program architecture vs workout generation distinction; four-track periodized system.', file: '2026-06-01-fitness-instructor-hire-research' },
+  { title: 'Orthopedic Surgeon Hire Research', date: '2026-06-01', author: 'Rees', purpose: 'World-class research for Bones (Orthopedic Surgeon). Conservative-first pathways; surgery vs conservative decision framework; age-assumption refusal as highest-risk failure mode for this cluster.', file: '2026-06-01-orthopedic-surgeon-hire-research' },
+  { title: 'Food Enjoyment Agent Hire Research', date: '2026-06-02', author: 'Rees', purpose: 'World-class research for Zess (Food and Enjoyment Specialist). Taste-model-not-restriction-model as core design principle; T&T cultural specificity vs international scope; personality as retention mechanism.', file: '2026-06-02-food-enjoyment-agent-hire-research' },
+  { title: 'Body Team SOP-014 Prep', date: '2026-06-02', author: 'Max', purpose: 'SOP-014 evaluation package for all five body team agents (Bones, Thera, Nathan, Forge, Zess). Contains the full five-agent review brief and design constraint context for the Opus reviewer.', file: '2026-06-02-body-team-sop014-prep' },
+  { title: 'Bones SOP-014 Review', date: '2026-06-02', author: 'Max (Opus)', purpose: 'SOP-014 review of Bones. 0 Blocks; flags resolved at close (entry-point, health-status read, GL-006 anchor).', file: '2026-06-02-bones-sop014-review' },
+  { title: 'Thera SOP-014 Review', date: '2026-06-02', author: 'Max (Opus)', purpose: 'SOP-014 review of Thera. 0 Blocks; reference-grade contract. Flags: documented-observation sourcing, capture-brief SOP candidate.', file: '2026-06-02-thera-sop014-review' },
+  { title: 'Nathan SOP-014 Review', date: '2026-06-02', author: 'Max (Opus)', purpose: 'SOP-014 review of Nathan. 0 Blocks. Widened scope (differential + OTC) re-confirmed; GL-007 triage anchor authored as backstop.', file: '2026-06-02-nathan-sop014-review' },
+  { title: 'Forge SOP-014 Review', date: '2026-06-02', author: 'Max (Opus)', purpose: 'SOP-014 review of Forge. 0 Blocks. Flags: Penn↔Forge logging schema, tracking workstream, gender field (set Female).', file: '2026-06-02-forge-sop014-review' },
+  { title: 'Zess SOP-014 Review', date: '2026-06-02', author: 'Max (Opus)', purpose: 'SOP-014 review of Zess. 0 Blocks. Material flag (taste-model persistence) resolved via food-preferences.md; performance-nutrition lane added.', file: '2026-06-02-zess-sop014-review' },
+  { title: 'Body Team SOP-014 Cluster Review', date: '2026-06-02', author: 'Max (Opus)', purpose: 'Cluster-level SOP-014 pass. Drove GL-006/GL-007, the data layer, routing reconciliation, and de-hardcoding. All five agents approved.', file: '2026-06-02-body-team-sop014-cluster-review' },
+  { title: 'Fiduciary Team Opus Tier 2 Review', date: '2026-06-03', author: 'Max (Opus)', purpose: 'SOP-014 Tier 2 review of the Fiduciary Team (Warren/Harvey/Ernst). Conditional pass; findings A1–A12 all implemented incl. a latent A6 bug (gsheets grant was a silent no-op). Team activation-ready.', file: '2026-06-03-fiduciary-team-opus-tier2-review' },
+  { title: 'Draft: Doc Hire Brief', date: '2026-06-04', author: 'Nolan', purpose: 'DRAFT hire brief — Doc (replaces Nathan + Bones). Pending Peter review in dedicated session.', file: 'Hire Briefs/draft-doc' },
+  { title: 'Draft: Otto (Productivity Agent) Hire Brief', date: '2026-06-04', author: 'Nolan', purpose: 'DRAFT hire brief — Otto (Productivity Agent, ICOR-grounded). Pending Peter review; Mack to wire My ICOR MCP.', file: 'Hire Briefs/draft-productivity-agent' },
+  { title: 'Draft: Vigil (Accountability Agent) Hire Brief', date: '2026-06-04', author: 'Nolan', purpose: 'DRAFT hire brief — Vigil (Accountability & Open Items Monitor). Operations cluster. Pending Peter review.', file: 'Hire Briefs/draft-accountability-agent' },
+  { title: 'Draft: Flux (Opportunity Scout) Hire Brief', date: '2026-06-04', author: 'Nolan', purpose: 'DRAFT hire brief — Flux (Opportunity Scout). Growth & Intelligence cluster. Pending Peter review.', file: 'Hire Briefs/draft-opportunity-scout' },
+  { title: 'Productivity Expert Research', date: '2026-06-04', author: 'Rees', purpose: 'Research confirming Ming\'s expanded scope as Digital Productivity Advisor. Key finding: ICOR methodology and macOS/tool-stack implementation are adjacent but non-overlapping — best held by one advisor.', file: '2026-06-04-productivity-expert-research' },
+  { title: 'Opus Ming Contract Review Brief', date: '2026-06-05', author: 'Max', purpose: 'Opus review brief for Ming\'s revised contract and the integrated SSOT architecture. Covers: five-tier model, anchor file concept, pending Penn contract change, stale SOPs (003, 004), design principles, ten specific review questions.', file: '2026-06-05-opus-ming-contract-review-brief' },
+  { title: 'Opus Ming Review Report', date: '2026-06-05', author: 'Max (Opus)', purpose: 'SOP-014 Tier 2 review report. Verdict: needs revision (2 Blocks + 9 Flags). Root cause: tier state lived outside the markdown layer Penn operates in. Superseded by Peter\'s decision to go mirror-only.', file: '2026-06-05-opus-ming-review-report' },
+  { title: 'Craft Inventory', date: '2026-06-05', author: 'Ming + Max', purpose: 'Full catalog of all 192 Craft documents across 47 folders. All proposed Historical legacy. Sheet 2 flags 6 anomalies for Peter\'s decision. Peter to review and mark Mirrored candidates before Ming proceeds to SOP-003 Step 5.', file: '2026-06-05-craft-inventory.xlsx' },
+  { title: 'Warren Morning Brief', date: '2026-06-06', author: 'Warren', purpose: 'E*TRADE Max-Rate Checking conversion (no concern, pure upgrade, effective Aug 6) + Kilter Group Q2 Daybreak newsletter (portfolio adjustments, no client action needed).', file: '2026-06-06-warren-morning-brief' },
+  { title: 'Monthly Checklist Workflow SOP', date: '2026-06-06', author: 'Max + Mack', purpose: 'Complete SOP for the automated monthly banking workflow. Includes Terminal commands, file naming conventions, filing table, and Python upgrade path. Craft-pasteable.', file: '2026-06-06-monthly-checklist-workflow-sop' },
+  { title: 'Indian Clubs Trinidad Research', date: '2026-06-11', author: 'Rees', purpose: 'Indian clubs availability in Trinidad & Tobago. Verdict: not in local retail. Best path: Amazon US + MyUS.com forwarder (~USD 100–150). DIY alternative: PVC + dowel + sand under TTD 150/pair.', file: '2026-06-09-rees-indian-clubs-trinidad' },
+  { title: 'Dead Bug Lumbar Position Research', date: '2026-06-11', author: 'Rees', purpose: 'Dead Bug lumbar position: flat vs neutral spine. Verdict: neutral spine. McGill and all peer-reviewed EMG studies support neutral; flat-back has no primary research. Practical cue: hand under lumbar curve as feedback sensor.', file: '2026-06-09-rees-dead-bug-lumbar-position' },
+  { title: 'CEAL Green Website Audit Findings', date: '2026-06-11', author: 'Cass', purpose: 'CEAL Green website audit findings register. 37 findings (8 Critical, 19 Major, 10 Minor, 7 Works) across 6 pages. Severity-ordered with specific change instructions. Competitive benchmarks from 5 peers included.', file: '2026-06-10-ceal-green-website-audit/ceal-green-website-audit-findings' },
+  { title: 'CEAL Green Copy Recommendations', date: '2026-06-11', author: 'Cass', purpose: 'CEAL Green copy recommendations — Options A/B/C for every copy element rated. Standalone brief for copywriter; keyed to finding numbers in the findings register.', file: '2026-06-10-ceal-green-website-audit/ceal-green-copy-recommendations' },
+  { title: 'CEAL Green Logo & Wordmark Evaluation', date: '2026-06-11', author: 'Cass', purpose: 'CEAL Green logo + wordmark evaluation. Ryan Roper\'s circular logo assessed against brand guidelines. Verdict: vector redraw required. Alignment: bottom-justify. Alt A (interpunct) recommended for wordmark differentiation.', file: '2026-06-10-ceal-green-website-audit/logo-evaluation/ceal-green-logo-wordmark-evaluation' },
+  { title: 'CEAL Green Website Audit HTML v1', date: '2026-06-11', author: 'Charta', purpose: 'CEAL Green website audit HTML report — v1 static build. Published at https://peterag.github.io/morevida-artifacts/2026-06-10-ceal-green-website-audit.html. Note: v1 is formatted Markdown only; interactive annotated screenshot rebuild deferred to next session.', file: '2026-06-10-ceal-green-website-audit/ceal-green-website-audit' },
+  { title: 'CEAL Green Website Audit HTML v2', date: '2026-06-15', author: 'Charta + Max', purpose: 'CEAL Green website audit — v2 interactive HTML artifact. Annotated screenshot viewer with 62 severity-coded pins (8C/27Ma/18Mi/9W), Works-only filter, and modal popups. Live at https://peterag.github.io/morevida-artifacts/ceal-green-website-audit-v2.html', file: '2026-06-10-ceal-green-website-audit/ceal-green-website-audit-v2' },
+  { title: 'CEAL Green Excel Alignment Report', date: '2026-06-15', author: 'Cass + Max', purpose: 'CEAL Green Excel alignment report — maps Ryan\'s 14-row approved change list against Cass\'s audit findings. Sections: Strong (8), Partial (5), No Mistakes (0), Unaddressed Critical/Major gaps.', file: '2026-06-10-ceal-green-website-audit/ceal-green-excel-alignment-report' },
+  { title: 'CG Publication & Event Research', date: '2026-06-13', author: 'Rees', purpose: 'Research brief: Global TT (govt agency, not a publication), Caribex Sport (does not exist), CariPhil, Family Offices, Hotel Conferences, Chambers of Commerce (Suriname/Guyana/T&T), SEOGS 2026 (speaker call closed Feb 2026).', file: 'rees-cg-publication-event-research-2026-06-13' },
+  { title: 'Caribbean Airlines Magazine Research', date: '2026-06-13', author: 'Rees', purpose: 'Caribbean Airlines in-flight magazine confirmed as Caribbean Beat (MEP Publishers). Editor: Caroline Taylor; bimonthly; contributor programme via caribbean-beat.com/submissions. Fit for CEAL Green conditional on human/place story angle.', file: 'rees-caribbean-airlines-magazine-2026-06-13' },
+  { title: 'CEAL Green Developer Action Sheet', date: '2026-06-15', author: 'Max', purpose: 'CEAL Green developer action sheet. Sheet 1: 47 ready-to-implement rows (Visual-Technical, Content Fix, Copy — full Option A copy in cells). Sheet 2: 12 rows awaiting Ryan\'s decision.', file: '2026-06-15-ceal-green-developer-action-sheet.xlsx' },
+  { title: 'Phase 1 Rehab Program', date: '2026-06-12', author: 'Charta + Kinec', purpose: 'Phase 1 Rehab Program HTML artifact. Bilateral patellofemoral prehab, elbow isometrics (both arms), glute activation emphasis, eccentric tendinopathy protocols, core sequence. Live at https://peterag.github.io/petergales-artifacts/2026-06-12-phase1-rehab-program.html.', file: '2026-06-12-phase1-rehab-program' },
+  { title: 'GL-013 + SOP-035 Opus Review', date: '2026-06-15', author: 'Max (Opus)', purpose: 'Opus review of GL-013 + SOP-035. Blocking fix: data-file validation used a JSON parser on a JavaScript file — switched to node --check. Three learnings generalized into GL-013. SOP-036 (general HTML build) tracked in Deferred #9.', file: '2026-06-15-gl013-sop035-opus-review' },
+  { title: 'Document Routing — Craft + Peter OS 2', date: '2026-06-17', author: 'Max', purpose: 'Living reference — document routing decisions for Peter OS 2 + Craft. Section 1: Craft content audit (type-based disposition). Section 2: ongoing use cases (produced artifacts, client deliverables). Add new use cases as discovered.', file: '2026-06-17-document-routing-craft-peter-os2' },
+  { title: 'Myelofibrosis Research Brief', date: '2026-06-17', author: 'Rees', purpose: 'Myelofibrosis (MF) research brief for Calvert Craigg\'s diagnosis. Covers disease mechanism, asymptomatic presentation, DIPSS risk stratification, fibrosis grading, driver mutations, treatment landscape (JAK inhibitors, pelabresib combo trials), and questions to ask Dr. Moosai.', file: 'rees-myelofibrosis-brief-20260617' },
+  { title: 'Doc: Calvert Myelofibrosis Prognosis', date: '2026-06-17', author: 'Doc', purpose: 'Clinical prognosis assessment for Calvert Craigg — asymptomatic MF diagnosed 2026-06-09 by Dr. Moosai. Five key questions for the haematologist; DIPSS tier survival ranges; fibrosis grade significance; natural history; monitoring protocol.', file: 'doc-calvert-myelofibrosis-prognosis-20260617' },
+  { title: 'Maraval Dredging Contacts', date: '2026-06-17', author: 'Rees', purpose: 'Maraval River dredging contact directory for Andalusia Residents Association. Correct authority: DMBC (not "Diego Martin East"). Correct councillor: Damian Fournillier (Moka/Boissiere #2). Government change May 2025 flagged.', file: '2026-06-17-maraval-dredging-contacts' },
+  { title: 'Andalusia Dredging Email Draft', date: '2026-06-18', author: 'Will + Max', purpose: 'Formal email draft — urgent dredging request to DMBC CEO Ms. Beverly Haywood. Copies: Mayor Glasgow-Warner, Councillor Fournillier, Colm Imbert MP, Ministry of Works. Ready to send pending Minister Jearlean John\'s email address confirmation.', file: '2026-06-17-andalusia-dredging-email-draft' },
+  { title: 'Project Vantage Experience Spec', date: '2026-06-17', author: 'Charta', purpose: 'Project Vantage experience spec — Peace / Power / Purpose + Living System. Self-contained HTML using GL-003 design system. Three-pillar architecture with open-bottom pillars on foundation slab. Benchmark review dates: 2026-07-17, 2026-09-17, 2027-06-17.', file: '2026-06-17-project-vantage-experience-spec' },
+  { title: 'Graphic Design Principles Brief', date: '2026-06-18', author: 'Rees', purpose: 'Robin Williams CRAP/PARC canon + color-in-sequential-layouts research. Grounds GL-003 and Charta/Iris contracts in established doctrine. 8 specific GL-003 recommendations.', file: '2026-06-18-rees-graphic-design-principles-brief' },
+  { title: 'Project Vantage Charter', date: '2026-06-18', author: 'Charta', purpose: 'Project Vantage two-tab HTML charter (v5). Tab 1: Peace/Power/Purpose + Living System experience spec. Tab 2: phased build plan (Phases 1–4) with benchmark checkpoint cards. Alabaster ground, badge-centric status encoding, GL-003 Williams canon applied.', file: 'project-vantage-charter' },
+  { title: 'Projects Dashboard', date: '2026-06-20', author: 'Charta', purpose: 'Living projects dashboard — all PKM projects in a sortable/filterable table. Row-click opens modal with Next Action callout, Steps (numbered/sequential), Action Points (parallel), Completed Steps toggle, document links, metadata grid, completeness bar. 40+ projects loaded.', file: 'peter-os-projects-dashboard' },
+];
+
+// ============================================================
+// VIEW SWITCHING
+// ============================================================
+let currentView = 'projects';
+
+function switchView(view) {
+  currentView = view;
+  document.getElementById('projectsView').style.display  = view === 'projects'  ? '' : 'none';
+  document.getElementById('artifactsView').style.display = view === 'artifacts' ? '' : 'none';
+  document.getElementById('btnProjects').classList.toggle('active',  view === 'projects');
+  document.getElementById('btnArtifacts').classList.toggle('active', view === 'artifacts');
+  if (view === 'artifacts') renderArtifacts();
+}
+
+// ============================================================
+// RENDER ARTIFACTS
+// ============================================================
+function renderArtifacts() {
+  const sortVal  = document.getElementById('artifactSortSelect').value;
+  const term     = (document.getElementById('artifactSearch').value || '').toLowerCase().trim();
+
+  let items = artifactsData.filter(a => {
+    if (!term) return true;
+    return [a.title, a.author, a.purpose, a.file].join(' ').toLowerCase().includes(term);
+  });
+
+  items.sort((a, b) => {
+    switch (sortVal) {
+      case 'date-desc': return b.date.localeCompare(a.date);
+      case 'date-asc':  return a.date.localeCompare(b.date);
+      case 'title':     return a.title.localeCompare(b.title);
+      case 'author':    return a.author.localeCompare(b.author);
+      default:          return 0;
+    }
+  });
+
+  const tbody      = document.getElementById('artifactsTableBody');
+  const noResults  = document.getElementById('artifactsNoResults');
+  const countEl    = document.getElementById('artifactCount');
+
+  countEl.textContent = items.length;
+
+  if (items.length === 0) {
+    tbody.innerHTML = '';
+    noResults.style.display = 'block';
+    return;
+  }
+  noResults.style.display = 'none';
+
+  const MAX_PURPOSE = 160;
+  let html = '';
+  for (const a of items) {
+    const purposeShort = a.purpose.length > MAX_PURPOSE
+      ? a.purpose.substring(0, MAX_PURPOSE) + '…'
+      : a.purpose;
+    html += `
+    <div class="artifact-row">
+      <div class="artifact-cell"><span class="artifact-title">${a.title}</span></div>
+      <div class="artifact-cell" style="font-size:12px;color:#7a6b5f;">${formatDate(a.date)}</div>
+      <div class="artifact-cell"><span class="artifact-author-chip">${a.author}</span></div>
+      <div class="artifact-cell"><span class="artifact-purpose">${purposeShort}</span></div>
+    </div>`;
+  }
+  tbody.innerHTML = html;
+}
+
+// Hook existing search bar to also work when artifacts view is active
+// (search bars are separate per-view; no cross-wiring needed)
+</script>
+<div class="step-note-popover" id="stepNotePopover"></div>
+
+<script>
+function showStepNote(btn, text) {
+  const popover = document.getElementById('stepNotePopover');
+  popover.textContent = text;
+  popover.style.display = 'block';
+  const rect = btn.getBoundingClientRect();
+  const pw = popover.offsetWidth;
+  let left = rect.left;
+  if (left + pw > window.innerWidth - 16) left = window.innerWidth - pw - 16;
+  popover.style.top  = (rect.bottom + 6) + 'px';
+  popover.style.left = left + 'px';
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.classList.contains('step-note-btn')) {
+    document.getElementById('stepNotePopover').style.display = 'none';
+  }
+});
+</script>
+</body>
+</html>

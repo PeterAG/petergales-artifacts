@@ -2503,6 +2503,16 @@ const domainColors = {
 const priorityOrder = { high: 0, medium: 1, low: 2 };
 const statusOrder   = { active: 0, planning: 1, 'on-hold': 2, parked: 3, closed: 4 };
 
+const DOMAIN_GROUPS = [
+  { label: 'Education',      slugs: ['education'] },
+  { label: 'Body & Play',    slugs: ['body', 'play'] },
+  { label: 'Relationships',  slugs: ['family', 'sociability', 'membership'] },
+  { label: 'Work & Ambition',slugs: ['work'] },
+  { label: 'Money',          slugs: ['money'] },
+  { label: 'Self',           slugs: ['self'] },
+  { label: 'Spirituality',   slugs: ['spirituality'] },
+];
+
 // ============================================================
 // STATE
 // ============================================================
@@ -2642,7 +2652,10 @@ function applyFilters() {
   // Filter
   let filtered = projectData.filter(p => {
     if (!activeStatuses.has(p.status)) return false;
-    if (activeDomain !== 'all' && p.domain !== activeDomain) return false;
+    if (activeDomain !== 'all') {
+      const group = DOMAIN_GROUPS.find(g => g.label === activeDomain);
+      if (!group || !group.slugs.includes(p.domain)) return false;
+    }
     if (activeClient !== 'all' && p.client !== activeClient) return false;
     if (searchTerm) {
       const haystack = [
@@ -2913,11 +2926,10 @@ document.addEventListener('keydown', function(e) {
 // ============================================================
 function buildProjectDomainDropdown() {
   const sel = document.getElementById('domainSelect');
-  const distinct = [...new Set(projectData.map(p => p.domain).filter(Boolean))].sort((a, b) => a.localeCompare(b));
-  distinct.forEach(d => {
+  DOMAIN_GROUPS.forEach(g => {
     const opt = document.createElement('option');
-    opt.value = d;
-    opt.textContent = d.charAt(0).toUpperCase() + d.slice(1);
+    opt.value = g.label;
+    opt.textContent = g.label;
     sel.appendChild(opt);
   });
 }
@@ -3029,7 +3041,14 @@ function buildArtifactFilterDropdowns() {
   }
   populate('artifactProjectSelect', artifactsData.map(a => a.project));
   populate('artifactClientSelect',  artifactsData.map(a => a.client));
-  populate('artifactDomainSelect',  artifactsData.map(a => a.domain));
+  // Domain dropdown uses 7 agreed display groupings, not raw slugs
+  const artifactDomainSel = document.getElementById('artifactDomainSelect');
+  DOMAIN_GROUPS.forEach(g => {
+    const opt = document.createElement('option');
+    opt.value = g.label;
+    opt.textContent = g.label;
+    artifactDomainSel.appendChild(opt);
+  });
   artifactFilterDropdownsBuilt = true;
 }
 
@@ -3058,7 +3077,10 @@ function renderArtifacts() {
     if (typeVal    !== 'all' && a.type    !== typeVal)    return false;
     if (projectVal !== 'all' && a.project !== projectVal) return false;
     if (clientVal  !== 'all' && a.client  !== clientVal)  return false;
-    if (domainVal  !== 'all' && a.domain  !== domainVal)  return false;
+    if (domainVal !== 'all') {
+      const group = DOMAIN_GROUPS.find(g => g.label === domainVal);
+      if (!group || !group.slugs.includes(a.domain)) return false;
+    }
     if (term && ![a.title, a.author, a.purpose, a.file, a.project, a.client, a.domain].join(' ').toLowerCase().includes(term)) return false;
     return true;
   });

@@ -789,9 +789,10 @@
     line-height: 1.6;
     padding: 10px 14px;
     border-radius: 6px;
-    max-width: 280px;
+    max-width: 340px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.35);
     font-family: var(--font-body);
+    white-space: pre-line;
   }
 
   .completed-steps-toggle {
@@ -2943,7 +2944,7 @@ function openModal(id) {
     const text = typeof item === 'string' ? item : item.text;
     const note = typeof item === 'object' && item.note ? item.note : null;
     const noteBtn = note
-      ? `<button class="step-note-btn" onclick="event.stopPropagation();showStepNote(this,'${note.replace(/'/g,"\\'")}')" title="More detail">i</button>`
+      ? `<button class="step-note-btn" onclick="event.stopPropagation();showStepNote(this)" data-note="${note.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;')}" title="More detail">i</button>`
       : '';
     return text + noteBtn;
   }
@@ -2957,7 +2958,7 @@ function openModal(id) {
     }
     if (hasDoneSteps) {
       bodyHTML += `<details class="completed-steps-toggle"><summary>${p.completed_steps.length} completed</summary><ul>`;
-      for (const s of p.completed_steps) { bodyHTML += `<li>${typeof s === 'string' ? s : s.text}</li>`; }
+      for (const s of p.completed_steps) { bodyHTML += `<li>${renderItem(s)}</li>`; }
       bodyHTML += '</ul></details>';
     }
     bodyHTML += '</div>';
@@ -3248,9 +3249,9 @@ function renderArtifacts() {
 <div class="step-note-popover" id="stepNotePopover"></div>
 
 <script>
-function showStepNote(btn, text) {
+function showStepNote(btn) {
   const popover = document.getElementById('stepNotePopover');
-  popover.textContent = text;
+  popover.textContent = btn.dataset.note;
   popover.style.display = 'block';
   const rect = btn.getBoundingClientRect();
   const pw = popover.offsetWidth;

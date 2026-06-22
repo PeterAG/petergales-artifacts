@@ -1106,7 +1106,7 @@
   <p class="header-tagline">A commanding view — every project, every domain</p>
 
   <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-top:24px;">
-    <p class="header-meta">Last updated: 2026-06-21 &nbsp;·&nbsp; <span id="totalCount">0</span> projects</p>
+    <p class="header-meta">Last updated: 2026-06-22 &nbsp;·&nbsp; <span id="totalCount">0</span> projects</p>
     <div class="view-toggle" role="group" aria-label="Switch view">
       <button class="view-toggle-btn active" id="btnProjects" onclick="switchView('projects')">Projects</button>
       <button class="view-toggle-btn" id="btnArtifacts" onclick="switchView('artifacts')">Artifacts</button>
@@ -1293,7 +1293,7 @@
 <!-- PAG Footer -->
 <footer class="pag-footer">
   <span class="pag-marker">PAG</span>
-  <span class="pag-meta">Peter OS 2 · Project Vantage · Dashboard v1.0 · 2026-06-21</span>
+  <span class="pag-meta">Peter OS 2 · Project Vantage · Dashboard v1.0 · 2026-06-22</span>
 </footer>
 
 <!-- ============================================================
@@ -1787,23 +1787,29 @@ const projectData = [
   {
     id: 'dutch-citizenship',
     name: 'Dutch Citizenship Documentation',
-    status: 'active',
+    status: 'planning',
     domain: 'self',
     client: 'Personal',
     priority: 'medium',
     target_date: '2027-06-30',
     closed_date: null,
+    lastUpdated: '2026-06-22',
     linked_goals: [],
     linked_people: [],
     tags: ['citizenship','netherlands','legal','identity','harvey'],
-    why: 'Peter may be eligible for Dutch citizenship through Galesloot family heritage — providing EU citizenship and freedom of movement.',
-    next_action: 'Submit birth certificate to Team Inbox',
+    why: 'Peter may be eligible for Dutch citizenship through Galesloot family heritage (ius sanguinis — paternal line) — providing EU citizenship and freedom of movement. Harvey brief (2026-06-22) clarifies the path: file CRS form with ASN first, then initiate Dutch embassy process. Key gap: legal marriage of parents at birth must be confirmed.',
+    next_action: 'Submit birth certificate to Team Inbox (gates Harvey\'s next step)',
     action_points: [
-      'Submit birth certificate to Team Inbox',
-      'Harvey to advise on documentation requirements for citizenship claim',
-      'Research eligibility criteria for citizenship through Galesloot parentage'
+      'PREREQUISITE: Complete CRS self-certification with ASN Bank before initiating embassy process (Harvey recommendation)',
+      'Submit birth certificate to Team Inbox — this gates Harvey\'s documentation review',
+      'Confirm father\'s full name, Dutch nationality status, and alive/deceased status',
+      'Confirm that parents were legally married at time of Peter\'s birth (key eligibility gap)',
+      'Assemble name-change chain: Galesloot → Gales deed poll + affidavit; Woon Sam-Gales → Gales deed poll + statutory declaration (currently in Craft)',
+      'Harvey to advise on Dutch embassy (T&T) application process once CRS form is filed'
     ],
-    artifacts: []
+    artifacts: [
+      { label: 'Harvey Legal Brief (2026-06-22)', url: '#', title: 'Local file — Deliverables/2026-06-22-asn-harvey-brief.md' }
+    ]
   },
   {
     id: 'fiduciary-team-onboarding',
@@ -1908,6 +1914,32 @@ const projectData = [
       'Confirm tenancy status and whether lease was executed',
       'Formalize gas range installation decision',
       'Add outdoor camera and Bluetooth speakers to insurance contents schedule at next renewal'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'historic-family-files',
+    name: 'Historic Family Files — Processing and Archival',
+    status: 'planning',
+    domain: 'self',
+    client: 'Personal',
+    priority: 'medium',
+    target_date: null,
+    closed_date: null,
+    lastUpdated: '2026-06-22',
+    linked_goals: [],
+    linked_people: ['pearl-phillips'],
+    tags: ['family','files','archival','documents','house'],
+    why: 'Peter\'s parents left behind filing cabinets full of decades-old documents — never systematically reviewed. Among them may be the deed to the family home "Happiness is..." (45 Ness Place). The deed is the first-priority document to locate.',
+    next_action: 'Count and locate all filing cabinets; begin search for the deed to 45 Ness Place',
+    action_points: [
+      'FIRST PRIORITY: Locate the deed to "Happiness is..." (45 Ness Place, Andalusia, Maraval)',
+      'Count and locate all filing cabinets — house and any other location',
+      'Begin with the cabinet most likely to hold legal/property documents',
+      'If deed not found: contact family lawyer or T&T Lands and Surveys Division',
+      'Once deed found: log in PKM/Documents/, photograph or scan, link to happiness-is-np45',
+      'Develop a folder-by-folder processing log as work progresses',
+      'See also related earlier project: process-mothers-cabinet-files'
     ],
     artifacts: []
   },
@@ -2120,14 +2152,17 @@ const projectData = [
     priority: 'high',
     target_date: '2026-09-08',
     closed_date: null,
+    lastUpdated: '2026-06-22',
     linked_goals: [],
     linked_people: ['camille-ojar'],
     tags: ['travel','netherlands','camy','urgent'],
-    why: 'Peter and Camy travelling to the Netherlands in September 2026 — KLM booked. Coordination window with Walter and Geert is approx Sep 8–24.',
-    next_action: 'Alert Walter and Geert of specific arrival/departure dates — URGENT',
+    why: 'Peter and Camy travelling to the Netherlands in September 2026 — KLM booked. Coordination window with Walter and Geert is approx Sep 8–24. July is almost here — the trip is approaching fast.',
+    next_action: 'URGENT: Begin Dutch listening/practice now — and contact Walter and Geert to lock arrival dates',
     action_points: [
       'URGENT: Alert Walter and Geert of specific arrival/departure dates',
       'URGENT: Coordinate days with both so the visit feels effortless',
+      'URGENT: Begin practicing or listening to Dutch now — if it will help, it must start soon',
+      'Plan any side trips with Camy',
       'Confirm travel dates and update target_date',
       'Lock accommodation',
       'Verify ASN Bank account is active and accessible while abroad'
@@ -2376,17 +2411,20 @@ const projectData = [
     domain: 'self',
     client: 'Personal',
     priority: 'high',
-    lastUpdated: '2026-06-21',
+    lastUpdated: '2026-06-22',
     target_date: '2027-03-31',
     closed_date: null,
     linked_goals: ['practice-meditation-and-remembering'],
     linked_people: ['camille-ojar'],
     tags: ['self','identity','design','iris','pgp','integrity'],
-    why: 'A daily practice of returning to centre — screensavers and audio reminders of who Peter is, using personalized voice. Personal R&D and future commercial product.',
+    why: 'A daily practice of returning to centre — screensavers and audio reminders of who Peter is, using personalized voice. Core mechanism: curated content to listen to before sleep and on waking (Naval Ravikant, Neville Goddard, movie scenes that teach or show the cost of violating a value). Personal R&D and future commercial product.',
+    next_action: 'Rate existing affirmation statements 1–10 in the content Google Sheet',
     action_points: [
       'Rate existing affirmation statements 1–10 in the content Google Sheet',
-      'Define the content scope: whose words, what themes',
-      'Brief Iris on the visual treatment',
+      'Define content scope: whose words, what themes — including Personal Guiding Philosophy (core beliefs, mission, prayers, creeds, affirmations)',
+      'Develop the before-sleep / on-waking listening feed — soul nourishment and identity reinforcement',
+      'Explore daytime visual reminders (screenshots sent during the day) — route to Pixel',
+      'Brief Iris on the visual treatment for screensavers',
       'Build a small quote bank to seed the first screensavers'
     ],
     artifacts: []
@@ -2449,6 +2487,30 @@ const projectData = [
       'Brief Charta on a custom-designed website concept',
       'Define pages and content sections needed',
       'Decide on platform (Carrd vs. GitHub Pages vs. other)'
+    ],
+    artifacts: []
+  },
+  {
+    id: 'work-area-cleanup',
+    name: 'Work Area Cleanup and Organization',
+    status: 'planning',
+    domain: 'self',
+    client: 'Personal',
+    priority: 'low',
+    target_date: null,
+    closed_date: null,
+    lastUpdated: '2026-06-22',
+    linked_goals: [],
+    linked_people: [],
+    tags: ['home','workspace','organization'],
+    why: 'A cluttered workspace is a friction point for focused work. Current state documented by photo (2026-06-22): tripod in the middle of the room, items on a folded cot/table, desk surface competing with equipment, shelves accumulated rather than curated.',
+    next_action: 'Clear the center of the room — remove tripod to designated storage, address items on folded table',
+    action_points: [
+      'Clear the center: remove tripod to a designated storage spot, deal with items on the folded cot/table',
+      'Surface-clear the desk: remove anything that is not daily-use equipment',
+      'Shelf audit: photograph shelves, decide what stays and what goes',
+      'Sweep and address the floor area',
+      'Determine whether filing cabinet is current or a candidate for archiving'
     ],
     artifacts: []
   },

@@ -1405,8 +1405,9 @@
 // RULE: any rendering code change must update this reference in the same commit.
 //
 // ============================================================
-// PROJECT DATA — source files: PKM/My Life/Projects/*.md
-// Dashboard = manually maintained; project files = canonical SSOT.
+// PROJECT DATA — GENERATED from PKM/My Life/Projects/*.md
+// DO NOT HAND-EDIT. Run Tools/generate_project_data.py to refresh.
+// Dashboard = generated view; project files = canonical SSOT.
 // ============================================================
 const projectData = [
   {
@@ -1682,14 +1683,13 @@ const projectData = [
   {
     id: 'ceal-green-agentic-platform',
     name: 'CEAL Green Agentic Platform',
-    parent: 'ceal-green-customer-journey',
     status: 'active',
     priority: 'high',
     client: 'CEAL Green',
     domain: 'work',
     target_date: '2026-12-31',
     closed_date: null,
-    lastUpdated: '2026-07-06',
+    lastUpdated: '2026-07-07',
     linked_goals: [],
     linked_people: ['mark-incus', 'cecl-george'],
     tags: ['ceal-green', 'agentic', 'ai'],
@@ -1715,8 +1715,8 @@ const projectData = [
     linked_people: ['ryan-roper'],
     tags: ['ceal-green', 'customer-journey', 'strategy'],
     why: 'Peter is leading the design of the full CEAL Green customer journey — the designed arc from a prospect\'s first encounter with CEAL Green to a sustained relationship of trust and advocacy. This is not a content role; it is the experience design and systems architecture across all three phases.',
-    next_action: 'Approve Content Production Workflow; begin Content Manager hire and AI agent configuration',
-    action_points: ['Approve Content Production Workflow v0.5', 'Begin Content Manager hire', 'Configure AI agents (Research & Ideation, Writing, Brand Reviewer, Critique)', 'Read CG Digital Transformation Roadmap 2026 PDF', 'Watch Ethniv\'s feedback on the roadmap', 'Identify which business processes connect to the customer journey work', 'Begin Phase 2 experience design — touchpoint mapping from first active step to commitment', 'Assess Customer Journey Manager formalisation timeline'],
+    next_action: 'Review Ryan\'s comments in the shared Craft document and incorporate into Content Strategy v0.5 → v1.0',
+    action_points: ['Review Ryan\'s comments in the shared Craft document and incorporate into Content Strategy v0.5 → v1.0', 'Review CG Digital Transformation Roadmap and Ethniv\'s feedback session', 'Begin Phase 2 experience design — touchpoint mapping from first active step to commitment', 'Define handoff protocols between Phase 1 and Phase 2', 'Assess Customer Journey Manager formalisation timeline'],
     artifacts: [
       { label: 'Customer Journey Project Overview', url: 'https://peterag.github.io/morevida-artifacts/ceal-green-customer-journey-project-overview.html' },
       { label: 'Guiding Narrative Spine v0.6', url: '#', title: 'Local file — not published' },
@@ -1747,7 +1747,7 @@ const projectData = [
     id: 'cg-digital-transformation-roadmap',
     name: 'CG Digital Transformation Roadmap',
     status: 'parked',
-    priority: 'low',
+    priority: 'high',
     client: 'CEAL Green',
     domain: 'work',
     target_date: '2026-12-31',
@@ -1756,9 +1756,9 @@ const projectData = [
     linked_goals: [],
     linked_people: [],
     tags: ['ceal-green', 'digital-transformation', 'customer-journey', 'ryan'],
-    why: 'Not a standalone project. Peter needs to stay informed about Ryan\'s roadmap so the customer journey work plugs into the right business processes — but delivery is Ryan\'s. Tracked as tasks within CEAL Green Customer Journey.',
-    next_action: 'See CEAL Green Customer Journey project',
-    action_points: [],
+    why: 'Peter is not responsible for delivering this roadmap — that is Ryan\'s and the CG team\'s work. However, Ryan wants the customer journey to be connected to business processes. Peter needs to be knowledgeable about this roadmap so the customer journey work he is leading can plug into the right business processes. See [[ceal-green-customer-journey-project-overview]].',
+    next_action: 'Read the CG Digital Transformation Roadmap 2026 PDF',
+    action_points: ['Read the CG Digital Transformation Roadmap 2026 PDF', 'Watch Ethniv\'s feedback on the roadmap', 'Identify which business processes connect to the customer journey work', 'Consider asking Jude to help process and synthesise what\'s relevant'],
     artifacts: []
   },
   {

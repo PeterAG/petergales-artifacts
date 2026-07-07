@@ -1331,9 +1331,82 @@
 ============================================================ -->
 <script>
 // ============================================================
-// PROJECT DATA — GENERATED from PKM/My Life/Projects/*.md
-// DO NOT HAND-EDIT. Run Tools/generate_project_data.py to refresh.
-// Dashboard = generated view; project files = canonical SSOT.
+// MAINTENANCE REFERENCE — peter-os-projects-dashboard.html
+// Last updated: 2026-07-07
+// ============================================================
+//
+// DATA SCHEMA — every field and what it produces in the UI
+// ──────────────────────────────────────────────────────────
+// id            string   Unique slug. Used by openModal() and parent lookups.
+// name          string   TABLE: card title. MODAL: modal title.
+// parent        string   id of parent project. TABLE: renders amber "↳ sub-project"
+//                        label above name. MODAL: renders clickable parent link.
+//                        DATA-ONLY field — no rendering code change needed to use it.
+// status        string   'active'|'planning'|'on-hold'|'parked'|'closed'
+//                        TABLE: status badge. Controls filter tab counts.
+// priority      string   'high'|'medium'|'low'. TABLE: priority badge. MODAL: metadata grid.
+// domain        string   'work'|'personal'|'health'|'family'|'learning'|...
+//                        TABLE: coloured domain chip (colours from domainColors map).
+// client        string   TABLE: shown in Client column. MODAL: metadata grid.
+// target_date   string   'YYYY-MM-DD'. TABLE: formatted date. MODAL: metadata grid.
+//                        Counts toward completeness score.
+// closed_date   string   'YYYY-MM-DD'|null. MODAL: metadata grid only.
+// lastUpdated   string   'YYYY-MM-DD'. MODAL: metadata grid, highlighted in red if stale.
+// linked_goals  string[] Goal slugs. MODAL: tag chips. Counts toward completeness score.
+// linked_people string[] Person slugs. MODAL: rendered via formatPeople() as name chips.
+// tags          string[] Free-form tags. MODAL: tag chip list.
+// why           string   MODAL: "Why this matters" section (full text).
+//                        TABLE: first 72 chars shown as row subtitle below project name.
+// next_action   string   MODAL: red callout box at top. If null: greyed placeholder shown.
+// steps         array    MODAL: ordered list under "Steps — in order".
+//                        Each item: string OR { text, note } (note adds inline "i" button).
+// completed_steps array  MODAL: collapsed "N completed" disclosure under steps list.
+// action_points array    MODAL: unordered list under "Action Points — any time".
+//                        Each item: string OR { text, note }.
+// artifacts     array    MODAL: linked chips at bottom. Each: { label, url, title? }
+//                        title is tooltip text (use for local-only files).
+//
+// COMPLETENESS SCORE (6 points — shown as dots in table, bar in modal)
+// ─────────────────────────────────────────────────────────────────────
+// +1 each for: name, domain, client, priority, target_date, linked_goals (non-empty)
+//
+// FUNCTION MAP — where rendering lives
+// ─────────────────────────────────────
+// renderTable(projects)    Builds the table rows. Edit here for new TABLE-column fields.
+// openModal(id)            Builds the modal body. Edit here for new MODAL fields.
+// renderArtifacts()        Separate Artifacts tab — reads same projectData.artifacts.
+// completenessScore(p)     Returns 0–6. Edit here to add/remove scored fields.
+// statusBadge(status)      Returns badge HTML. Add new status strings here + CSS.
+// priorityBadge(priority)  Returns badge HTML. Add new priority levels here + CSS.
+// domainChip(domain)       Returns chip HTML. Add new domains to domainColors map.
+// formatDate(d)            'YYYY-MM-DD' → 'D Mon YYYY'. Pure utility — don't touch.
+// formatPeople(arr)        Slug array → name chip HTML. Reads peopleIndex.
+// formatGoals(arr)         Slug array → goal chip HTML. Reads goalsIndex.
+//
+// ADDING A NEW FIELD
+// ──────────────────
+// Data-only (no rendering change needed):
+//   parent — already wired; just add the field to the data object.
+//   Any field that maps to an existing rendered slot (e.g. a second why-style string
+//   you put inside `why` itself) needs no code change.
+//
+// Requires rendering code change:
+//   New TABLE column  → add <div class="project-cell"> block in renderTable()
+//                        and a matching header cell in the table header HTML
+//   New MODAL section → add bodyHTML += block in openModal(), follow the pattern:
+//                        bodyHTML += `<div class="modal-section">
+//                          <div class="modal-section-title">Label</div>
+//                          <div class="modal-section-content">${value}</div>
+//                        </div>`;
+//   New visual treatment (badge, chip, callout) → write a helper function like
+//                        statusBadge() that returns the HTML string, call it inline.
+//   New status value  → add to statusBadge() label map + add CSS class badge-status-X
+//
+// RULE: any rendering code change must update this reference in the same commit.
+//
+// ============================================================
+// PROJECT DATA — source files: PKM/My Life/Projects/*.md
+// Dashboard = manually maintained; project files = canonical SSOT.
 // ============================================================
 const projectData = [
   {

@@ -1609,6 +1609,7 @@ const projectData = [
   {
     id: 'ceal-green-agentic-platform',
     name: 'CEAL Green Agentic Platform',
+    parent: 'ceal-green-customer-journey',
     status: 'active',
     priority: 'high',
     client: 'CEAL Green',
@@ -1641,8 +1642,8 @@ const projectData = [
     linked_people: ['ryan-roper'],
     tags: ['ceal-green', 'customer-journey', 'strategy'],
     why: 'Peter is leading the design of the full CEAL Green customer journey — the designed arc from a prospect\'s first encounter with CEAL Green to a sustained relationship of trust and advocacy. This is not a content role; it is the experience design and systems architecture across all three phases.',
-    next_action: 'Review Ryan\'s comments in the shared Craft document and incorporate into Content Strategy v0.5 → v1.0',
-    action_points: ['Review Ryan\'s comments in the shared Craft document and incorporate into Content Strategy v0.5 → v1.0', 'Review CG Digital Transformation Roadmap and Ethniv\'s feedback session', 'Begin Phase 2 experience design — touchpoint mapping from first active step to commitment', 'Define handoff protocols between Phase 1 and Phase 2', 'Assess Customer Journey Manager formalisation timeline'],
+    next_action: 'Approve Content Production Workflow; begin Content Manager hire and AI agent configuration',
+    action_points: ['Approve Content Production Workflow v0.5', 'Begin Content Manager hire', 'Configure AI agents (Research & Ideation, Writing, Brand Reviewer, Critique)', 'Read CG Digital Transformation Roadmap 2026 PDF', 'Watch Ethniv\'s feedback on the roadmap', 'Identify which business processes connect to the customer journey work', 'Begin Phase 2 experience design — touchpoint mapping from first active step to commitment', 'Assess Customer Journey Manager formalisation timeline'],
     artifacts: [
       { label: 'Customer Journey Project Overview', url: 'https://peterag.github.io/morevida-artifacts/ceal-green-customer-journey-project-overview.html' },
       { label: 'Guiding Narrative Spine v0.6', url: '#', title: 'Local file — not published' },
@@ -1672,19 +1673,19 @@ const projectData = [
   {
     id: 'cg-digital-transformation-roadmap',
     name: 'CG Digital Transformation Roadmap',
-    status: 'active',
-    priority: 'high',
+    status: 'parked',
+    priority: 'low',
     client: 'CEAL Green',
     domain: 'work',
     target_date: '2026-12-31',
     closed_date: null,
-    lastUpdated: '2026-06-23',
+    lastUpdated: '2026-07-07',
     linked_goals: [],
     linked_people: [],
     tags: ['ceal-green', 'digital-transformation', 'customer-journey', 'ryan'],
-    why: 'Peter is not responsible for delivering this roadmap — that is Ryan\'s and the CG team\'s work. However, Ryan wants the customer journey to be connected to business processes. Peter needs to be knowledgeable about this roadmap so the customer journey work he is leading can plug into the right business processes. See [[ceal-green-customer-journey-project-overview]].',
-    next_action: 'Read the CG Digital Transformation Roadmap 2026 PDF',
-    action_points: ['Read the CG Digital Transformation Roadmap 2026 PDF', 'Watch Ethniv\'s feedback on the roadmap', 'Identify which business processes connect to the customer journey work', 'Consider asking Jude to help process and synthesise what\'s relevant'],
+    why: 'Not a standalone project. Peter needs to stay informed about Ryan\'s roadmap so the customer journey work plugs into the right business processes — but delivery is Ryan\'s. Tracked as tasks within CEAL Green Customer Journey.',
+    next_action: 'See CEAL Green Customer Journey project',
+    action_points: [],
     artifacts: []
   },
   {
@@ -2839,6 +2840,7 @@ function renderTable(projects) {
     html += `
     <div class="project-row" data-id="${p.id}" onclick="openModal('${p.id}')">
       <div class="project-cell">
+        ${p.parent ? `<div style="font-size:10px;color:#B87A4E;font-weight:600;letter-spacing:0.04em;margin-bottom:2px;">↳ sub-project</div>` : ''}
         <div class="project-name">${p.name}</div>
         ${p.why ? `<div class="project-name-sub">${p.why.substring(0, 72)}${p.why.length > 72 ? '…' : ''}</div>` : ''}
       </div>
@@ -2874,6 +2876,17 @@ function openModal(id) {
   const pctLabel = pct === 100 ? 'Complete' : `${pct}% complete`;
 
   let bodyHTML = '';
+
+  // Sub-project parent link
+  if (p.parent) {
+    const parentProject = projectData.find(x => x.id === p.parent);
+    const parentName = parentProject ? parentProject.name : p.parent;
+    bodyHTML += `
+    <div style="font-size:11px;color:#B87A4E;margin-bottom:16px;display:flex;align-items:center;gap:6px;">
+      <span style="font-weight:600;letter-spacing:0.04em;text-transform:uppercase;">↳ Sub-project of</span>
+      <span style="font-weight:700;cursor:pointer;text-decoration:underline;" onclick="event.stopPropagation();openModal('${p.parent}')">${parentName}</span>
+    </div>`;
+  }
 
   // Next Action callout
   if (p.next_action) {

@@ -1,0 +1,2055 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Language Practice</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Dutch Practice">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Montserrat:wght@500;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ── PAG Design System Tokens (GL-003) ── */
+    :root {
+      /* Core palette */
+      --color-primary:      #9B2D30;   /* Garnet — buttons, active states, H1/H3 */
+      --color-neutral-0:    #F9F7F2;   /* Alabaster — page and card backgrounds */
+      --color-neutral-5:    #1A1A1A;   /* Ebon — body text, H4 */
+      --color-supporting-1: #5E3A2B;   /* Deep Earth — H2, section labels */
+      --color-supporting-2: #D67D4E;   /* Sienna — secondary UI accents */
+      --color-supporting-3: #E8C0A3;   /* Soft Sand — sidebar bg, dividers, secondary cards */
+      --color-foundation:   #2A1F1A;   /* Old Mahogany — inset dark panels ONLY */
+
+      /* Semantic aliases */
+      --color-bg:           var(--color-neutral-0);
+      --color-surface:      #FFFFFF;
+      --color-surface-2:    var(--color-neutral-0);
+      --color-surface-sidebar: #EFE8DF; /* slightly warmer than Soft Sand — sidebar background */
+      --color-border:       var(--color-supporting-3);
+      --color-border-focus: var(--color-primary);
+
+      --color-text-primary:   var(--color-neutral-5);
+      --color-text-secondary: var(--color-supporting-1);
+      --color-text-muted:     var(--color-supporting-1);
+      --color-text-on-accent: var(--color-neutral-0);
+
+      --color-accent:         var(--color-primary);
+      --color-accent-hover:   #7d2326;
+      --color-accent-active:  #661e21;
+      --color-danger:         #c0392b;
+      --color-success:        #27622a;
+      --color-warning:        #9a6700;
+
+      /* Radius — GL-003 Hard Constraint: 24px everywhere */
+      --radius-sm:  24px;
+      --radius-md:  24px;
+      --radius-lg:  24px;
+
+      /* Spacing — 8px base */
+      --space-xs:   6px;
+      --space-sm:   12px;
+      --space-md:   18px;
+      --space-lg:   28px;
+      --space-xl:   44px;
+
+      /* Type scale */
+      --text-xs:   0.72rem;
+      --text-sm:   0.85rem;
+      --text-base: 1rem;
+      --text-lg:   1.15rem;
+      --text-xl:   1.35rem;
+      --text-2xl:  1.65rem;
+
+      /* Fonts — GL-003 §3: Montserrat (headings) + Inter (body) */
+      --font-heading: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-body:    'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono:    ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+      --transition: 150ms ease;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { font-size: 16px; }
+
+    body {
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      color: var(--color-text-primary);
+      background: var(--color-bg);
+      line-height: 1.5; /* GL-003 §0 — mandatory 1.5x for body */
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Layout ── */
+    #app {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      grid-template-rows: auto 1fr;
+      grid-template-areas:
+        "header header"
+        "sidebar main";
+      min-height: 100vh;
+    }
+
+    @media (max-width: 768px) {
+      #app {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+          "header"
+          "sidebar"
+          "main";
+      }
+    }
+
+    /* ── Header ── */
+    #app-header {
+      grid-area: header;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-sm) var(--space-lg);
+      background: var(--color-neutral-0);
+      border-bottom: 0.5pt solid var(--color-supporting-3);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    /* H1 — Montserrat 800, Garnet (GL-003 §3) */
+    #app-header h1 {
+      font-family: var(--font-heading);
+      font-size: var(--text-xl);
+      font-weight: 800;
+      color: var(--color-primary);
+      letter-spacing: -0.01em;
+    }
+
+    /* ── Sidebar ── */
+    #sidebar {
+      grid-area: sidebar;
+      background: var(--color-surface-sidebar);
+      border-right: 1px solid var(--color-border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      height: calc(100vh - 49px);
+      position: sticky;
+      top: 49px;
+    }
+
+    @media (max-width: 768px) {
+      #sidebar {
+        height: auto;
+        position: static;
+        border-right: none;
+        border-bottom: 1px solid var(--color-border);
+      }
+    }
+
+    #sidebar-top {
+      padding: var(--space-md);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    #story-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--space-sm);
+    }
+
+    .story-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: background var(--transition);
+      margin-bottom: 2px;
+    }
+
+    .story-item:hover { background: rgba(155,45,48,0.08); }
+
+    /* Active story item: Garnet background / Alabaster text (GL-003 §7c active) */
+    .story-item.active {
+      background: var(--color-primary);
+    }
+    .story-item.active .story-item-title {
+      color: var(--color-neutral-0);
+    }
+    .story-item.active .story-item-del {
+      color: rgba(249,247,242,0.7);
+    }
+
+    .story-item-title {
+      font-family: var(--font-body);
+      font-size: var(--text-sm);
+      font-weight: 400;
+      color: var(--color-text-primary);
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .story-item-del {
+      background: none;
+      border: none;
+      color: var(--color-supporting-1);
+      cursor: pointer;
+      padding: 2px var(--space-xs);
+      border-radius: var(--radius-sm);
+      font-size: var(--text-sm);
+      flex-shrink: 0;
+      transition: color var(--transition);
+    }
+    .story-item-del:hover { color: var(--color-danger); }
+
+    /* ── Main panel ── */
+    #main {
+      grid-area: main;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      padding: var(--space-lg);
+      gap: var(--space-lg);
+      background: var(--color-bg);
+    }
+
+    /* ── Cards — Alabaster bg, 24px radius (GL-003 §7a) ── */
+    .card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg);
+      box-shadow: 0 1px 3px rgba(42,31,26,0.06);
+    }
+
+    /* Card title — Inter 700, Deep Earth, uppercase (GL-003 §3 H4 style) */
+    .card-title {
+      font-family: var(--font-body);
+      font-size: var(--text-xs);
+      font-weight: 700;
+      color: var(--color-supporting-1);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: var(--space-md);
+    }
+
+    /* ── Form elements ── */
+    label {
+      display: block;
+      font-family: var(--font-body);
+      font-size: var(--text-sm);
+      font-weight: 700;
+      color: var(--color-neutral-5);
+      margin-bottom: var(--space-xs);
+    }
+
+    input[type="text"],
+    input[type="password"],
+    textarea,
+    select {
+      width: 100%;
+      background: var(--color-neutral-0);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      color: var(--color-text-primary);
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      padding: var(--space-sm);
+      transition: border-color var(--transition), box-shadow var(--transition);
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    input[type="text"]:focus,
+    input[type="password"]:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(155,45,48,0.15);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 160px;
+      line-height: 1.5;
+    }
+
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235E3A2B' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 36px;
+    }
+
+    /* ── Buttons — GL-003 §7c ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--radius-md);
+      border: none;
+      cursor: pointer;
+      font-family: var(--font-heading);
+      font-size: var(--text-sm);
+      font-weight: 700;
+      transition: background var(--transition), color var(--transition), opacity var(--transition);
+      white-space: nowrap;
+    }
+
+    .btn:focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 2px;
+    }
+
+    .btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    /* Primary: Garnet bg / Alabaster text */
+    .btn-primary {
+      background: var(--color-primary);
+      color: var(--color-neutral-0);
+    }
+    .btn-primary:not(:disabled):hover { background: var(--color-accent-hover); }
+    .btn-primary:not(:disabled):active { background: var(--color-accent-active); }
+
+    /* Secondary: Garnet outline / Garnet text / Alabaster bg */
+    .btn-secondary {
+      background: var(--color-neutral-0);
+      color: var(--color-primary);
+      border: 1.5px solid var(--color-primary);
+    }
+    .btn-secondary:not(:disabled):hover {
+      background: rgba(155,45,48,0.06);
+    }
+
+    .btn-danger {
+      background: var(--color-danger);
+      color: var(--color-neutral-0);
+    }
+    .btn-danger:not(:disabled):hover { opacity: 0.85; }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--color-supporting-1);
+      padding: var(--space-xs) var(--space-sm);
+      border: 1px solid transparent;
+    }
+    .btn-ghost:not(:disabled):hover {
+      background: rgba(155,45,48,0.06);
+      color: var(--color-primary);
+      border-color: var(--color-border);
+    }
+
+    .btn-group {
+      display: flex;
+      gap: var(--space-xs);
+      flex-wrap: wrap;
+    }
+
+    /* Toggle buttons: inactive = secondary style, active = primary style */
+    .btn-toggle {
+      background: var(--color-neutral-0);
+      color: var(--color-supporting-1);
+      border: 1.5px solid var(--color-supporting-3);
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-family: var(--font-body);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      transition: background var(--transition), color var(--transition), border-color var(--transition);
+    }
+    .btn-toggle:hover {
+      background: rgba(155,45,48,0.06);
+      color: var(--color-primary);
+      border-color: var(--color-primary);
+    }
+    .btn-toggle.active {
+      background: var(--color-primary);
+      color: var(--color-neutral-0);
+      border-color: var(--color-primary);
+    }
+    .btn-toggle:focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 2px;
+    }
+
+    /* ── Status / notices ── */
+    .notice {
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--radius-md);
+      font-size: var(--text-sm);
+      line-height: 1.5;
+    }
+    .notice-error   { background: rgba(192,57,43,0.08); color: var(--color-danger); border: 1px solid rgba(192,57,43,0.25); }
+    .notice-success { background: rgba(39,98,42,0.08); color: var(--color-success); border: 1px solid rgba(39,98,42,0.25); }
+    .notice-info    { background: rgba(94,58,43,0.06); color: var(--color-supporting-1); border: 1px solid var(--color-border); }
+
+    /* ── Loading spinner ── */
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--color-border);
+      border-top-color: var(--color-primary);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      flex-shrink: 0;
+    }
+
+    /* ── Form row ── */
+    .form-row {
+      margin-bottom: var(--space-md);
+    }
+    .form-row:last-child { margin-bottom: 0; }
+
+    .form-inline {
+      display: flex;
+      gap: var(--space-sm);
+      align-items: flex-end;
+      flex-wrap: wrap;
+    }
+    .form-inline > * { flex: 1; min-width: 120px; }
+    .form-inline > .btn { flex: 0; }
+
+    /* ── Section header with controls ── */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-sm);
+      flex-wrap: wrap;
+      margin-bottom: var(--space-md);
+    }
+
+    /* ── Translation display ── */
+    #translation-text {
+      font-family: var(--font-body);
+      font-size: var(--text-lg);
+      line-height: 1.75;
+      color: var(--color-neutral-5);
+      white-space: pre-wrap;
+      min-height: 80px;
+    }
+
+    #source-text-display {
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      line-height: 1.75;
+      color: var(--color-supporting-1);
+      white-space: pre-wrap;
+      min-height: 60px;
+    }
+
+    /* ── Player ── */
+    #player-card {
+      display: none;
+    }
+    #player-card.visible {
+      display: block;
+    }
+
+    #scrubber {
+      width: 100%;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--color-border);
+      outline: none;
+      cursor: pointer;
+      margin: var(--space-sm) 0;
+    }
+    #scrubber::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--color-primary);
+      cursor: pointer;
+    }
+    #scrubber::-moz-range-thumb {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--color-primary);
+      cursor: pointer;
+      border: none;
+    }
+    #scrubber:focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 2px;
+    }
+
+    .player-time {
+      display: flex;
+      justify-content: space-between;
+      font-size: var(--text-xs);
+      color: var(--color-supporting-1);
+      font-variant-numeric: tabular-nums;
+      font-family: var(--font-mono);
+    }
+
+    .player-controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-xs);
+      margin: var(--space-sm) 0;
+      flex-wrap: wrap;
+    }
+
+    #play-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--text-xl);
+      padding: 0;
+      background: var(--color-primary);
+      color: var(--color-neutral-0);
+      border: none;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background var(--transition);
+    }
+    #play-btn:hover { background: var(--color-accent-hover); }
+    #play-btn:focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 3px;
+    }
+
+    .skip-btn {
+      background: var(--color-neutral-0);
+      border: 1.5px solid var(--color-supporting-3);
+      color: var(--color-supporting-1);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      padding: 4px 8px;
+      transition: background var(--transition), border-color var(--transition), color var(--transition);
+    }
+    .skip-btn:hover {
+      background: rgba(155,45,48,0.06);
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+    }
+    .skip-btn:focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 2px;
+    }
+
+    /* ── Speed selector ── */
+    .speed-btn-group {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    /* ── Subtitles ── */
+    #subtitle-display {
+      font-family: var(--font-body);
+      font-size: var(--text-lg);
+      line-height: 1.75;
+      color: var(--color-neutral-5);
+      white-space: pre-wrap;
+      min-height: 60px;
+      margin-top: var(--space-md);
+      border-top: 1px solid var(--color-border);
+      padding-top: var(--space-md);
+    }
+    #subtitle-display.hidden { display: none; }
+
+    /* ── Gear icon ── */
+    .icon-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--color-supporting-1);
+      padding: var(--space-xs);
+      border-radius: var(--radius-sm);
+      font-size: var(--text-lg);
+      line-height: 1;
+      transition: color var(--transition), background var(--transition);
+      display: flex;
+      align-items: center;
+    }
+    .icon-btn:hover {
+      background: rgba(155,45,48,0.08);
+      color: var(--color-primary);
+    }
+    .icon-btn:focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 2px;
+    }
+
+    /* ── Modals ── */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(42,31,26,0.55);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-md);
+    }
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal {
+      background: #FFFFFF;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg);
+      width: 100%;
+      max-width: 560px;
+      max-height: 85vh;
+      overflow-y: auto;
+      box-shadow: 0 8px 32px rgba(42,31,26,0.15);
+    }
+
+    /* Modal H2 — Montserrat 700, Garnet (GL-003 §3 H3 style) */
+    .modal h2 {
+      font-family: var(--font-heading);
+      font-size: var(--text-xl);
+      font-weight: 700;
+      margin-bottom: var(--space-lg);
+      color: var(--color-primary);
+    }
+
+    .modal-footer {
+      display: flex;
+      gap: var(--space-sm);
+      justify-content: flex-end;
+      margin-top: var(--space-lg);
+      padding-top: var(--space-md);
+      border-top: 1px solid var(--color-border);
+      flex-wrap: wrap;
+    }
+
+    /* ── Settings field status indicator ── */
+    .field-status {
+      font-size: var(--text-xs);
+      color: var(--color-success);
+      font-weight: 600;
+      margin-top: 4px;
+      display: none;
+    }
+    .field-status.visible { display: block; }
+
+    /* ── Tense/person controls ── */
+    .controls-row {
+      display: flex;
+      gap: var(--space-md);
+      flex-wrap: wrap;
+      align-items: flex-end;
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+
+    /* Control group labels — Inter 700, Deep Earth uppercase (GL-003 §3) */
+    .control-group label {
+      font-family: var(--font-body);
+      font-size: var(--text-xs);
+      font-weight: 700;
+      color: var(--color-supporting-1);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 2px;
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--color-primary); }
+
+    /* ── Utility ── */
+    .hidden { display: none !important; }
+    .flex { display: flex; }
+    .gap-sm { gap: var(--space-sm); }
+    .mt-sm { margin-top: var(--space-sm); }
+    .mt-md { margin-top: var(--space-md); }
+    .mt-lg { margin-top: var(--space-lg); }
+
+    /* ── Rewrite modal text area ── */
+    #rewrite-text {
+      font-size: var(--text-base);
+      line-height: 1.5;
+      min-height: 200px;
+    }
+
+    /* ── Download row ── */
+    #download-row {
+      display: flex;
+      gap: var(--space-sm);
+      align-items: center;
+      margin-top: var(--space-md);
+      flex-wrap: wrap;
+    }
+
+    /* ── Empty state ── */
+    .empty-state {
+      text-align: center;
+      color: var(--color-supporting-1);
+      padding: var(--space-xl) var(--space-lg);
+      font-size: var(--text-sm);
+    }
+
+    /* ── Speed loading indicator ── */
+    #speed-loading {
+      display: none;
+      align-items: center;
+      gap: var(--space-xs);
+      font-size: var(--text-xs);
+      color: var(--color-supporting-1);
+    }
+    #speed-loading.visible {
+      display: flex;
+    }
+
+    /* ── Story heading — Montserrat 800, Garnet (GL-003 H1) ── */
+    #story-heading {
+      font-family: var(--font-heading);
+      font-size: var(--text-2xl);
+      font-weight: 800;
+      color: var(--color-primary);
+      letter-spacing: -0.01em;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Settings modal -->
+<div id="settings-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+  <div class="modal">
+    <h2 id="settings-title">Settings</h2>
+
+    <div class="form-row">
+      <label for="deepl-key">Azure Translator Key</label>
+      <input type="password" id="deepl-key" placeholder="Azure Translator key" autocomplete="off">
+      <div id="deepl-key-status" class="field-status">Key saved</div>
+    </div>
+
+    <div class="form-row">
+      <label for="azure-key">Azure Speech Key</label>
+      <input type="password" id="azure-key" placeholder="Azure Cognitive Services key" autocomplete="off">
+      <div id="azure-key-status" class="field-status">Key saved</div>
+    </div>
+
+    <div class="form-row">
+      <label for="azure-region">Azure Region</label>
+      <input type="text" id="azure-region" placeholder="eastus" value="eastus">
+    </div>
+
+    <div class="form-row">
+      <label for="default-lang">Default Language</label>
+      <select id="default-lang">
+        <option value="nl">Dutch</option>
+        <option value="es">Spanish</option>
+        <option value="fr">French</option>
+        <option value="pt">Portuguese</option>
+      </select>
+    </div>
+
+    <div class="form-row">
+      <label for="default-speed">Default Speed</label>
+      <select id="default-speed">
+        <option value="0.8">0.8</option>
+        <option value="0.85">0.85</option>
+        <option value="0.9" selected>0.9</option>
+        <option value="1.0">1.0</option>
+      </select>
+    </div>
+
+    <div class="form-row">
+      <label style="display:flex;align-items:center;gap:var(--space-sm);cursor:pointer;">
+        <input type="checkbox" id="auto-audio" style="width:auto;margin:0;">
+        Auto-generate audio after translation
+      </label>
+    </div>
+
+    <div id="settings-notice" style="margin-top:var(--space-md);"></div>
+
+    <div class="modal-footer">
+      <button class="btn btn-secondary" id="settings-cancel-btn">Cancel</button>
+      <button class="btn btn-primary" id="settings-save-btn">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- New story modal -->
+<div id="new-story-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="new-story-title">
+  <div class="modal">
+    <h2 id="new-story-title">New Story</h2>
+
+    <div class="form-row">
+      <label for="new-story-title-input">Title</label>
+      <input type="text" id="new-story-title-input" placeholder="Story title...">
+    </div>
+
+    <div class="form-row">
+      <label for="new-story-body">English Text</label>
+      <textarea id="new-story-body" placeholder="Paste your English text here..." style="min-height:280px;"></textarea>
+    </div>
+
+    <div id="new-story-notice" style="margin-top:var(--space-sm);"></div>
+
+    <div class="modal-footer">
+      <button class="btn btn-secondary" id="new-story-cancel-btn">Cancel</button>
+      <button class="btn btn-primary" id="new-story-save-btn">Save Story</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit story modal -->
+<div id="edit-story-modal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="edit-story-title">
+  <div class="modal">
+    <h2 id="edit-story-title">Edit Story</h2>
+
+    <div class="form-row">
+      <label for="edit-story-title-input">Title</label>
+      <input type="text" id="edit-story-title-input" placeholder="Story title...">
+    </div>
+
+    <div class="form-row">
+      <label for="edit-story-body">English Text</label>
+      <textarea id="edit-story-body" placeholder="English text..." style="min-height:280px;"></textarea>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-secondary" id="edit-story-cancel-btn">Cancel</button>
+      <button class="btn btn-primary" id="edit-story-save-btn">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- App shell -->
+<div id="app">
+  <!-- Header -->
+  <header id="app-header" role="banner">
+    <h1>Language <span>Practice</span></h1>
+    <button class="icon-btn" id="settings-open-btn" aria-label="Open settings">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="3"></circle>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+      </svg>
+    </button>
+  </header>
+
+  <!-- Sidebar: library -->
+  <nav id="sidebar" aria-label="Story library">
+    <div id="sidebar-top">
+      <button class="btn btn-primary" id="new-story-btn" style="width:100%;">+ New Story</button>
+    </div>
+    <div id="story-list" role="list">
+      <div class="empty-state" id="library-empty">No stories yet. Add one above.</div>
+    </div>
+  </nav>
+
+  <!-- Main: editor + player -->
+  <main id="main" aria-label="Practice workspace">
+
+    <!-- No story selected -->
+    <div id="no-story-state" class="empty-state" style="margin:auto;">
+      <p style="font-size:var(--text-lg);font-weight:600;color:var(--color-text-secondary);margin-bottom:var(--space-sm);">Select a story to begin</p>
+      <p style="font-size:var(--text-sm);">Choose from your library or add a new story.</p>
+    </div>
+
+    <!-- Story workspace (hidden until story selected) -->
+    <div id="story-workspace" class="hidden">
+
+      <!-- Story header -->
+      <div class="section-header">
+        <div>
+          <h2 id="story-heading"></h2>
+        </div>
+        <div class="btn-group">
+          <button class="btn btn-secondary" id="edit-story-btn">Edit</button>
+        </div>
+      </div>
+
+      <!-- Source text (collapsible display) -->
+      <div class="card">
+        <div class="section-header">
+          <p class="card-title" style="margin:0;">English Source</p>
+          <button class="btn btn-ghost" id="toggle-source-btn" aria-expanded="true">Hide</button>
+        </div>
+        <div id="source-panel">
+          <div id="source-text-display"></div>
+        </div>
+      </div>
+
+      <!-- Language + translate controls -->
+      <div class="card">
+        <p class="card-title">Translate</p>
+
+<div class="form-inline" style="margin-bottom:var(--space-md);">
+          <div class="form-row" style="margin:0;flex:1;">
+            <label for="lang-select">Language</label>
+            <select id="lang-select">
+              <option value="nl">Dutch (Netherlands)</option>
+              <option value="es">Spanish (Castilian)</option>
+              <option value="fr">French</option>
+              <option value="pt">Portuguese</option>
+            </select>
+          </div>
+          <div style="align-self:flex-end;">
+            <button class="btn btn-primary" id="translate-btn">Translate</button>
+          </div>
+        </div>
+
+        <div id="translate-status" style="margin-bottom:var(--space-sm);"></div>
+
+        <!-- Translation output -->
+        <div id="translation-output" class="hidden">
+          <div style="border-top:1px solid var(--color-border);padding-top:var(--space-md);">
+            <div id="translation-text"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Audio generation -->
+      <div id="audio-card" class="card hidden">
+        <p class="card-title">Audio</p>
+        <div class="flex gap-sm" style="align-items:center;flex-wrap:wrap;">
+          <button class="btn btn-primary" id="generate-audio-btn">Generate Audio</button>
+          <div id="audio-status"></div>
+        </div>
+      </div>
+
+      <!-- Player -->
+      <div id="player-card" class="card">
+        <p class="card-title">Player</p>
+
+        <!-- Scrubber -->
+        <input type="range" id="scrubber" min="0" max="100" value="0" step="0.1" aria-label="Playback position">
+        <div class="player-time">
+          <span id="time-current">0:00</span>
+          <span id="time-total">0:00</span>
+        </div>
+
+        <!-- Main controls -->
+        <div class="player-controls">
+          <!-- Skip back -->
+          <button class="skip-btn" data-skip="-30" aria-label="Skip back 30 seconds">-30s</button>
+          <button class="skip-btn" data-skip="-15" aria-label="Skip back 15 seconds">-15s</button>
+          <button class="skip-btn" data-skip="-10" aria-label="Skip back 10 seconds">-10s</button>
+          <button class="skip-btn" data-skip="-5" aria-label="Skip back 5 seconds">-5s</button>
+
+          <!-- Play/pause -->
+          <button id="play-btn" aria-label="Play">&#9654;</button>
+
+          <!-- Skip forward -->
+          <button class="skip-btn" data-skip="5" aria-label="Skip forward 5 seconds">+5s</button>
+          <button class="skip-btn" data-skip="10" aria-label="Skip forward 10 seconds">+10s</button>
+          <button class="skip-btn" data-skip="15" aria-label="Skip forward 15 seconds">+15s</button>
+          <button class="skip-btn" data-skip="30" aria-label="Skip forward 30 seconds">+30s</button>
+        </div>
+
+        <!-- Speed -->
+        <div style="display:flex;align-items:center;gap:var(--space-sm);flex-wrap:wrap;margin-bottom:var(--space-md);">
+          <span style="font-size:var(--text-xs);color:var(--color-text-muted);text-transform:uppercase;letter-spacing:0.06em;">Speed</span>
+          <div class="speed-btn-group" role="group" aria-label="Playback speed">
+            <button class="btn-toggle" data-speed="0.8">0.8</button>
+            <button class="btn-toggle" data-speed="0.85">0.85</button>
+            <button class="btn-toggle active" data-speed="0.9">0.9</button>
+            <button class="btn-toggle" data-speed="1.0">1.0</button>
+          </div>
+          <div id="speed-loading" aria-live="polite">
+            <div class="spinner"></div>
+            <span>Regenerating...</span>
+          </div>
+        </div>
+
+        <!-- Subtitles -->
+        <div style="display:flex;align-items:center;gap:var(--space-sm);flex-wrap:wrap;margin-bottom:var(--space-md);">
+          <span style="font-size:var(--text-xs);color:var(--color-text-muted);text-transform:uppercase;letter-spacing:0.06em;">Subtitles</span>
+          <div class="btn-group" role="group" aria-label="Subtitle display">
+            <button class="btn-toggle" data-subtitle="none">None</button>
+            <button class="btn-toggle active" data-subtitle="target">Translation</button>
+            <button class="btn-toggle" data-subtitle="source">English</button>
+            <button class="btn-toggle" data-subtitle="both">Both</button>
+          </div>
+        </div>
+
+        <!-- Subtitle text -->
+        <div id="subtitle-display" aria-live="polite"></div>
+
+        <!-- Download -->
+        <div id="download-row">
+          <button class="btn btn-secondary" id="download-btn">Download MP3</button>
+        </div>
+      </div>
+
+    </div><!-- /story-workspace -->
+  </main>
+</div><!-- /app -->
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════════════ */
+const state = {
+  stories: [],           // [{id, title, body}]
+  currentStoryId: null,
+  lang: 'nl',
+  speed: 0.9,
+  subtitleMode: 'target', // none | target | source | both
+  translatedText: '',
+  audioBlob: null,
+  audioUrl: null,
+  audioElement: null,
+  isPlaying: false,
+};
+
+/* ═══════════════════════════════════════════════════════
+   CONSTANTS
+═══════════════════════════════════════════════════════ */
+const AZURE_TRANS_LANG = {
+  nl: 'nl',
+  es: 'es',
+  fr: 'fr',
+  pt: 'pt',
+};
+
+const VOICE_MAP = {
+  nl: 'nl-NL-MaartenNeural',
+  es: 'es-ES-AlvaroNeural',
+  fr: 'fr-FR-HenriNeural',
+  pt: 'pt-PT-DuarteNeural',
+};
+
+const LANG_LOCALE = {
+  nl: 'nl-NL',
+  es: 'es-ES',
+  fr: 'fr-FR',
+  pt: 'pt-PT',
+};
+
+const STARTER_STORY_TITLE = 'About Me';
+const STARTER_STORY_BODY = `My name is Peter Gales. I was born in Port of Spain, the capital of Trinidad and Tobago, in 1962. Trinidad is a small island in the southern Caribbean, seven miles from the coast of Venezuela.
+
+My father was Dutch. His name was Pieter Galesloot, though he was known here as Peter Gales — which is a good thing, because I still can't pronounce Galesloot properly. He left Trinidad before I was born, but my mother never mentioned him, so I never knew there was anyone to miss. She never gave any sign that there was anything wrong with her situation or mine. My stepfather Geddes came into my life when I was about nine, and he became my dad.
+
+But I grew up looking very different from everyone around me. My family was either some shade of brown or Chinese. I had blonde hair, green eyes, and very fair skin — and I became quite curious about that. As I got older I asked my mom about it and that's how I came to know that my biological father was dutch. To save herself having to tell a story she didn't want to tell, she told me he was dead. Case closed. But Pieter came back to Trinidad to meet me when I was sixteen years old. Awkward, especially for him, but cool at the same time.
+
+The following year — around 1980 — I traveled to the Netherlands for the first time. I met my Dutch brother Walter and my Dutch sister Nicolette, and their mother Thérèse, who welcomed me as though I were her own. It was a gift I had not expected. I had a father, a brother, a sister, and a second family, all at once.
+
+While I lived in the Netherlands, I would often spend weekends at their home in Best, near Eindhoven. I grew close to both Walter and Nicolette. Nicolette is a lovely woman who is very sensitive, warm, and caring. She often calls to find out how I'm doing, and we often have very interesting conversations about our lives and the lives of our parents. She married Hans Driessen and together they have a son, Thomas, who recently married Lisa Hu. They had a son of their own last year. Walter has a wonderful sense of humour. He married Evelien Brouwers, who is now a university professor, and they have two children, Pieter and Merel, who are both at university now.
+
+I studied at York university in Canada from 1981 to 1985. After graduating, my father gave me a Eurail pass as a gift, and I spent three months traveling through Western Europe, using their family home in Best as my base. It was one of the most formative experiences of my life.
+
+I returned to Trinidad and worked in our family restaurant business for about two and a half years before going to Cornell University in the United States to do my MBA. I graduated from Cornell in 1990.
+
+My first job after Cornell was at a company called Norelco, which I later discovered was owned by a Dutch company called Philips. That job brought the Netherlands back into my life. I traveled there every year on business, and every trip drew me a bit closer to my Dutch family.
+
+In 1996, I moved to Groningen to work for a division of Philips called Domestic Appliances and Personal Care. I lived in Groningen until 2002 — six years that gave me a deep connection to the country, and its people. I made many dutch friends, and have found that the dutch love of life very similar to Trinidadian culture.
+
+In 2002, I moved to London to manage a business relationship between Philips and Time Warner AOL. That contract was cancelled, and I found myself leaving London sooner than I had planned. I returned to the United States in 2003. I lived in Manhattan until 2008, then in the Bronx, where I shared a home with my brother Steve until 2012. Steve passed away last year, and I still carry him with me.
+
+In 2012, I came home to Trinidad. My stepfather had died and I did not want to leave my mother alone. She is now ninety-six years old and lives in an elderly care home nearby.
+
+Back in Trinidad, I have worked as a corporate trainer and public speaker, and briefly taught at a local college. These days I am spending my time learning how to integrate AI into my life and researching the implications of artificial intelligence for the future of mankind — specifically for the future of work and human connection.`;
+
+/* ═══════════════════════════════════════════════════════
+   INDEXEDDB
+═══════════════════════════════════════════════════════ */
+let db;
+
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open('dutch-practice', 1);
+    req.onupgradeneeded = (e) => {
+      const d = e.target.result;
+      if (!d.objectStoreNames.contains('stories')) {
+        d.createObjectStore('stories', { keyPath: 'id' });
+      }
+    };
+    req.onsuccess = (e) => { db = e.target.result; resolve(db); };
+    req.onerror = (e) => reject(e.target.error);
+  });
+}
+
+function dbGetAll(store) {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(store, 'readonly');
+    const req = tx.objectStore(store).getAll();
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+function dbPut(store, obj) {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(store, 'readwrite');
+    const req = tx.objectStore(store).put(obj);
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+function dbDelete(store, id) {
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(store, 'readwrite');
+    const req = tx.objectStore(store).delete(id);
+    req.onsuccess = () => resolve();
+    req.onerror = () => reject(req.error);
+  });
+}
+
+/* ═══════════════════════════════════════════════════════
+   LOCAL STORAGE HELPERS
+═══════════════════════════════════════════════════════ */
+function loadSettings() {
+  return {
+    deeplKey:    localStorage.getItem('azure_trans_key')    || '',
+    azureKey:    localStorage.getItem('azure_key')    || '',
+    azureRegion: localStorage.getItem('azure_region') || 'eastus',
+    defaultLang: localStorage.getItem('default_lang') || 'nl',
+    defaultSpeed:parseFloat(localStorage.getItem('default_speed') || '0.9'),
+    autoAudio:   localStorage.getItem('auto_audio') === '1',
+  };
+}
+
+function saveSettings(s) {
+  localStorage.setItem('azure_trans_key',     s.deeplKey);
+  localStorage.setItem('azure_key',     s.azureKey);
+  localStorage.setItem('azure_region',  s.azureRegion);
+  localStorage.setItem('default_lang',  s.defaultLang);
+  localStorage.setItem('default_speed', s.defaultSpeed);
+  localStorage.setItem('auto_audio',    s.autoAudio ? '1' : '0');
+}
+
+/* ═══════════════════════════════════════════════════════
+   DOM REFERENCES
+═══════════════════════════════════════════════════════ */
+const $ = (id) => document.getElementById(id);
+
+const els = {
+  settingsModal:        $('settings-modal'),
+  settingsOpenBtn:      $('settings-open-btn'),
+  settingsCancelBtn:    $('settings-cancel-btn'),
+  settingsSaveBtn:      $('settings-save-btn'),
+  settingsNotice:       $('settings-notice'),
+  deeplKey:             $('deepl-key'),
+  azureKey:             $('azure-key'),
+  azureRegion:          $('azure-region'),
+  defaultLang:          $('default-lang'),
+  defaultSpeed:         $('default-speed'),
+  autoAudio:            $('auto-audio'),
+
+  newStoryModal:        $('new-story-modal'),
+  newStoryBtn:          $('new-story-btn'),
+  newStoryCancelBtn:    $('new-story-cancel-btn'),
+  newStorySaveBtn:      $('new-story-save-btn'),
+  newStoryTitleInput:   $('new-story-title-input'),
+  newStoryBody:         $('new-story-body'),
+  newStoryNotice:       $('new-story-notice'),
+
+  editStoryModal:       $('edit-story-modal'),
+  editStoryCancelBtn:   $('edit-story-cancel-btn'),
+  editStorySaveBtn:     $('edit-story-save-btn'),
+  editStoryTitleInput:  $('edit-story-title-input'),
+  editStoryBody:        $('edit-story-body'),
+  editStoryBtn:         $('edit-story-btn'),
+
+  storyList:            $('story-list'),
+  libraryEmpty:         $('library-empty'),
+  noStoryState:         $('no-story-state'),
+  storyWorkspace:       $('story-workspace'),
+  storyHeading:         $('story-heading'),
+
+  sourcePanel:          $('source-panel'),
+  sourceTextDisplay:    $('source-text-display'),
+  toggleSourceBtn:      $('toggle-source-btn'),
+
+  langSelect:           $('lang-select'),
+  translateBtn:         $('translate-btn'),
+  translateStatus:      $('translate-status'),
+  translationOutput:    $('translation-output'),
+  translationText:      $('translation-text'),
+
+  audioCard:            $('audio-card'),
+  generateAudioBtn:     $('generate-audio-btn'),
+  audioStatus:          $('audio-status'),
+
+  playerCard:           $('player-card'),
+  scrubber:             $('scrubber'),
+  timeCurrent:          $('time-current'),
+  timeTotal:            $('time-total'),
+  playBtn:              $('play-btn'),
+  speedLoading:         $('speed-loading'),
+  subtitleDisplay:      $('subtitle-display'),
+  downloadBtn:          $('download-btn'),
+  downloadRow:          $('download-row'),
+};
+
+/* ═══════════════════════════════════════════════════════
+   UTILS
+═══════════════════════════════════════════════════════ */
+function uid() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2);
+}
+
+function fmtTime(sec) {
+  if (!isFinite(sec)) return '0:00';
+  const m = Math.floor(sec / 60);
+  const s = Math.floor(sec % 60);
+  return `${m}:${s.toString().padStart(2, '0')}`;
+}
+
+function showNotice(el, msg, type = 'error') {
+  el.innerHTML = `<div class="notice notice-${type}">${escHtml(msg)}</div>`;
+}
+
+function clearNotice(el) {
+  el.innerHTML = '';
+}
+
+function escHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function setLoading(el, loading, defaultText) {
+  if (loading) {
+    el.disabled = true;
+    el.dataset.origText = el.textContent;
+    el.innerHTML = '<div class="spinner"></div><span>' + (defaultText || 'Working...') + '</span>';
+  } else {
+    el.disabled = false;
+    el.innerHTML = el.dataset.origText || defaultText || 'Done';
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   SETTINGS
+═══════════════════════════════════════════════════════ */
+function openSettings() {
+  const s = loadSettings();
+  const MASK = '••••••••••••';
+
+  if (s.deeplKey) {
+    els.deeplKey.value = MASK;
+    els.deeplKey.dataset.masked = '1';
+  } else {
+    els.deeplKey.value = '';
+    delete els.deeplKey.dataset.masked;
+  }
+
+  if (s.azureKey) {
+    els.azureKey.value = MASK;
+    els.azureKey.dataset.masked = '1';
+  } else {
+    els.azureKey.value = '';
+    delete els.azureKey.dataset.masked;
+  }
+
+  const deeplStatus = document.getElementById('deepl-key-status');
+  const azureStatus = document.getElementById('azure-key-status');
+  if (deeplStatus) deeplStatus.classList.toggle('visible', !!s.deeplKey);
+  if (azureStatus) azureStatus.classList.toggle('visible',  !!s.azureKey);
+
+  els.azureRegion.value  = s.azureRegion;
+  els.defaultLang.value  = s.defaultLang;
+  els.defaultSpeed.value = String(s.defaultSpeed);
+  els.autoAudio.checked  = s.autoAudio;
+  clearNotice(els.settingsNotice);
+  openModal(els.settingsModal);
+  els.deeplKey.focus();
+}
+
+// Clear masked value on focus so the user can type a new key
+function setupMaskClear(inputEl) {
+  inputEl.addEventListener('focus', () => {
+    if (inputEl.dataset.masked === '1') {
+      inputEl.value = '';
+      delete inputEl.dataset.masked;
+    }
+  });
+}
+
+function closeSettings() {
+  closeModal(els.settingsModal);
+}
+
+function saveSettingsUI() {
+  const existing = loadSettings();
+  const MASK = '••••••••••••';
+
+  const deeplVal = els.deeplKey.value.trim();
+  const azureVal = els.azureKey.value.trim();
+
+  const s = {
+    deeplKey:     (deeplVal === MASK || deeplVal === '') ? existing.deeplKey : deeplVal,
+    azureKey:     (azureVal === MASK || azureVal === '') ? existing.azureKey : azureVal,
+    azureRegion:  els.azureRegion.value.trim() || 'eastus',
+    defaultLang:  els.defaultLang.value,
+    defaultSpeed: parseFloat(els.defaultSpeed.value),
+    autoAudio:    els.autoAudio.checked,
+  };
+  saveSettings(s);
+  showNotice(els.settingsNotice, 'Settings saved.', 'success');
+  setTimeout(closeSettings, 800);
+}
+
+/* ═══════════════════════════════════════════════════════
+   MODAL HELPERS
+═══════════════════════════════════════════════════════ */
+function openModal(modal) {
+  modal.classList.add('open');
+  modal.addEventListener('keydown', trapFocus);
+}
+
+function closeModal(modal) {
+  modal.classList.remove('open');
+  modal.removeEventListener('keydown', trapFocus);
+}
+
+function trapFocus(e) {
+  if (e.key !== 'Tab') return;
+  const focusable = [...e.currentTarget.querySelectorAll(
+    'button, input, textarea, select, [tabindex]:not([tabindex="-1"])'
+  )].filter(el => !el.disabled);
+  if (!focusable.length) return;
+  const first = focusable[0];
+  const last  = focusable[focusable.length - 1];
+  if (e.shiftKey) {
+    if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+  } else {
+    if (document.activeElement === last)  { e.preventDefault(); first.focus(); }
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   STORY LIBRARY
+═══════════════════════════════════════════════════════ */
+async function loadStories() {
+  state.stories = await dbGetAll('stories');
+  state.stories.sort((a, b) => a.title.localeCompare(b.title));
+  renderLibrary();
+}
+
+function renderLibrary() {
+  const list = els.storyList;
+  // Remove existing story items (not the empty notice)
+  [...list.querySelectorAll('.story-item')].forEach(el => el.remove());
+
+  if (state.stories.length === 0) {
+    els.libraryEmpty.style.display = '';
+    return;
+  }
+  els.libraryEmpty.style.display = 'none';
+
+  state.stories.forEach(story => {
+    const item = document.createElement('div');
+    item.className = 'story-item' + (story.id === state.currentStoryId ? ' active' : '');
+    item.setAttribute('role', 'listitem');
+    item.dataset.id = story.id;
+
+    const title = document.createElement('span');
+    title.className = 'story-item-title';
+    title.textContent = story.title;
+
+    const del = document.createElement('button');
+    del.className = 'story-item-del';
+    del.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>`;
+    del.setAttribute('aria-label', `Delete story: ${story.title}`);
+    del.addEventListener('click', (e) => {
+      e.stopPropagation();
+      deleteStory(story.id);
+    });
+
+    item.appendChild(title);
+    item.appendChild(del);
+    item.addEventListener('click', () => selectStory(story.id));
+    list.appendChild(item);
+  });
+}
+
+function selectStory(id) {
+  state.currentStoryId = id;
+  state.translatedText = '';
+  state.audioBlob = null;
+  state.audioUrl = null;
+  resetPlayer();
+
+  const story = state.stories.find(s => s.id === id);
+  if (!story) return;
+
+  els.storyHeading.textContent = story.title;
+  els.sourceTextDisplay.textContent = story.body;
+  clearNotice(els.translateStatus);
+  clearNotice(els.audioStatus);
+
+  // Restore saved translation — IndexedDB first, localStorage fallback
+  const saved = story.translations?.[state.lang]
+             || localStorage.getItem(`tx_${story.id}_${state.lang}`);
+  if (saved) {
+    state.translatedText = saved;
+    displayTranslation(saved);
+
+    // Restore saved audio if available
+    const savedAudio = story.audio?.[state.lang];
+    if (savedAudio?.blob) {
+      state.audioBlob = savedAudio.blob;
+      if (state.audioUrl) URL.revokeObjectURL(state.audioUrl);
+      state.audioUrl = URL.createObjectURL(savedAudio.blob);
+      state.speed = savedAudio.speed;
+      // Sync speed buttons
+      document.querySelectorAll('.btn-toggle[data-speed]').forEach(btn => {
+        const match = parseFloat(btn.dataset.speed) === savedAudio.speed;
+        btn.classList.toggle('active', match);
+        btn.setAttribute('aria-pressed', match ? 'true' : 'false');
+      });
+      mountAudio(state.audioUrl);
+      showNotice(els.audioStatus, 'Audio ready.', 'success');
+    }
+  } else {
+    els.translationText.textContent = '';
+    els.translationOutput.classList.add('hidden');
+    els.audioCard.classList.add('hidden');
+    els.playerCard.classList.remove('visible');
+  }
+
+  els.noStoryState.classList.add('hidden');
+  els.storyWorkspace.classList.remove('hidden');
+  renderLibrary();
+}
+
+async function saveNewStory() {
+  const title = els.newStoryTitleInput.value.trim();
+  const body  = els.newStoryBody.value.trim();
+  if (!title) { showNotice(els.newStoryNotice, 'Please enter a title.'); return; }
+  if (!body)  { showNotice(els.newStoryNotice, 'Please enter some text.'); return; }
+
+  const story = { id: uid(), title, body };
+  await dbPut('stories', story);
+  state.stories.push(story);
+  state.stories.sort((a, b) => a.title.localeCompare(b.title));
+  renderLibrary();
+  closeModal(els.newStoryModal);
+  els.newStoryTitleInput.value = '';
+  els.newStoryBody.value = '';
+  clearNotice(els.newStoryNotice);
+  selectStory(story.id);
+}
+
+function openEditStory() {
+  const story = state.stories.find(s => s.id === state.currentStoryId);
+  if (!story) return;
+  els.editStoryTitleInput.value = story.title;
+  els.editStoryBody.value = story.body;
+  openModal(els.editStoryModal);
+  els.editStoryTitleInput.focus();
+}
+
+async function saveEditStory() {
+  const story = state.stories.find(s => s.id === state.currentStoryId);
+  if (!story) return;
+  const title = els.editStoryTitleInput.value.trim();
+  const body  = els.editStoryBody.value.trim();
+  if (!title) { alert('Title cannot be empty.'); return; }
+  if (!body)  { alert('Body cannot be empty.'); return; }
+
+  story.title = title;
+  story.body  = body;
+  await dbPut('stories', story);
+  state.stories.sort((a, b) => a.title.localeCompare(b.title));
+  els.storyHeading.textContent = title;
+  els.sourceTextDisplay.textContent = body;
+  // Clear any existing translation (source changed)
+  state.translatedText = '';
+  els.translationText.textContent = '';
+  els.translationOutput.classList.add('hidden');
+  els.audioCard.classList.add('hidden');
+  els.playerCard.classList.remove('visible');
+  resetPlayer();
+  renderLibrary();
+  closeModal(els.editStoryModal);
+}
+
+async function deleteStory(id) {
+  if (!confirm('Delete this story?')) return;
+  await dbDelete('stories', id);
+  state.stories = state.stories.filter(s => s.id !== id);
+  if (state.currentStoryId === id) {
+    state.currentStoryId = null;
+    els.storyWorkspace.classList.add('hidden');
+    els.noStoryState.classList.remove('hidden');
+    resetPlayer();
+  }
+  renderLibrary();
+}
+
+
+/* ═══════════════════════════════════════════════════════
+   DEEPL TRANSLATION
+═══════════════════════════════════════════════════════ */
+async function handleTranslate() {
+  const story = state.stories.find(s => s.id === state.currentStoryId);
+  if (!story) return;
+
+  const { deeplKey: transKey } = loadSettings();
+  if (!transKey) {
+    showNotice(els.translateStatus, 'Azure Translator key not set. Open settings to add it.');
+    return;
+  }
+
+  setLoading(els.translateBtn, true, 'Translating...');
+  clearNotice(els.translateStatus);
+  try {
+    const targetLang = AZURE_TRANS_LANG[state.lang] || 'nl';
+    const resp = await fetch(
+      `https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&from=en&to=${targetLang}`,
+      {
+        method: 'POST',
+        headers: {
+          'Ocp-Apim-Subscription-Key': transKey,
+          'Ocp-Apim-Subscription-Region': 'eastus',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify([{ text: story.body }]),
+      }
+    );
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      throw new Error(err.error?.message || `Translator error ${resp.status}`);
+    }
+    const data = await resp.json();
+    const result = data[0]?.translations?.[0]?.text || '';
+    state.translatedText = result;
+
+    // Persist translation — both IndexedDB and localStorage
+    if (!story.translations) story.translations = {};
+    story.translations[state.lang] = result;
+    await dbPut('stories', story);
+    localStorage.setItem(`tx_${story.id}_${state.lang}`, result);
+
+    displayTranslation(result);
+  } catch (e) {
+    showNotice(els.translateStatus, e.message);
+  } finally {
+    setLoading(els.translateBtn, false, 'Translate');
+  }
+}
+
+function displayTranslation(text) {
+  els.translationText.textContent = text;
+  els.translationOutput.classList.remove('hidden');
+
+  // Show audio card
+  els.audioCard.classList.remove('hidden');
+  clearNotice(els.audioStatus);
+
+  // Auto-generate if enabled
+  const { autoAudio } = loadSettings();
+  if (autoAudio) {
+    generateAudio();
+  }
+
+  updateSubtitles();
+}
+
+/* ═══════════════════════════════════════════════════════
+   AZURE TTS
+═══════════════════════════════════════════════════════ */
+// Dutch proper nouns — IPA phoneme corrections for MaartenNeural
+const NL_PHONEMES = [
+  { word: 'Galesloot', ipa: 'ɣaːləsloːt' },
+  { word: 'Gales',     ipa: 'ɣaːləs' },
+];
+
+function escSsml(str) {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+
+function applyDutchPhonemes(text) {
+  // Escape first, then wrap known words in phoneme tags
+  // (phoneme tags are supported by standard neural voices like MaartenNeural)
+  let result = escSsml(text);
+  for (const { word, ipa } of NL_PHONEMES) {
+    const escaped = escSsml(word);
+    result = result.replace(
+      new RegExp(escaped, 'g'),
+      `<phoneme alphabet="ipa" ph="${ipa}">${escaped}</phoneme>`
+    );
+  }
+  return result;
+}
+
+function buildSSML(text, lang, speed) {
+  const voice  = VOICE_MAP[lang];
+  const locale = LANG_LOCALE[lang];
+  const content = lang === 'nl' ? applyDutchPhonemes(text) : escSsml(text);
+  const rateAttr = speed !== 1.0 ? ` rate="${speed}"` : '';
+  const inner = rateAttr ? `<prosody${rateAttr}>${content}</prosody>` : content;
+  return `<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="${locale}">
+  <voice name="${voice}">${inner}</voice>
+</speak>`;
+}
+
+async function callAzureTTS(ssml) {
+  const { azureKey, azureRegion } = loadSettings();
+  if (!azureKey) throw new Error('Azure Speech key not set. Open settings to add it.');
+  const region = azureRegion || 'eastus';
+  const url = `https://${region}.tts.speech.microsoft.com/cognitiveservices/v1`;
+
+  const resp = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Ocp-Apim-Subscription-Key': azureKey,
+      'Content-Type': 'application/ssml+xml',
+      'X-Microsoft-OutputFormat': 'audio-16khz-128kbitrate-mono-mp3',
+    },
+    body: ssml,
+  });
+
+  if (!resp.ok) {
+    const text = await resp.text().catch(() => '');
+    throw new Error(`Azure TTS error ${resp.status}: ${text.slice(0, 200)}`);
+  }
+  return await resp.blob();
+}
+
+async function generateAudio(speed) {
+  if (!state.translatedText) return;
+
+  const spd = speed !== undefined ? speed : state.speed;
+  const ssml = buildSSML(state.translatedText, state.lang, spd);
+
+  setLoading(els.generateAudioBtn, true, 'Generating...');
+  clearNotice(els.audioStatus);
+  try {
+    const blob = await callAzureTTS(ssml);
+    state.audioBlob = blob;
+    if (state.audioUrl) URL.revokeObjectURL(state.audioUrl);
+    state.audioUrl = URL.createObjectURL(blob);
+    mountAudio(state.audioUrl);
+
+    // Persist audio blob to IndexedDB
+    const story = state.stories.find(s => s.id === state.currentStoryId);
+    if (story) {
+      if (!story.audio) story.audio = {};
+      story.audio[state.lang] = { blob, speed: spd };
+      await dbPut('stories', story);
+    }
+    showNotice(els.audioStatus, 'Audio ready.', 'success');
+  } catch (e) {
+    showNotice(els.audioStatus, e.message);
+  } finally {
+    setLoading(els.generateAudioBtn, false, 'Generate Audio');
+  }
+}
+
+async function regenerateAtSpeed(speed) {
+  if (!state.translatedText) return;
+  els.speedLoading.classList.add('visible');
+  try {
+    const spd = parseFloat(speed);
+    const ssml = buildSSML(state.translatedText, state.lang, spd);
+    const blob = await callAzureTTS(ssml);
+    state.audioBlob = blob;
+    const wasPlaying = state.isPlaying;
+    const currentTime = state.audioElement ? state.audioElement.currentTime : 0;
+    if (state.audioUrl) URL.revokeObjectURL(state.audioUrl);
+    state.audioUrl = URL.createObjectURL(blob);
+    mountAudio(state.audioUrl, currentTime, wasPlaying);
+    state.speed = spd;
+
+    // Persist updated audio
+    const story = state.stories.find(s => s.id === state.currentStoryId);
+    if (story) {
+      if (!story.audio) story.audio = {};
+      story.audio[state.lang] = { blob, speed: spd };
+      await dbPut('stories', story);
+    }
+  } catch (e) {
+    showNotice(els.audioStatus, `Speed change failed: ${e.message}`);
+  } finally {
+    els.speedLoading.classList.remove('visible');
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   PLAYER
+═══════════════════════════════════════════════════════ */
+function mountAudio(url, seekTo = 0, autoplay = false) {
+  if (state.audioElement) {
+    state.audioElement.pause();
+    state.audioElement.src = '';
+  }
+  const audio = new Audio(url);
+  state.audioElement = audio;
+  state.isPlaying = false;
+
+  audio.addEventListener('loadedmetadata', () => {
+    els.timeTotal.textContent = fmtTime(audio.duration);
+    els.scrubber.max = audio.duration;
+    if (seekTo > 0) audio.currentTime = Math.min(seekTo, audio.duration);
+    if (autoplay) { audio.play(); state.isPlaying = true; updatePlayBtn(); }
+  });
+
+  audio.addEventListener('timeupdate', () => {
+    els.timeCurrent.textContent = fmtTime(audio.currentTime);
+    els.scrubber.value = audio.currentTime;
+    renderSubtitle();
+  });
+
+  audio.addEventListener('ended', () => {
+    state.isPlaying = false;
+    updatePlayBtn();
+  });
+
+  audio.addEventListener('error', () => {
+    showNotice(els.audioStatus, 'Audio playback error.');
+  });
+
+  els.playerCard.classList.add('visible');
+  updateSubtitles();
+}
+
+function resetPlayer() {
+  if (state.audioElement) {
+    state.audioElement.pause();
+    state.audioElement.src = '';
+    state.audioElement = null;
+  }
+  state.isPlaying = false;
+  els.scrubber.value = 0;
+  els.timeCurrent.textContent = '0:00';
+  els.timeTotal.textContent   = '0:00';
+  els.playerCard.classList.remove('visible');
+  updatePlayBtn();
+}
+
+function updatePlayBtn() {
+  els.playBtn.setAttribute('aria-label', state.isPlaying ? 'Pause' : 'Play');
+  els.playBtn.innerHTML = state.isPlaying ? '&#9646;&#9646;' : '&#9654;';
+}
+
+function togglePlay() {
+  if (!state.audioElement) return;
+  if (state.isPlaying) {
+    state.audioElement.pause();
+    state.isPlaying = false;
+  } else {
+    state.audioElement.play();
+    state.isPlaying = true;
+  }
+  updatePlayBtn();
+}
+
+function skip(secs) {
+  if (!state.audioElement) return;
+  const t = Math.max(0, Math.min(state.audioElement.currentTime + secs, state.audioElement.duration || 0));
+  state.audioElement.currentTime = t;
+}
+
+/* ═══════════════════════════════════════════════════════
+   SUBTITLES — sentence-level sync
+═══════════════════════════════════════════════════════ */
+function splitSentences(text) {
+  const parts = text.match(/[^.!?\n]+(?:[.!?]+(?:\s|$)|\n+|$)/g) || [text];
+  return parts.map(s => s.trim()).filter(Boolean);
+}
+
+function buildSentences() {
+  const story = state.stories.find(s => s.id === state.currentStoryId);
+  state.targetSentences = state.translatedText ? splitSentences(state.translatedText) : [];
+  state.sourceSentences = story ? splitSentences(story.body) : [];
+
+  // Build cumulative progress offsets weighted by character count
+  // so longer sentences occupy proportionally more of the timeline
+  function buildOffsets(sentences) {
+    const total = sentences.reduce((sum, s) => sum + s.length, 0) || 1;
+    const offsets = [];
+    let cum = 0;
+    for (const s of sentences) {
+      offsets.push(cum);
+      cum += s.length / total;
+    }
+    offsets.push(1);
+    return offsets;
+  }
+
+  state.targetOffsets = buildOffsets(state.targetSentences);
+  state.sourceOffsets = buildOffsets(state.sourceSentences);
+}
+
+function sentenceAtProgress(sentences, offsets, progress) {
+  if (!sentences.length) return '';
+  let idx = 0;
+  for (let i = 0; i < offsets.length - 1; i++) {
+    if (progress >= offsets[i]) idx = i;
+  }
+  return sentences[idx] || '';
+}
+
+function renderSubtitle() {
+  const mode = state.subtitleMode;
+  if (mode === 'none' || !state.audioElement) {
+    els.subtitleDisplay.classList.add('hidden');
+    return;
+  }
+
+  const duration = state.audioElement.duration || 0;
+  const current  = state.audioElement.currentTime || 0;
+  const progress = duration > 0 ? current / duration : 0;
+
+  els.subtitleDisplay.classList.remove('hidden');
+  els.subtitleDisplay.innerHTML = '';
+
+  if (mode === 'target' || mode === 'both') {
+    const text = sentenceAtProgress(state.targetSentences, state.targetOffsets, progress);
+    if (text) {
+      const p = document.createElement('p');
+      p.style.cssText = 'margin:0;font-size:var(--text-lg);line-height:1.75;color:var(--color-neutral-5);';
+      p.textContent = text;
+      els.subtitleDisplay.appendChild(p);
+    }
+  }
+
+  if (mode === 'source' || mode === 'both') {
+    const text = sentenceAtProgress(state.sourceSentences, state.sourceOffsets, progress);
+    if (text) {
+      const p = document.createElement('p');
+      p.style.cssText = 'margin:0.5em 0 0;font-size:var(--text-base);line-height:1.75;color:var(--color-supporting-1);font-style:italic;';
+      p.textContent = text;
+      els.subtitleDisplay.appendChild(p);
+    }
+  }
+}
+
+function updateSubtitles() {
+  buildSentences();
+  renderSubtitle();
+}
+
+/* ═══════════════════════════════════════════════════════
+   DOWNLOAD
+═══════════════════════════════════════════════════════ */
+function downloadAudio() {
+  if (!state.audioBlob || !state.currentStoryId) return;
+  const story = state.stories.find(s => s.id === state.currentStoryId);
+  const slug = (story?.title || 'story').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  const filename = `${slug}-${state.lang}-${state.speed}x.mp3`;
+
+  const a = document.createElement('a');
+  a.href = state.audioUrl;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+/* ═══════════════════════════════════════════════════════
+   KEYBOARD SHORTCUTS (global)
+═══════════════════════════════════════════════════════ */
+document.addEventListener('keydown', (e) => {
+  // Space = play/pause (only when no input focused)
+  if (e.code === 'Space' && !['INPUT','TEXTAREA','SELECT','BUTTON'].includes(document.activeElement.tagName)) {
+    e.preventDefault();
+    togglePlay();
+  }
+  // Escape closes any open modal
+  if (e.key === 'Escape') {
+    [els.settingsModal, els.newStoryModal, els.editStoryModal].forEach(m => {
+      if (m.classList.contains('open')) closeModal(m);
+    });
+  }
+});
+
+/* ═══════════════════════════════════════════════════════
+   EVENT BINDING
+═══════════════════════════════════════════════════════ */
+// Settings
+els.settingsOpenBtn.addEventListener('click', openSettings);
+els.settingsCancelBtn.addEventListener('click', closeSettings);
+els.settingsSaveBtn.addEventListener('click', saveSettingsUI);
+setupMaskClear(els.deeplKey);
+setupMaskClear(els.azureKey);
+
+// New story
+els.newStoryBtn.addEventListener('click', () => {
+  clearNotice(els.newStoryNotice);
+  els.newStoryTitleInput.value = '';
+  els.newStoryBody.value = '';
+  openModal(els.newStoryModal);
+  els.newStoryTitleInput.focus();
+});
+els.newStoryCancelBtn.addEventListener('click', () => closeModal(els.newStoryModal));
+els.newStorySaveBtn.addEventListener('click', saveNewStory);
+
+// Edit story
+els.editStoryBtn.addEventListener('click', openEditStory);
+els.editStoryCancelBtn.addEventListener('click', () => closeModal(els.editStoryModal));
+els.editStorySaveBtn.addEventListener('click', saveEditStory);
+
+// Toggle source text
+els.toggleSourceBtn.addEventListener('click', () => {
+  const expanded = els.toggleSourceBtn.getAttribute('aria-expanded') !== 'false';
+  if (expanded) {
+    els.sourcePanel.style.display = 'none';
+    els.toggleSourceBtn.textContent = 'Show';
+    els.toggleSourceBtn.setAttribute('aria-expanded', 'false');
+  } else {
+    els.sourcePanel.style.display = '';
+    els.toggleSourceBtn.textContent = 'Hide';
+    els.toggleSourceBtn.setAttribute('aria-expanded', 'true');
+  }
+});
+
+// Language select
+els.langSelect.addEventListener('change', () => {
+  state.lang = els.langSelect.value;
+  resetPlayer();
+  const story = state.stories.find(s => s.id === state.currentStoryId);
+  const saved = story?.translations?.[state.lang]
+             || localStorage.getItem(`tx_${story?.id}_${state.lang}`);
+  if (saved) {
+    state.translatedText = saved;
+    displayTranslation(saved);
+  } else {
+    state.translatedText = '';
+    els.translationText.textContent = '';
+    els.translationOutput.classList.add('hidden');
+    els.audioCard.classList.add('hidden');
+  }
+});
+
+// Translate
+els.translateBtn.addEventListener('click', handleTranslate);
+
+// Generate audio
+els.generateAudioBtn.addEventListener('click', () => generateAudio());
+
+// Player
+els.playBtn.addEventListener('click', togglePlay);
+
+els.scrubber.addEventListener('input', () => {
+  if (state.audioElement) {
+    state.audioElement.currentTime = parseFloat(els.scrubber.value);
+  }
+});
+
+document.querySelectorAll('.skip-btn').forEach(btn => {
+  btn.addEventListener('click', () => skip(parseInt(btn.dataset.skip, 10)));
+});
+
+// Speed
+document.querySelectorAll('.btn-toggle[data-speed]').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    document.querySelectorAll('.btn-toggle[data-speed]').forEach(b => {
+      b.classList.remove('active');
+      b.setAttribute('aria-pressed', 'false');
+    });
+    btn.classList.add('active');
+    btn.setAttribute('aria-pressed', 'true');
+    const spd = parseFloat(btn.dataset.speed);
+    state.speed = spd;
+    if (state.audioBlob) await regenerateAtSpeed(spd);
+  });
+});
+
+// Subtitles
+document.querySelectorAll('.btn-toggle[data-subtitle]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.btn-toggle[data-subtitle]').forEach(b => {
+      b.classList.remove('active');
+      b.setAttribute('aria-pressed', 'false');
+    });
+    btn.classList.add('active');
+    btn.setAttribute('aria-pressed', 'true');
+    state.subtitleMode = btn.dataset.subtitle;
+    updateSubtitles();
+  });
+});
+
+// Download
+els.downloadBtn.addEventListener('click', downloadAudio);
+
+// Modal backdrop click to close
+[els.settingsModal, els.newStoryModal, els.editStoryModal].forEach(modal => {
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal(modal);
+  });
+});
+
+/* ═══════════════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════════════ */
+async function init() {
+  if (!localStorage.getItem('azure_region')) {
+    localStorage.setItem('azure_region', 'eastus');
+  }
+  if (!localStorage.getItem('azure_trans_key')) {
+    localStorage.setItem('azure_trans_key', '');
+  }
+
+  await openDB();
+  await loadStories();
+
+  // Apply saved settings to UI
+  const settings = loadSettings();
+  els.langSelect.value = settings.defaultLang;
+  state.lang  = settings.defaultLang;
+  state.speed = settings.defaultSpeed;
+
+  // Set speed buttons to match saved default
+  document.querySelectorAll('.btn-toggle[data-speed]').forEach(btn => {
+    const match = parseFloat(btn.dataset.speed) === settings.defaultSpeed;
+    btn.classList.toggle('active', match);
+    btn.setAttribute('aria-pressed', match ? 'true' : 'false');
+  });
+
+  // Seed starter story if library is empty
+  if (state.stories.length === 0) {
+    const starter = { id: uid(), title: STARTER_STORY_TITLE, body: STARTER_STORY_BODY };
+    await dbPut('stories', starter);
+    state.stories = [starter];
+    renderLibrary();
+  }
+
+  // Open settings on first launch if the DeepL key is missing.
+  const s = loadSettings();
+  if (!s.deeplKey) {
+    openSettings();
+  }
+}
+
+init();
+</script>
+</body>
+</html>

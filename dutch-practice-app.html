@@ -1596,13 +1596,18 @@ function escSsml(str) {
 }
 
 function applyDutchPhonemes(text) {
-  // Escape first, then wrap known words in phoneme tags
-  // (phoneme tags are supported by standard neural voices like MaartenNeural)
+  // Escape first, then wrap known words in phoneme tags.
+  // Build a negative lookahead for each word to prevent matching it as a prefix
+  // of a longer word already handled (e.g. 'Gales' must not match inside 'Galesloot').
   let result = escSsml(text);
   for (const { word, ipa } of NL_PHONEMES) {
     const escaped = escSsml(word);
+    const suffixes = NL_PHONEMES
+      .filter(p => p.word !== word && p.word.startsWith(word))
+      .map(p => escSsml(p.word.slice(word.length)));
+    const lookahead = suffixes.length ? `(?!${suffixes.join('|')})` : '';
     result = result.replace(
-      new RegExp(escaped, 'g'),
+      new RegExp(escaped + lookahead, 'g'),
       `<phoneme alphabet="ipa" ph="${ipa}">${escaped}</phoneme>`
     );
   }

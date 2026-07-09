@@ -930,7 +930,13 @@
         <!-- Translation output -->
         <div id="translation-output" class="hidden">
           <div style="border-top:1px solid var(--color-border);padding-top:var(--space-md);">
-            <div id="translation-text"></div>
+            <div class="section-header" style="margin-bottom:var(--space-sm);">
+              <span></span>
+              <button class="btn btn-ghost" id="toggle-translation-btn" aria-expanded="true">Hide</button>
+            </div>
+            <div id="translation-panel">
+              <div id="translation-text"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -1187,6 +1193,8 @@ const els = {
   storyHeading:         $('story-heading'),
 
   sourcePanel:          $('source-panel'),
+  toggleTranslationBtn: $('toggle-translation-btn'),
+  translationPanel:     $('translation-panel'),
   sourceTextDisplay:    $('source-text-display'),
   toggleSourceBtn:      $('toggle-source-btn'),
 
@@ -1563,6 +1571,9 @@ async function handleTranslate() {
 function displayTranslation(text) {
   els.translationText.textContent = text;
   els.translationOutput.classList.remove('hidden');
+  els.translationPanel.style.display = '';
+  els.toggleTranslationBtn.textContent = 'Hide';
+  els.toggleTranslationBtn.setAttribute('aria-expanded', 'true');
 
   // Show audio card
   els.audioCard.classList.remove('hidden');
@@ -1921,6 +1932,20 @@ els.newStorySaveBtn.addEventListener('click', saveNewStory);
 els.editStoryBtn.addEventListener('click', openEditStory);
 els.editStoryCancelBtn.addEventListener('click', () => closeModal(els.editStoryModal));
 els.editStorySaveBtn.addEventListener('click', saveEditStory);
+
+// Toggle translation text
+els.toggleTranslationBtn.addEventListener('click', () => {
+  const expanded = els.toggleTranslationBtn.getAttribute('aria-expanded') !== 'false';
+  if (expanded) {
+    els.translationPanel.style.display = 'none';
+    els.toggleTranslationBtn.textContent = 'Show';
+    els.toggleTranslationBtn.setAttribute('aria-expanded', 'false');
+  } else {
+    els.translationPanel.style.display = '';
+    els.toggleTranslationBtn.textContent = 'Hide';
+    els.toggleTranslationBtn.setAttribute('aria-expanded', 'true');
+  }
+});
 
 // Toggle source text
 els.toggleSourceBtn.addEventListener('click', () => {

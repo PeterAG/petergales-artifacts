@@ -36,6 +36,12 @@
     --color-supporting-3: #E8C0A3;
     --color-foundation: #2A1F1A;
 
+    /* Neutral ramp — GL-003 §2c (Iris, 2026-07-11) */
+    --color-neutral-1: #F2EEE5;
+    --color-neutral-2: #DDD3C6;
+    --color-neutral-3: #9A8D7D;
+    --color-neutral-4: #6F5F52;
+
     /* Domain colors — GL-003 §13a (Iris, 2026-06-20) */
     --color-body:        #4A6741; /* Fern */
     --color-education:   #476070; /* River Stone */
@@ -69,6 +75,7 @@
     --radius: 24px;
     --radius-sm: 8px;
     --radius-xs: 4px;
+    --radius-chip: 8px; /* GL-003 §4a micro-component exception — badges, chips, domain tags */
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -78,7 +85,7 @@
     font-size: 14px;
     line-height: 1.5;
     color: var(--color-neutral-5);
-    background: #EDEBE5;
+    background: var(--color-neutral-0);
     min-height: 100vh;
   }
 
@@ -235,12 +242,12 @@
   .filter-chip {
     padding: 5px 12px;
     border-radius: var(--radius-xs);
-    border: 1.5px solid #D1CBC1;
+    border: 1.5px solid var(--color-neutral-2);
     background: transparent;
     font-family: 'Inter', sans-serif;
     font-size: 12px;
     font-weight: 700;
-    color: #7a6b5f;
+    color: var(--color-neutral-4);
     cursor: pointer;
     transition: all 0.12s ease;
     white-space: nowrap;
@@ -251,7 +258,7 @@
     cursor: text;
   }
   .search-input::placeholder {
-    color: #9a8f86;
+    color: var(--color-neutral-3);
     font-style: italic;
   }
 
@@ -277,23 +284,23 @@
   .filter-divider {
     width: 1px;
     height: 28px;
-    background: #D1CBC1;
+    background: var(--color-neutral-2);
     flex-shrink: 0;
   }
 
   .filter-select {
     padding: 5px 10px;
     border-radius: var(--radius-xs);
-    border: 1.5px solid #D1CBC1;
+    border: 1.5px solid var(--color-neutral-2);
     background: transparent;
     font-family: 'Inter', sans-serif;
     font-size: 12px;
     font-weight: 700;
-    color: #7a6b5f;
+    color: var(--color-neutral-4);
     cursor: pointer;
     appearance: none;
     padding-right: 24px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%237a6b5f' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' fill='none'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236F5F52' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 8px center;
     /* GL-003 Fix 3: override browser-default green selection highlight with Garnet.
@@ -327,11 +334,11 @@
 
   .table-header {
     display: grid;
-    grid-template-columns: 2.4fr 1fr 0.9fr 0.85fr 0.7fr 0.9fr 0.6fr 36px;
+    grid-template-columns: 2.4fr 1.1fr 0.9fr 0.7fr 0.9fr 0.7fr;
     gap: 0;
     padding: 0 var(--space-md);
-    border-bottom: 1px solid #E0D9D0;
-    background: #F2EFE8;
+    border-bottom: 1px solid var(--color-neutral-2);
+    background: var(--color-neutral-1);
   }
 
   .table-header-cell {
@@ -359,17 +366,21 @@
 
   .project-row {
     display: grid;
-    grid-template-columns: 2.4fr 1fr 0.9fr 0.85fr 0.7fr 0.9fr 0.6fr;
+    grid-template-columns: 2.4fr 1.1fr 0.9fr 0.7fr 0.9fr 0.7fr;
     gap: 0;
     padding: 0 var(--space-md);
-    border-bottom: 1px solid #EDE9E3;
+    border-bottom: 1px solid var(--color-neutral-1);
+    border-left: 3px solid transparent;
     align-items: center;
     transition: background 0.1s;
     cursor: pointer;
   }
+  .project-row.priority-high   { border-left-color: #9B2D30; }
+  .project-row.priority-medium { border-left-color: #B45309; }
+  .project-row.priority-low    { border-left-color: #c0c0c0; }
 
   .project-row:hover {
-    background: #FAF8F4;
+    background: var(--color-neutral-1);
   }
 
   .project-row:last-child {
@@ -395,7 +406,7 @@
 
   .project-name-sub {
     font-size: 11px;
-    color: #9a8f86;
+    color: var(--color-neutral-3);
     font-weight: 400;
     margin-top: 1px;
     line-height: 1.3;
@@ -408,7 +419,7 @@
     display: inline-flex;
     align-items: center;
     padding: 3px 8px;
-    border-radius: var(--radius-xs);
+    border-radius: var(--radius-chip); /* GL-003 §4a micro-component exception */
     font-size: 11px;
     font-weight: 700;
     line-height: 1;
@@ -430,7 +441,7 @@
     display: inline-flex;
     align-items: center;
     padding: 3px 8px;
-    border-radius: var(--radius-xs);
+    border-radius: var(--radius-chip); /* GL-003 §4a micro-component exception */
     font-size: 11px;
     font-weight: 700;
     line-height: 1;
@@ -460,7 +471,7 @@
   }
 
   .completeness-dot.empty {
-    background: #D1CBC1;
+    background: var(--color-neutral-2);
   }
 
   /* ============================================================
@@ -470,9 +481,9 @@
     width: 22px;
     height: 22px;
     border-radius: 50%;
-    border: 1.5px solid #C2B9AF;
+    border: 1.5px solid var(--color-neutral-2);
     background: transparent;
-    color: #9a8f86;
+    color: var(--color-neutral-3);
     font-family: 'Inter', sans-serif;
     font-size: 12px;
     font-weight: 700;
@@ -497,7 +508,7 @@
   .empty-state {
     padding: var(--space-xl) var(--space-md);
     text-align: center;
-    color: #9a8f86;
+    color: var(--color-neutral-3);
     font-size: 14px;
   }
 
@@ -548,7 +559,7 @@
 
   .modal-header {
     padding: var(--space-lg) var(--space-lg) var(--space-md);
-    border-bottom: 1px solid #E0D9D0;
+    border-bottom: 1px solid var(--color-neutral-2);
     position: relative;
   }
 
@@ -573,9 +584,9 @@
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    border: 1.5px solid #D1CBC1;
+    border: 1.5px solid var(--color-neutral-2);
     background: transparent;
-    color: #9a8f86;
+    color: var(--color-neutral-3);
     font-size: 16px;
     cursor: pointer;
     display: flex;
@@ -622,7 +633,7 @@
     color: var(--color-supporting-1);
     margin-bottom: 8px;
     padding-bottom: 6px;
-    border-bottom: 1px solid #EDE9E3;
+    border-bottom: 1px solid var(--color-neutral-1);
   }
 
   .modal-section-content {
@@ -632,7 +643,7 @@
   }
 
   .modal-section-content.muted {
-    color: #9a8f86;
+    color: var(--color-neutral-3);
     font-style: italic;
   }
 
@@ -641,7 +652,7 @@
     grid-template-columns: repeat(3, 1fr);
     gap: var(--space-sm);
     margin-bottom: var(--space-md);
-    background: #F5F2EC;
+    background: var(--color-neutral-1);
     border-radius: var(--radius-sm);
     padding: var(--space-sm);
   }
@@ -657,7 +668,7 @@
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: #9a8f86;
+    color: var(--color-neutral-3);
   }
 
   .meta-item-value {
@@ -668,7 +679,7 @@
 
   /* Completeness bar in modal */
   .completeness-bar-wrap {
-    background: #F5F2EC;
+    background: var(--color-neutral-1);
     border-radius: var(--radius-sm);
     padding: var(--space-sm);
     margin-bottom: var(--space-md);
@@ -685,7 +696,7 @@
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: #9a8f86;
+    color: var(--color-neutral-3);
   }
 
   .completeness-bar-pct {
@@ -696,7 +707,7 @@
 
   .completeness-track {
     height: 6px;
-    background: #D1CBC1;
+    background: var(--color-neutral-2);
     border-radius: 3px;
     overflow: hidden;
   }
@@ -771,11 +782,11 @@
     justify-content: center;
     width: 15px;
     height: 15px;
-    border: 1.5px solid #9a8f86;
+    border: 1.5px solid var(--color-neutral-3);
     border-radius: 50%;
     font-size: 9px;
     font-weight: 700;
-    color: #9a8f86;
+    color: var(--color-neutral-3);
     background: none;
     cursor: pointer;
     margin-left: 5px;
@@ -807,7 +818,7 @@
   .completed-steps-toggle {
     margin-top: 10px;
     font-size: 11px;
-    color: #9a8f86;
+    color: var(--color-neutral-3);
   }
   .completed-steps-toggle summary {
     cursor: pointer;
@@ -834,11 +845,11 @@
     flex-direction: column;
     gap: 5px;
     padding-left: 12px;
-    border-left: 2px solid #E8E3DC;
+    border-left: 2px solid var(--color-neutral-2);
   }
   .completed-steps-toggle li {
     font-size: 12px;
-    color: #9a8f86;
+    color: var(--color-neutral-3);
     text-decoration: line-through;
     line-height: 1.5;
   }
@@ -852,10 +863,10 @@
 
   .tag {
     padding: 2px 8px;
-    background: #EDE9E3;
+    background: var(--color-neutral-1);
     border-radius: var(--radius-xs);
     font-size: 11px;
-    color: #7a6b5f;
+    color: var(--color-neutral-4);
     font-weight: 400;
   }
 
@@ -921,13 +932,13 @@
 
   .pag-meta {
     font-size: 11px;
-    color: #9a8f86;
+    color: var(--color-neutral-3);
   }
 
   /* Scrollbar styling */
   .modal::-webkit-scrollbar { width: 6px; }
   .modal::-webkit-scrollbar-track { background: transparent; }
-  .modal::-webkit-scrollbar-thumb { background: #D1CBC1; border-radius: 3px; }
+  .modal::-webkit-scrollbar-thumb { background: var(--color-neutral-2); border-radius: 3px; }
 
   /* Responsive */
   @media (max-width: 900px) {
@@ -948,11 +959,118 @@
     display: none;
     padding: var(--space-xl);
     text-align: center;
-    color: #9a8f86;
+    color: var(--color-neutral-3);
     font-size: 14px;
   }
 
   .sort-arrow { margin-left: 3px; opacity: 0.6; font-size: 9px; }
+
+  /* ============================================================
+     PRIORITY LEGEND
+  ============================================================ */
+  .priority-legend {
+    padding: 6px var(--space-md) 0;
+    font-size: 11px;
+    color: var(--color-neutral-3);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 8px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .legend-swatch {
+    display: inline-block;
+    width: 3px;
+    height: 13px;
+    border-radius: 0;
+    flex-shrink: 0;
+  }
+
+  /* ============================================================
+     COLUMN FILTER HEADER
+  ============================================================ */
+  .col-filterable {
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+  }
+  .col-filterable:hover {
+    color: var(--color-primary);
+  }
+  .col-filterable.filter-active {
+    color: var(--color-primary);
+  }
+  .col-filter-caret {
+    margin-left: 3px;
+    font-size: 9px;
+    opacity: 0.7;
+  }
+  .col-active-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 4px;
+    min-width: 17px;
+    height: 15px;
+    padding: 0 4px;
+    border-radius: 4px;
+    background: var(--color-primary);
+    color: var(--color-neutral-0);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0;
+    text-transform: none;
+    line-height: 1;
+  }
+
+  /* Column dropdown panel — portal-mounted to body, position:fixed */
+  .col-dropdown {
+    position: fixed;
+    z-index: 500;
+    background: var(--color-neutral-0);
+    border: 1.5px solid var(--color-neutral-2);
+    border-radius: var(--radius-sm);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+    min-width: 180px;
+    padding: 4px 0;
+    display: none;
+  }
+  .col-dropdown.open { display: block; }
+  .col-dropdown-option {
+    padding: 7px 14px;
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--color-neutral-5);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.08s;
+  }
+  .col-dropdown-option:hover {
+    background: var(--color-neutral-1);
+  }
+  .col-dropdown-option.selected {
+    color: var(--color-primary);
+    font-weight: 700;
+  }
+  .col-dropdown-count {
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--color-neutral-3);
+  }
+
+  /* ============================================================
+     LAST UPDATED CELL
+  ============================================================ */
+  .last-updated-recent { color: var(--color-neutral-3); }
+  .last-updated-warm   { color: #B45309; font-weight: 500; }
+  .last-updated-stale  { color: #9B2D30; font-weight: 500; }
 
   /* ============================================================
      VIEW TOGGLE — Projects / Artifacts
@@ -1005,8 +1123,8 @@
     grid-template-columns: 2.4fr 0.6fr 0.65fr 0.72fr 2.8fr;
     gap: 0;
     padding: 0 var(--space-md);
-    border-bottom: 1px solid #E0D9D0;
-    background: #F2EFE8;
+    border-bottom: 1px solid var(--color-neutral-2);
+    background: var(--color-neutral-1);
   }
 
   .artifact-row {
@@ -1014,12 +1132,12 @@
     grid-template-columns: 2.4fr 0.6fr 0.65fr 0.72fr 2.8fr;
     gap: 0;
     padding: 0 var(--space-md);
-    border-bottom: 1px solid #EDE9E3;
+    border-bottom: 1px solid var(--color-neutral-1);
     align-items: start;
     transition: background 0.1s;
   }
 
-  .artifact-row:hover { background: #FAF8F4; }
+  .artifact-row:hover { background: var(--color-neutral-1); }
   .artifact-row:last-child { border-bottom: none; }
 
   .artifact-cell {
@@ -1037,7 +1155,7 @@
 
   .artifact-purpose {
     font-size: 12px;
-    color: #7a6b5f;
+    color: var(--color-neutral-4);
     line-height: 1.5;
   }
 
@@ -1073,8 +1191,8 @@
     border-radius: 3px;
     font-size: 10px;
     font-weight: 700;
-    background: #EDE9E3;
-    color: #9a8f86;
+    background: var(--color-neutral-1);
+    color: var(--color-neutral-3);
     letter-spacing: 0.04em;
     vertical-align: middle;
     position: relative;
@@ -1132,81 +1250,36 @@
   <!-- ===== PROJECTS VIEW ===== -->
   <div id="projectsView">
 
-  <!-- Filter Bar -->
-  <div class="filter-bar">
-    <div class="filter-group">
-      <span class="filter-label">Status</span>
-      <button class="filter-chip active" data-filter-type="status" data-filter-value="all" onclick="handleStatusFilter('all')">All <span class="chip-count" id="count-all"></span></button>
-      <button class="filter-chip" data-filter-type="status" data-filter-value="active" onclick="handleStatusFilter('active')">Active <span class="chip-count" id="count-active"></span></button>
-      <button class="filter-chip" data-filter-type="status" data-filter-value="planning" onclick="handleStatusFilter('planning')">Planning <span class="chip-count" id="count-planning"></span></button>
-      <button class="filter-chip" data-filter-type="status" data-filter-value="on-hold" onclick="handleStatusFilter('on-hold')">On Hold <span class="chip-count" id="count-on-hold"></span></button>
-      <button class="filter-chip" data-filter-type="status" data-filter-value="parked" onclick="handleStatusFilter('parked')">Parked <span class="chip-count" id="count-parked"></span></button>
-      <button class="filter-chip" data-filter-type="status" data-filter-value="closed" onclick="handleStatusFilter('closed')">Closed <span class="chip-count" id="count-closed"></span></button>
+  <!-- Filter Bar — search only -->
+  <div class="filter-bar" style="padding: var(--space-sm) var(--space-md);">
+    <div style="position:relative;display:flex;align-items:center;flex:1;">
+      <input type="text" class="filter-select search-input" id="searchInput"
+             placeholder="Search projects — name, domain, tags…"
+             oninput="applyFilters(); document.getElementById('searchClear').style.display = this.value ? 'flex' : 'none';"
+             autocomplete="off" style="width:100%;padding-right:28px;">
+      <button id="searchClear"
+              onclick="document.getElementById('searchInput').value=''; document.getElementById('searchClear').style.display='none'; applyFilters(); document.getElementById('searchInput').focus();"
+              style="display:none;position:absolute;right:6px;border:none;background:none;cursor:pointer;color:var(--color-neutral-3);font-size:14px;line-height:1;padding:0;width:18px;height:18px;align-items:center;justify-content:center;"
+              title="Clear search">&#x2715;</button>
     </div>
-
-    <div class="filter-divider"></div>
-
-    <div class="filter-group">
-      <span class="filter-label">Sort</span>
-      <select class="filter-select" id="sortSelect" onchange="applySort(this.value)">
-        <option value="priority">Priority</option>
-        <option value="domain">Domain</option>
-        <option value="client">Client</option>
-        <option value="deadline">Deadline</option>
-        <option value="status">Status</option>
-        <option value="name">Name</option>
-      </select>
-    </div>
-
-    <div class="filter-divider"></div>
-
-    <div class="filter-group">
-      <span class="filter-label">Domain</span>
-      <select class="filter-select" id="domainSelect" onchange="applyFilters()">
-        <option value="all">All domains</option>
-        <!-- populated dynamically by buildProjectDomainDropdown() from projectData -->
-      </select>
-    </div>
-
-    <div class="filter-group">
-      <span class="filter-label">Client</span>
-      <select class="filter-select" id="clientSelect" onchange="applyFilters()">
-        <option value="all">All clients</option>
-        <option value="Personal">Personal</option>
-        <option value="CEAL Green">CEAL Green</option>
-        <option value="ARA">ARA</option>
-        <option value="Jamaica Observer">Jamaica Observer</option>
-        <option value="Family">Family</option>
-      </select>
-    </div>
-
-    <div class="filter-divider"></div>
-
-    <div class="filter-group">
-      <span class="filter-label">Search</span>
-      <div style="position:relative;display:inline-flex;align-items:center;">
-        <input type="text" class="filter-select search-input" id="searchInput"
-               placeholder="Name, domain, client…"
-               oninput="applyFilters(); document.getElementById('searchClear').style.display = this.value ? 'flex' : 'none';"
-               autocomplete="off" style="padding-right:28px;">
-        <button id="searchClear"
-                onclick="document.getElementById('searchInput').value=''; document.getElementById('searchClear').style.display='none'; applyFilters(); document.getElementById('searchInput').focus();"
-                style="display:none;position:absolute;right:6px;border:none;background:none;cursor:pointer;color:#9a8f86;font-size:14px;line-height:1;padding:0;width:18px;height:18px;align-items:center;justify-content:center;"
-                title="Clear search">&#x2715;</button>
-      </div>
-    </div>
+  </div>
+  <!-- Priority legend -->
+  <div class="priority-legend">
+    Priority border:
+    <span class="legend-item"><span class="legend-swatch" style="background:#9B2D30;"></span>High</span>
+    <span class="legend-item"><span class="legend-swatch" style="background:#B45309;"></span>Medium</span>
+    <span class="legend-item"><span class="legend-swatch" style="background:#c0c0c0;"></span>Low</span>
   </div>
 
   <!-- Table -->
   <div class="table-wrapper">
     <div class="table-header">
-      <div class="table-header-cell sortable sorted" data-col="name" onclick="applySort('name')">Project <span class="sort-arrow" id="sort-name">▲</span></div>
-      <div class="table-header-cell">Domain</div>
-      <div class="table-header-cell">Client</div>
-      <div class="table-header-cell">Status</div>
-      <div class="table-header-cell">Priority</div>
+      <div class="table-header-cell sortable" data-col="name" onclick="applySort('name')">Project <span class="sort-arrow" id="sort-name"></span></div>
+      <div class="table-header-cell col-filterable" id="col-header-domain" onclick="toggleColDropdown('domain', this)">Domain <span class="col-filter-caret">▾</span><span class="col-active-chip" id="col-chip-domain" style="display:none;"></span></div>
+      <div class="table-header-cell col-filterable" id="col-header-status" onclick="toggleColDropdown('status', this)">Status <span class="col-filter-caret">▾</span><span class="col-active-chip" id="col-chip-status" style="display:none;"></span></div>
+      <div class="table-header-cell col-filterable" id="col-header-priority" onclick="toggleColDropdown('priority', this)">Priority <span class="col-filter-caret">▾</span><span class="col-active-chip" id="col-chip-priority" style="display:none;"></span></div>
       <div class="table-header-cell sortable" data-col="deadline" onclick="applySort('deadline')">Target <span class="sort-arrow" id="sort-deadline"></span></div>
-      <div class="table-header-cell">Fields</div>
+      <div class="table-header-cell sortable" data-col="lastUpdated" onclick="applySort('lastUpdated')">Updated <span class="sort-arrow" id="sort-lastUpdated"></span></div>
     </div>
     <div id="projectTableBody">
       <!-- Rows injected by JS -->
@@ -1271,7 +1344,7 @@
                  autocomplete="off" style="padding-right:28px;">
           <button id="artifactSearchClear"
                   onclick="document.getElementById('artifactSearch').value=''; document.getElementById('artifactSearchClear').style.display='none'; renderArtifacts(); document.getElementById('artifactSearch').focus();"
-                  style="display:none;position:absolute;right:6px;border:none;background:none;cursor:pointer;color:#9a8f86;font-size:14px;line-height:1;padding:0;width:18px;height:18px;align-items:center;justify-content:center;"
+                  style="display:none;position:absolute;right:6px;border:none;background:none;cursor:pointer;color:var(--color-neutral-3);font-size:14px;line-height:1;padding:0;width:18px;height:18px;align-items:center;justify-content:center;"
                   title="Clear search">&#x2715;</button>
         </div>
       </div>
@@ -1709,7 +1782,7 @@ const projectData = [
     closed_date: null,
     lastUpdated: '2026-07-07',
     linked_goals: [],
-    linked_people: ['mark-incus', 'cecl-george'],
+    linked_people: ['mark-incus', 'cecile-george'],
     tags: ['ceal-green', 'agentic', 'ai'],
     why: 'Building an agentic AI system to allow [[ceal-green]] to execute its business operations. This is a concrete application of Peter\'s AI capabilities in a client context — and a proof of concept for the kind of offer he could make to other companies.',
     next_action: 'Working group session: Mark, Cecil, Peter — scope customer journey agentic build',
@@ -2721,13 +2794,13 @@ const DOMAIN_GROUPS = [
 // ============================================================
 // STATE
 // ============================================================
-let activeStatuses = new Set(['active','planning','on-hold','parked','closed']);
-let activeDomain   = 'all';
-let activeClient   = 'all';
-let activeSort     = 'priority';
-let searchTerm     = '';
-let activeStatusChip = 'all'; // tracks which chip is selected
-let sortDir        = 1; // 1 = asc, -1 = desc
+let activeStatusFilter   = 'all';
+let activeDomainFilter   = 'all';
+let activePriorityFilter = 'all';
+let activeSort           = 'priority';
+let searchTerm           = '';
+let sortDir              = 1; // 1 = asc, -1 = desc
+let _openDropdown        = null; // currently open dropdown id
 
 // ============================================================
 // COMPLETENESS SCORE (out of 6 fields)
@@ -2753,7 +2826,7 @@ function statusBadge(status) {
 }
 
 function priorityBadge(priority) {
-  if (!priority) return '<span style="color:#9a8f86;font-size:12px;">—</span>';
+  if (!priority) return '<span style="color:var(--color-neutral-3);font-size:12px;">—</span>';
   return `<span class="badge badge-priority-${priority}">${priority.toUpperCase()}</span>`;
 }
 
@@ -2794,41 +2867,15 @@ function formatGoals(arr) {
 }
 
 // ============================================================
-// BUILD STATS — counts into filter chips
+// BUILD STATS — total count in header
 // ============================================================
 function buildStats() {
-  const counts = {};
-  for (const p of projectData) {
-    counts[p.status] = (counts[p.status] || 0) + 1;
-  }
   document.getElementById('totalCount').textContent = projectData.length;
-
-  const total = projectData.length;
-  const el = id => document.getElementById(id);
-  if (el('count-all'))      el('count-all').textContent      = `(${total})`;
-  if (el('count-active'))   el('count-active').textContent   = `(${counts['active']   || 0})`;
-  if (el('count-planning')) el('count-planning').textContent = `(${counts['planning'] || 0})`;
-  if (el('count-on-hold'))  el('count-on-hold').textContent  = `(${counts['on-hold']  || 0})`;
-  if (el('count-parked'))   el('count-parked').textContent   = `(${counts['parked']   || 0})`;
-  if (el('count-closed'))   el('count-closed').textContent   = `(${counts['closed']   || 0})`;
 }
 
 // ============================================================
 // FILTER LOGIC
 // ============================================================
-function handleStatusFilter(value) {
-  activeStatusChip = value;
-  if (value === 'all') {
-    activeStatuses = new Set(['active','planning','on-hold','parked','closed']);
-  } else {
-    activeStatuses = new Set([value]);
-  }
-  document.querySelectorAll('[data-filter-type="status"]').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.filterValue === value);
-  });
-  applyFilters();
-}
-
 function applySort(col) {
   if (activeSort === col) {
     sortDir = sortDir === 1 ? -1 : 1;
@@ -2836,7 +2883,6 @@ function applySort(col) {
     activeSort = col;
     sortDir = 1;
   }
-  document.getElementById('sortSelect').value = col;
 
   // Update header arrows
   document.querySelectorAll('.sort-arrow').forEach(el => el.textContent = '');
@@ -2850,18 +2896,16 @@ function applySort(col) {
 }
 
 function applyFilters() {
-  activeDomain = document.getElementById('domainSelect').value;
-  activeClient = document.getElementById('clientSelect').value;
-  searchTerm   = (document.getElementById('searchInput').value || '').toLowerCase().trim();
+  searchTerm = (document.getElementById('searchInput').value || '').toLowerCase().trim();
 
   // Filter
   let filtered = projectData.filter(p => {
-    if (!activeStatuses.has(p.status)) return false;
-    if (activeDomain !== 'all') {
-      const group = DOMAIN_GROUPS.find(g => g.label === activeDomain);
+    if (activeStatusFilter !== 'all' && p.status !== activeStatusFilter) return false;
+    if (activeDomainFilter !== 'all') {
+      const group = DOMAIN_GROUPS.find(g => g.label === activeDomainFilter);
       if (!group || !group.slugs.includes(p.domain)) return false;
     }
-    if (activeClient !== 'all' && p.client !== activeClient) return false;
+    if (activePriorityFilter !== 'all' && (p.priority || 'low') !== activePriorityFilter) return false;
     if (searchTerm) {
       const haystack = [
         p.name, p.domain, p.client, p.why,
@@ -2885,13 +2929,13 @@ function applyFilters() {
         va = a.domain || 'zzz';
         vb = b.domain || 'zzz';
         break;
-      case 'client':
-        va = a.client || 'zzz';
-        vb = b.client || 'zzz';
-        break;
       case 'deadline':
         va = a.target_date || '9999-99-99';
         vb = b.target_date || '9999-99-99';
+        break;
+      case 'lastUpdated':
+        va = a.lastUpdated || '0000-00-00';
+        vb = b.lastUpdated || '0000-00-00';
         break;
       case 'status':
         va = statusOrder[a.status] ?? 9;
@@ -2910,7 +2954,23 @@ function applyFilters() {
   });
 
   renderTable(filtered);
+  updateColChips(filtered.length);
   buildStats();
+}
+
+// ============================================================
+// RELATIVE AGE HELPER
+// ============================================================
+function relativeAge(dateStr) {
+  if (!dateStr) return { label: '—', cls: 'last-updated-recent' };
+  const today = new Date();
+  const d = new Date(dateStr + 'T00:00:00');
+  const days = Math.floor((today - d) / (1000 * 60 * 60 * 24));
+  const label = days + 'd';
+  const cls = days < 4 ? 'last-updated-recent'
+            : days <= 30 ? 'last-updated-warm'
+            : 'last-updated-stale';
+  return { label, cls };
 }
 
 // ============================================================
@@ -2929,21 +2989,22 @@ function renderTable(projects) {
 
   let html = '';
   for (const p of projects) {
-    const score = completenessScore(p);
-    const clientLabel = p.client || '—';
+    const priBorderClass = p.priority === 'high' ? 'priority-high'
+                         : p.priority === 'medium' ? 'priority-medium'
+                         : 'priority-low';
+    const age = relativeAge(p.lastUpdated);
     html += `
-    <div class="project-row" data-id="${p.id}" onclick="openModal('${p.id}')">
+    <div class="project-row ${priBorderClass}" data-id="${p.id}" onclick="openModal('${p.id}')">
       <div class="project-cell">
-        ${p.parent ? `<div style="font-size:10px;color:#B87A4E;font-weight:600;letter-spacing:0.04em;margin-bottom:2px;">↳ sub-project</div>` : ''}
+        ${p.parent ? `<div style="font-size:10px;color:var(--color-supporting-2);font-weight:600;letter-spacing:0.04em;margin-bottom:2px;">↳ sub-project</div>` : ''}
         <div class="project-name">${p.name}</div>
         ${p.why ? `<div class="project-name-sub">${p.why.substring(0, 72)}${p.why.length > 72 ? '…' : ''}</div>` : ''}
       </div>
       <div class="project-cell">${domainChip(p.domain)}</div>
-      <div class="project-cell" style="font-size:12px;color:#5E3A2B;font-weight:700;">${clientLabel}</div>
       <div class="project-cell">${statusBadge(p.status)}</div>
       <div class="project-cell">${priorityBadge(p.priority)}</div>
-      <div class="project-cell" style="font-size:12px;color:#7a6b5f;">${formatDate(p.target_date)}</div>
-      <div class="project-cell">${completenessDotsHTML(score)}</div>
+      <div class="project-cell" style="font-size:12px;color:var(--color-neutral-4);">${formatDate(p.target_date)}</div>
+      <div class="project-cell"><span class="${age.cls}" style="font-size:12px;">${age.label}</span></div>
     </div>`;
   }
   tbody.innerHTML = html;
@@ -2976,7 +3037,7 @@ function openModal(id) {
     const parentProject = projectData.find(x => x.id === p.parent);
     const parentName = parentProject ? parentProject.name : p.parent;
     bodyHTML += `
-    <div style="font-size:11px;color:#B87A4E;margin-bottom:16px;display:flex;align-items:center;gap:6px;">
+    <div style="font-size:11px;color:var(--color-supporting-2);margin-bottom:16px;display:flex;align-items:center;gap:6px;">
       <span style="font-weight:600;letter-spacing:0.04em;text-transform:uppercase;">↳ Sub-project of</span>
       <span style="font-weight:700;cursor:pointer;text-decoration:underline;" onclick="event.stopPropagation();openModal('${p.parent}')">${parentName}</span>
     </div>`;
@@ -2991,9 +3052,9 @@ function openModal(id) {
     </div>`;
   } else {
     bodyHTML += `
-    <div style="border-left:3px solid #c8beb7;background:rgba(200,190,183,0.07);padding:12px 16px;border-radius:0 4px 4px 0;margin-bottom:20px;">
-      <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#9a8f86;margin-bottom:5px;">Next Action</div>
-      <div style="font-size:13px;color:#9a8f86;font-style:italic;">Not recorded — open a session to define the next step.</div>
+    <div style="border-left:3px solid var(--color-neutral-2);background:var(--color-neutral-1);padding:12px 16px;border-radius:0 4px 4px 0;margin-bottom:20px;">
+      <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--color-neutral-3);margin-bottom:5px;">Next Action</div>
+      <div style="font-size:13px;color:var(--color-neutral-3);font-style:italic;">Not recorded — open a session to define the next step.</div>
     </div>`;
   }
 
@@ -3042,7 +3103,7 @@ function openModal(id) {
   bodyHTML += `
   <div class="modal-section">
     <div class="modal-section-title">Why this matters</div>
-    <div class="modal-section-content">${p.why || '<span style="color:#9a8f86;font-style:italic;">Not recorded.</span>'}</div>
+    <div class="modal-section-content">${p.why || '<span style="color:var(--color-neutral-3);font-style:italic;">Not recorded.</span>'}</div>
   </div>`;
 
   // Steps (sequential) + Action Points (parallel)
@@ -3060,7 +3121,7 @@ function openModal(id) {
   }
 
   if (hasSteps || hasDoneSteps) {
-    bodyHTML += `<div class="modal-section"><div class="modal-section-title">Steps <span style="font-size:10px;font-weight:400;color:#9a8f86;letter-spacing:0;text-transform:none;">— in order</span></div>`;
+    bodyHTML += `<div class="modal-section"><div class="modal-section-title">Steps <span style="font-size:10px;font-weight:400;color:var(--color-neutral-3);letter-spacing:0;text-transform:none;">— in order</span></div>`;
     if (hasSteps) {
       bodyHTML += '<ol class="steps-list">';
       for (const s of p.steps) { bodyHTML += `<li>${renderItem(s)}</li>`; }
@@ -3074,7 +3135,7 @@ function openModal(id) {
     bodyHTML += '</div>';
   }
 
-  bodyHTML += `<div class="modal-section"><div class="modal-section-title">Action Points <span style="font-size:10px;font-weight:400;color:#9a8f86;letter-spacing:0;text-transform:none;">— any time</span></div>`;
+  bodyHTML += `<div class="modal-section"><div class="modal-section-title">Action Points <span style="font-size:10px;font-weight:400;color:var(--color-neutral-3);letter-spacing:0;text-transform:none;">— any time</span></div>`;
   if (hasAPs) {
     bodyHTML += '<ul class="action-list">';
     for (const ap of p.action_points) { bodyHTML += `<li>${renderItem(ap)}</li>`; }
@@ -3088,7 +3149,7 @@ function openModal(id) {
   bodyHTML += `
   <div class="modal-section">
     <div class="modal-section-title">Linked Goals</div>
-    <div class="modal-section-content">${p.linked_goals && p.linked_goals.length > 0 ? '<div class="tag-list">' + formatGoals(p.linked_goals) + '</div>' : '<span class="muted" style="color:#9a8f86;font-style:italic;font-size:13px;">None recorded</span>'}</div>
+    <div class="modal-section-content">${p.linked_goals && p.linked_goals.length > 0 ? '<div class="tag-list">' + formatGoals(p.linked_goals) + '</div>' : '<span class="muted" style="color:var(--color-neutral-3);font-style:italic;font-size:13px;">None recorded</span>'}</div>
   </div>`;
 
   // Linked People
@@ -3138,34 +3199,169 @@ document.addEventListener('keydown', function(e) {
 });
 
 // ============================================================
-// BUILD PROJECT DOMAIN DROPDOWN — distinct values from projectData, sorted A–Z
-// Keeps the Projects view domain filter in sync with actual data, not a hardcoded list.
+// COLUMN FILTER DROPDOWNS
 // ============================================================
-function buildProjectDomainDropdown() {
-  const sel = document.getElementById('domainSelect');
-  DOMAIN_GROUPS.forEach(g => {
-    const opt = document.createElement('option');
-    opt.value = g.label;
-    opt.textContent = g.label;
-    sel.appendChild(opt);
+
+// Pre-compute full-dataset counts (never changes — reflects all data)
+function buildFullCounts() {
+  const statusCounts   = {};
+  const priorityCounts = {};
+  const domainCounts   = {};
+
+  for (const p of projectData) {
+    statusCounts[p.status]         = (statusCounts[p.status]         || 0) + 1;
+    const pri = p.priority || 'low';
+    priorityCounts[pri]            = (priorityCounts[pri]            || 0) + 1;
+    const grp = DOMAIN_GROUPS.find(g => g.slugs.includes(p.domain));
+    if (grp) domainCounts[grp.label] = (domainCounts[grp.label] || 0) + 1;
+  }
+  return { statusCounts, priorityCounts, domainCounts };
+}
+
+let _fullCounts = null;
+
+function initColumnDropdowns() {
+  _fullCounts = buildFullCounts();
+  const total = projectData.length;
+
+  // Build three dropdown panels, portal-mount to body
+  const configs = [
+    {
+      id: 'domain',
+      options: [
+        { value: 'all', label: 'All domains', count: total },
+        ...DOMAIN_GROUPS.map(g => ({ value: g.label, label: g.label, count: _fullCounts.domainCounts[g.label] || 0 }))
+      ]
+    },
+    {
+      id: 'status',
+      options: [
+        { value: 'all', label: 'All statuses', count: total },
+        { value: 'active',   label: 'Active',   count: _fullCounts.statusCounts['active']   || 0 },
+        { value: 'planning', label: 'Planning',  count: _fullCounts.statusCounts['planning'] || 0 },
+        { value: 'on-hold',  label: 'On Hold',   count: _fullCounts.statusCounts['on-hold']  || 0 },
+        { value: 'parked',   label: 'Parked',    count: _fullCounts.statusCounts['parked']   || 0 },
+        { value: 'closed',   label: 'Closed',    count: _fullCounts.statusCounts['closed']   || 0 },
+      ]
+    },
+    {
+      id: 'priority',
+      options: [
+        { value: 'all',    label: 'All priorities', count: total },
+        { value: 'high',   label: 'High',   count: _fullCounts.priorityCounts['high']   || 0 },
+        { value: 'medium', label: 'Medium', count: _fullCounts.priorityCounts['medium'] || 0 },
+        { value: 'low',    label: 'Low',    count: _fullCounts.priorityCounts['low']    || 0 },
+      ]
+    }
+  ];
+
+  configs.forEach(cfg => {
+    const panel = document.createElement('div');
+    panel.className = 'col-dropdown';
+    panel.id = 'coldrop-' + cfg.id;
+
+    cfg.options.forEach(opt => {
+      const el = document.createElement('div');
+      el.className = 'col-dropdown-option' + (opt.value === 'all' ? ' selected' : '');
+      el.dataset.value = opt.value;
+      el.dataset.filter = cfg.id;
+      el.innerHTML = `<span>${opt.label}</span><span class="col-dropdown-count">[${opt.count}]</span>`;
+      el.addEventListener('click', function(e) {
+        e.stopPropagation();
+        setColFilter(cfg.id, opt.value);
+        closeAllDropdowns();
+      });
+      panel.appendChild(el);
+    });
+
+    document.body.appendChild(panel);
+  });
+
+  // Close dropdowns on outside click
+  document.addEventListener('click', function() {
+    closeAllDropdowns();
+  });
+}
+
+function closeAllDropdowns() {
+  document.querySelectorAll('.col-dropdown').forEach(d => d.classList.remove('open'));
+  _openDropdown = null;
+}
+
+function toggleColDropdown(id, triggerEl) {
+  // Stop propagation so outside-click listener doesn't immediately close
+  event.stopPropagation();
+  const panel = document.getElementById('coldrop-' + id);
+  if (!panel) return;
+
+  if (_openDropdown === id) {
+    closeAllDropdowns();
+    return;
+  }
+
+  closeAllDropdowns();
+  _openDropdown = id;
+
+  // Position below the trigger
+  const rect = triggerEl.getBoundingClientRect();
+  panel.style.top  = (rect.bottom + 2) + 'px';
+  panel.style.left = rect.left + 'px';
+  panel.classList.add('open');
+
+  // Highlight selected option
+  const activeValue = id === 'domain'   ? activeDomainFilter
+                    : id === 'status'   ? activeStatusFilter
+                    : activePriorityFilter;
+  panel.querySelectorAll('.col-dropdown-option').forEach(opt => {
+    opt.classList.toggle('selected', opt.dataset.value === activeValue);
+  });
+}
+
+function setColFilter(id, value) {
+  if (id === 'domain')   activeDomainFilter   = value;
+  if (id === 'status')   activeStatusFilter   = value;
+  if (id === 'priority') activePriorityFilter = value;
+
+  // Update header cell active class
+  const headerEl = document.getElementById('col-header-' + id);
+  if (headerEl) headerEl.classList.toggle('filter-active', value !== 'all');
+
+  applyFilters();
+}
+
+function updateColChips(visibleCount) {
+  // Show count chip on active filter headers (reflects filtered row count)
+  const configs = [
+    { id: 'domain',   active: activeDomainFilter   !== 'all' },
+    { id: 'status',   active: activeStatusFilter   !== 'all' },
+    { id: 'priority', active: activePriorityFilter !== 'all' },
+  ];
+  configs.forEach(cfg => {
+    const chip = document.getElementById('col-chip-' + cfg.id);
+    if (!chip) return;
+    chip.textContent = visibleCount;
+    chip.style.display = cfg.active ? 'inline-flex' : 'none';
   });
 }
 
 // ============================================================
 // INIT
 // ============================================================
-buildProjectDomainDropdown();
+initColumnDropdowns();
 buildStats();
 applyFilters();
 
 // ============================================================
-// ARTIFACTS DATA — sourced from Deliverables/INDEX.md (2026-06-21)
-// type: derived from file field (.html / folder→html = "HTML", .md/plain = "Markdown", .xlsx = "Spreadsheet")
-// url:  first https:// URL found in purpose string, or null
+// ARTIFACTS DATA — GENERATED (merge of legacy seed + project frontmatter)
+// DO NOT HAND-EDIT. Run Tools/generate_project_data.py to refresh.
+// Legacy seed (~60 rows, hand-built 2026-06-21 from Deliverables/INDEX.md):
+//   Tools/artifacts_legacy_seed.json
+// New rows come from project frontmatter `artifacts:` entries that
+// specify label/url + author/date/type (purpose optional).
 // ============================================================
 const artifactsData = [
   { title: 'CEAL Green Website Audit Brief', date: '2026-06-10', author: 'Max', purpose: 'Audit brief for Cass — CEAL Green website full evaluation. All 4 intake items complete, scope defined, pre-fetch protocol, HTML-at-URL output path. Ready for execution session.', file: '2026-06-10-ceal-green-website-audit-brief', type: 'Markdown', url: null, project: 'CEAL Green Audit', client: 'CEAL Green', domain: 'work' },
-  { title: 'CEAL Green Visual Identity Spec v1', date: '2026-06-09', author: 'Charta', purpose: 'Living HTML version of the CEAL Green Visual Identity Specification v1.0 — renders actual colours, typefaces, wordmark, buttons, and all 6 spec sections. Self-contained; requires internet for Google Fonts.', file: '2026-06-09-ceal-green-vis-id-spec/ceal-green-visual-identity-spec-v1', type: 'HTML', url: 'https://peterag.github.io/morevida-artifacts/ceal-green-visual-identity-spec-v1.html', project: 'CEAL Green', client: 'CEAL Green', domain: 'work' },
+  { title: 'Visual Identity Spec', date: '2026-06-09', author: 'Charta', purpose: 'Living HTML version of the CEAL Green Visual Identity Specification v1.0 — renders actual colours, typefaces, wordmark, buttons, and all 6 spec sections. Self-contained; requires internet for Google Fonts.', file: '2026-06-09-ceal-green-vis-id-spec/ceal-green-visual-identity-spec-v1', type: 'HTML', url: 'https://peterag.github.io/morevida-artifacts/ceal-green-visual-identity-spec-v1.html', project: 'CEAL Green Agentic Platform', client: 'CEAL Green', domain: 'work' },
   { title: 'Public Speaking Emotional Regulation', date: '2026-06-09', author: 'Rees', purpose: 'Research brief on emotional regulation techniques for public speaking — pain-interrupt mechanism, invisible body-based techniques, mechanical discreet devices. Mirrored to Craft (Speakwrite folder).', file: 'rees-public-speaking-emotional-regulation', type: 'Markdown', url: null, project: 'Public Speaking', client: 'Personal', domain: 'self' },
   { title: 'Ming Craft Research', date: '2026-05-30', author: 'Rees', purpose: 'Craft capabilities research for Ming\'s contract — data model, MCP tools, REST API, limitations, update cadence. Required reading before Ming activation.', file: '2026-05-30-ming-craft-research', type: 'Markdown', url: null, project: 'Ming / Craft', client: 'Personal', domain: 'self' },
   { title: 'Leslie LeeFook Research', date: '2026-05-30', author: 'Rees', purpose: 'Due-diligence on Leslie LeeFook (Incus) ahead of dinner. Background, professional reputation, AI positioning in T&T, mutual benefit angles.', file: '2026-05-30-leslie-leefook-research', type: 'Markdown', url: null, project: 'System', client: 'Personal', domain: 'self' },
@@ -3207,11 +3403,11 @@ const artifactsData = [
   { title: 'CEAL Green Copy Recommendations', date: '2026-06-11', author: 'Cass', purpose: 'CEAL Green copy recommendations — Options A/B/C for every copy element rated. Standalone brief for copywriter; keyed to finding numbers in the findings register.', file: '2026-06-10-ceal-green-website-audit/ceal-green-copy-recommendations', type: 'Markdown', url: null, project: 'CEAL Green Audit', client: 'CEAL Green', domain: 'work' },
   { title: 'CEAL Green Logo & Wordmark Evaluation', date: '2026-06-11', author: 'Cass', purpose: 'CEAL Green logo + wordmark evaluation. Ryan Roper\'s circular logo assessed against brand guidelines. Verdict: vector redraw required. Alignment: bottom-justify. Alt A (interpunct) recommended for wordmark differentiation.', file: '2026-06-10-ceal-green-website-audit/logo-evaluation/ceal-green-logo-wordmark-evaluation', type: 'Markdown', url: null, project: 'CEAL Green Audit', client: 'CEAL Green', domain: 'work' },
   { title: 'CEAL Green Website Audit HTML v1', date: '2026-06-11', author: 'Charta', purpose: 'CEAL Green website audit HTML report — v1 static build. Published at https://peterag.github.io/morevida-artifacts/2026-06-10-ceal-green-website-audit.html. Note: v1 is formatted Markdown only; interactive annotated screenshot rebuild deferred to next session.', file: '2026-06-10-ceal-green-website-audit/ceal-green-website-audit', type: 'HTML', url: 'https://peterag.github.io/morevida-artifacts/2026-06-10-ceal-green-website-audit.html', project: 'CEAL Green Audit', client: 'CEAL Green', domain: 'work' },
-  { title: 'CEAL Green Website Audit HTML v2', date: '2026-06-15', author: 'Charta + Max', purpose: 'CEAL Green website audit — v2 interactive HTML artifact. Annotated screenshot viewer with 62 severity-coded pins (8C/27Ma/18Mi/9W), Works-only filter, and modal popups. Live at https://peterag.github.io/morevida-artifacts/ceal-green-website-audit-v2.html', file: '2026-06-10-ceal-green-website-audit/ceal-green-website-audit-v2', type: 'HTML', url: 'https://peterag.github.io/morevida-artifacts/ceal-green-website-audit-v2.html', project: 'CEAL Green Audit', client: 'CEAL Green', domain: 'work' },
+  { title: 'Website Audit', date: '2026-06-15', author: 'Charta + Max', purpose: 'CEAL Green website audit — v2 interactive HTML artifact. Annotated screenshot viewer with 62 severity-coded pins (8C/27Ma/18Mi/9W), Works-only filter, and modal popups.', file: '2026-06-10-ceal-green-website-audit/ceal-green-website-audit-v2', type: 'HTML', url: 'https://peterag.github.io/morevida-artifacts/ceal-green-website-audit-v2.html', project: 'CEAL Green Website Audit', client: 'CEAL Green', domain: 'work' },
   { title: 'CEAL Green Excel Alignment Report', date: '2026-06-15', author: 'Cass + Max', purpose: 'CEAL Green Excel alignment report — maps Ryan\'s 14-row approved change list against Cass\'s audit findings. Sections: Strong (8), Partial (5), No Mistakes (0), Unaddressed Critical/Major gaps.', file: '2026-06-10-ceal-green-website-audit/ceal-green-excel-alignment-report', type: 'Markdown', url: null, project: 'CEAL Green Audit', client: 'CEAL Green', domain: 'work' },
   { title: 'CG Publication & Event Research', date: '2026-06-13', author: 'Rees', purpose: 'Research brief: Global TT (govt agency, not a publication), Caribex Sport (does not exist), CariPhil, Family Offices, Hotel Conferences, Chambers of Commerce (Suriname/Guyana/T&T), SEOGS 2026 (speaker call closed Feb 2026).', file: 'rees-cg-publication-event-research-2026-06-13', type: 'Markdown', url: null, project: 'System', client: 'CEAL Green', domain: 'work' },
   { title: 'Caribbean Airlines Magazine Research', date: '2026-06-13', author: 'Rees', purpose: 'Caribbean Airlines in-flight magazine confirmed as Caribbean Beat (MEP Publishers). Editor: Caroline Taylor; bimonthly; contributor programme via caribbean-beat.com/submissions. Fit for CEAL Green conditional on human/place story angle.', file: 'rees-caribbean-airlines-magazine-2026-06-13', type: 'Markdown', url: null, project: 'System', client: 'CEAL Green', domain: 'work' },
-  { title: 'CEAL Green Developer Action Sheet', date: '2026-06-15', author: 'Max', purpose: 'CEAL Green developer action sheet. Sheet 1: 47 ready-to-implement rows (Visual-Technical, Content Fix, Copy — full Option A copy in cells). Sheet 2: 12 rows awaiting Ryan\'s decision.', file: '2026-06-15-ceal-green-developer-action-sheet.xlsx', type: 'Spreadsheet', url: null, project: 'CEAL Green Audit', client: 'CEAL Green', domain: 'work' },
+  { title: 'Developer Action Sheet', date: '2026-06-15', author: 'Max', purpose: 'Developer action sheet. Sheet 1: 47 ready-to-implement rows (Visual-Technical, Content Fix, Copy — full Option A copy in cells). Sheet 2: 12 rows awaiting Ryan\'s decision.', file: '2026-06-15-ceal-green-developer-action-sheet.xlsx', type: 'Spreadsheet', url: null, project: 'CEAL Green Website Audit', client: 'CEAL Green', domain: 'work' },
   { title: 'Phase 1 Rehab Program', date: '2026-06-12', author: 'Charta + Kinec', purpose: 'Phase 1 Rehab Program HTML artifact. Bilateral patellofemoral prehab, elbow isometrics (both arms), glute activation emphasis, eccentric tendinopathy protocols, core sequence. Live at https://peterag.github.io/petergales-artifacts/2026-06-12-phase1-rehab-program.html.', file: '2026-06-12-phase1-rehab-program', type: 'HTML', url: 'https://peterag.github.io/petergales-artifacts/2026-06-12-phase1-rehab-program.html', project: 'Body Team', client: 'Personal', domain: 'body' },
   { title: 'GL-013 + SOP-035 Opus Review', date: '2026-06-15', author: 'Max (Opus)', purpose: 'Opus review of GL-013 + SOP-035. Blocking fix: data-file validation used a JSON parser on a JavaScript file — switched to node --check. Three learnings generalized into GL-013. SOP-036 (general HTML build) tracked in Deferred #9.', file: '2026-06-15-gl013-sop035-opus-review', type: 'Markdown', url: null, project: 'System', client: 'Personal', domain: 'self' },
   { title: 'Document Routing — Craft + Peter OS 2', date: '2026-06-17', author: 'Max', purpose: 'Living reference — document routing decisions for Peter OS 2 + Craft. Section 1: Craft content audit (type-based disposition). Section 2: ongoing use cases (produced artifacts, client deliverables). Add new use cases as discovered.', file: '2026-06-17-document-routing-craft-peter-os2', type: 'Markdown', url: null, project: 'Ming / Craft', client: 'Personal', domain: 'self' },
@@ -3219,11 +3415,15 @@ const artifactsData = [
   { title: 'Doc: Calvert Myelofibrosis Prognosis', date: '2026-06-17', author: 'Doc', purpose: 'Clinical prognosis assessment for Calvert Craigg — asymptomatic MF diagnosed 2026-06-09 by Dr. Moosai. Five key questions for the haematologist; DIPSS tier survival ranges; fibrosis grade significance; natural history; monitoring protocol.', file: 'doc-calvert-myelofibrosis-prognosis-20260617', type: 'Markdown', url: null, project: 'System', client: 'Personal', domain: 'body' },
   { title: 'Maraval Dredging Contacts', date: '2026-06-17', author: 'Rees', purpose: 'Maraval River dredging contact directory for Andalusia Residents Association. Correct authority: DMBC (not "Diego Martin East"). Correct councillor: Damian Fournillier (Moka/Boissiere #2). Government change May 2025 flagged.', file: '2026-06-17-maraval-dredging-contacts', type: 'Markdown', url: null, project: 'ARA', client: 'ARA', domain: 'membership' },
   { title: 'Andalusia Dredging Email Draft', date: '2026-06-18', author: 'Will + Max', purpose: 'Formal email draft — urgent dredging request to DMBC CEO Ms. Beverly Haywood. Copies: Mayor Glasgow-Warner, Councillor Fournillier, Colm Imbert MP, Ministry of Works. Ready to send pending Minister Jearlean John\'s email address confirmation.', file: '2026-06-17-andalusia-dredging-email-draft', type: 'Markdown', url: null, project: 'ARA', client: 'ARA', domain: 'membership' },
-  { title: 'Project Vantage Experience Spec', date: '2026-06-17', author: 'Charta', purpose: 'Project Vantage experience spec — Peace / Power / Purpose + Living System. Self-contained HTML using GL-003 design system. Three-pillar architecture with open-bottom pillars on foundation slab. Benchmark review dates: 2026-07-17, 2026-09-17, 2027-06-17.', file: '2026-06-17-project-vantage-experience-spec', type: 'HTML', url: 'https://peterag.github.io/petergales-artifacts/2026-06-17-project-vantage-experience-spec.html', project: 'Project Vantage', client: 'Personal', domain: 'self' },
+  { title: 'Experience Spec', date: '2026-06-17', author: 'Charta', purpose: 'Project Vantage experience spec — Peace / Power / Purpose + Living System. Self-contained HTML using GL-003 design system. Three-pillar architecture with open-bottom pillars on foundation slab. Benchmark review dates: 2026-07-17, 2026-09-17, 2027-06-17.', file: '2026-06-17-project-vantage-experience-spec', type: 'HTML', url: 'https://peterag.github.io/petergales-artifacts/2026-06-17-project-vantage-experience-spec.html', project: 'Project Vantage', client: 'Personal', domain: 'self' },
   { title: 'Graphic Design Principles Brief', date: '2026-06-18', author: 'Rees', purpose: 'Robin Williams CRAP/PARC canon + color-in-sequential-layouts research. Grounds GL-003 and Charta/Iris contracts in established doctrine. 8 specific GL-003 recommendations.', file: '2026-06-18-rees-graphic-design-principles-brief', type: 'Markdown', url: null, project: 'System', client: 'Personal', domain: 'self' },
-  { title: 'Project Vantage Charter', date: '2026-06-18', author: 'Charta', purpose: 'Project Vantage two-tab HTML charter (v5). Tab 1: Peace/Power/Purpose + Living System experience spec. Tab 2: phased build plan (Phases 1–4) with benchmark checkpoint cards. Alabaster ground, badge-centric status encoding, GL-003 Williams canon applied.', file: 'project-vantage-charter', type: 'HTML', url: 'https://peterag.github.io/petergales-artifacts/project-vantage-charter.html', project: 'Project Vantage', client: 'Personal', domain: 'self' },
+  { title: 'Charter', date: '2026-06-18', author: 'Charta', purpose: 'Project Vantage two-tab HTML charter (v5). Tab 1: Peace/Power/Purpose + Living System experience spec. Tab 2: phased build plan (Phases 1-4) with benchmark checkpoint cards.', file: 'project-vantage-charter', type: 'HTML', url: 'https://peterag.github.io/petergales-artifacts/project-vantage-charter.html', project: 'Project Vantage', client: 'Personal', domain: 'self' },
   { title: 'Projects Dashboard', date: '2026-06-20', author: 'Charta', purpose: 'Living projects dashboard — all PKM projects in a sortable/filterable table. Row-click opens modal with Next Action callout, Steps (numbered/sequential), Action Points (parallel), Completed Steps toggle, document links, metadata grid, completeness bar. 40+ projects loaded. Live at https://peterag.github.io/petergales-artifacts/peter-os-projects-dashboard.html', file: 'peter-os-projects-dashboard', type: 'HTML', url: 'https://peterag.github.io/petergales-artifacts/peter-os-projects-dashboard.html', project: 'Project Vantage', client: 'Personal', domain: 'self' },
   { title: 'Dutch Practice App', date: '2026-07-08', author: 'Max', purpose: 'Single-file browser app for Dutch language practice. Enter English text, translate to Dutch via Azure Translator, generate audio via Azure TTS (MaartenNeural), listen with sentence-level subtitles. Stories, translations, and audio persist in IndexedDB. Keys stored in localStorage via Settings modal.', file: 'dutch-practice-app', type: 'HTML', url: 'https://peterag.github.io/petergales-artifacts/dutch-practice-app.html', project: 'Dutch Language Practice', client: 'Personal', domain: 'play' },
+  { title: 'Customer Journey Project Overview', date: '2026-06-18', author: 'Charta', purpose: 'Living HTML project overview for the CEAL Green Customer Journey — project identity, phased build steps, org roles, and status tracking. Shared reference for both this project and the agentic-platform sub-project.', file: 'ceal-green-customer-journey-project-overview', type: 'HTML', url: 'https://peterag.github.io/morevida-artifacts/ceal-green-customer-journey-project-overview.html', project: 'CEAL Green Customer Journey', client: 'CEAL Green', domain: 'work' },
+  { title: 'Guiding Narrative Spine v0.6', date: '2026-05-01', author: 'Ryan Roper (CEAL Green)', purpose: 'Final-approved CEAL Green Guiding Narrative Spine v0.6 — the authoritative brand foundation document (core proposition, 6 narrative sections, DRIVEN values, Build Now close). Everything downstream (brand guidelines, website audit, copy) derives from this.', file: 'PKM/Clients/ceal-green-guiding-narrative', type: 'Markdown', url: null, project: 'CEAL Green Customer Journey', client: 'CEAL Green', domain: 'work' },
+  { title: 'Strategy Review Synthesis (2026-07-09)', date: '2026-07-09', author: 'Max', purpose: 'Synthesis of Jude\'s and Nolan\'s strategy reviews of the CEAL Green Customer Journey implementation — Peter\'s responsibility for the prospect-first-contact-to-ongoing-client system and business processes.', file: '2026-07-09-ceal-green-strategy-review-synthesis', type: 'Markdown', url: 'Deliverables/2026-07-09-ceal-green-strategy-review-synthesis.md', project: 'CEAL Green Customer Journey', client: 'CEAL Green', domain: 'work' },
+  { title: 'Harvey Legal Brief (2026-06-22)', date: '2026-06-22', author: 'Harvey', purpose: 'Fiduciary Team legal brief on ASN Bank CRS fiscal residency declaration, Dutch domicile status, ius sanguinis citizenship path, and a possible FBAR obligation flag. Coordinated in parallel with Warren and Ernst.', file: '2026-06-22-asn-harvey-brief', type: 'Markdown', url: null, project: 'Dutch Citizenship Documentation', client: 'Personal', domain: 'self' },
 ];
 
 // ============================================================
@@ -3346,7 +3546,7 @@ function renderArtifacts() {
     html += `
     <div class="artifact-row">
       <div class="artifact-cell">${titleCell}</div>
-      <div class="artifact-cell" style="font-size:12px;color:#7a6b5f;">${formatDate(a.date)}</div>
+      <div class="artifact-cell" style="font-size:12px;color:var(--color-neutral-4);">${formatDate(a.date)}</div>
       <div class="artifact-cell"><span class="artifact-author-chip">${a.author}</span></div>
       <div class="artifact-cell">${typeChip(a.type)}</div>
       <div class="artifact-cell"><span class="artifact-purpose">${purposeShort}</span></div>

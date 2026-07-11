@@ -958,7 +958,8 @@
     font-size: 14px;
   }
 
-  .sort-arrow { margin-left: 3px; opacity: 0.6; font-size: 9px; }
+  .sort-arrow { margin-left: 3px; font-size: 9px; color: var(--color-neutral-3); }
+  .sort-arrow.active { color: var(--color-neutral-5); }
 
   /* ============================================================
      PRIORITY LEGEND
@@ -1229,7 +1230,7 @@
   <p class="header-tagline">A commanding view — every project, every domain</p>
 
   <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-top:24px;">
-    <p class="header-meta">Last updated: 2026-06-22 &nbsp;·&nbsp; <span id="totalCount">0</span> projects</p>
+    <p class="header-meta">Last updated: <span id="header-last-updated">2026-06-22</span> &nbsp;·&nbsp; <span id="totalCount">0</span> projects</p>
     <div class="view-toggle" role="group" aria-label="Switch view">
       <button class="view-toggle-btn active" id="btnProjects" onclick="switchView('projects')">Projects</button>
       <button class="view-toggle-btn" id="btnArtifacts" onclick="switchView('artifacts')">Artifacts</button>
@@ -1265,7 +1266,7 @@
       <div class="table-header-cell col-filterable" id="col-header-domain" onclick="toggleColDropdown('domain', this)">Domain <span class="col-filter-caret">▾</span><span class="col-active-chip" id="col-chip-domain" style="display:none;"></span></div>
       <div class="table-header-cell col-filterable" id="col-header-status" onclick="toggleColDropdown('status', this)">Status <span class="col-filter-caret">▾</span><span class="col-active-chip" id="col-chip-status" style="display:none;"></span></div>
       <div class="table-header-cell col-filterable" id="col-header-priority" onclick="toggleColDropdown('priority', this)">Priority <span class="col-filter-caret">▾</span><span class="col-active-chip" id="col-chip-priority" style="display:none;"></span></div>
-      <div class="table-header-cell">Client</div>
+      <div class="table-header-cell col-filterable" id="col-header-client" onclick="toggleColDropdown('client', this)">Client <span class="col-filter-caret">▾</span><span class="col-active-chip" id="col-chip-client" style="display:none;"></span></div>
       <div class="table-header-cell sortable" data-col="deadline" onclick="applySort('deadline')">Target <span class="sort-arrow" id="sort-deadline"></span></div>
       <div class="table-header-cell sortable" data-col="lastUpdated" onclick="applySort('lastUpdated')">Updated <span class="sort-arrow" id="sort-lastUpdated"></span></div>
     </div>
@@ -1364,7 +1365,7 @@
 <!-- PAG Footer -->
 <footer class="pag-footer">
   <span class="pag-marker">PAG</span>
-  <span class="pag-meta">Peter OS 2 · Project Vantage · Dashboard v1.0 · 2026-06-22</span>
+  <span class="pag-meta">Peter OS 2 · Project Vantage · Dashboard v1.0 · <span id="footer-generated-date">2026-06-22</span></span>
 </footer>
 
 <!-- ============================================================
@@ -1392,8 +1393,13 @@
 ============================================================ -->
 <script>
 // ============================================================
+// GENERATED DATE — updated by Tools/generate_project_data.py on each run
+// ============================================================
+const generatedDate = "2026-07-11";
+
+// ============================================================
 // MAINTENANCE REFERENCE — peter-os-projects-dashboard.html
-// Last updated: 2026-07-07
+// Last updated: 2026-07-11
 // ============================================================
 //
 // DATA SCHEMA — every field and what it produces in the UI
@@ -2785,6 +2791,7 @@ const DOMAIN_GROUPS = [
 let activeStatusFilter   = 'all';
 let activeDomainFilter   = 'all';
 let activePriorityFilter = 'all';
+let activeClientFilter   = 'all';
 let activeSort           = 'priority';
 let searchTerm           = '';
 let sortDir              = 1; // 1 = asc, -1 = desc
@@ -2872,10 +2879,10 @@ function applySort(col) {
     sortDir = 1;
   }
 
-  // Update header arrows
-  document.querySelectorAll('.sort-arrow').forEach(el => el.textContent = '');
+  // Update header arrows — reset all to muted ↑↓, then set active arrow
+  document.querySelectorAll('.sort-arrow').forEach(el => { el.textContent = '↑↓'; el.classList.remove('active'); });
   const arrow = document.getElementById('sort-' + col);
-  if (arrow) arrow.textContent = sortDir === 1 ? '▲' : '▼';
+  if (arrow) { arrow.textContent = sortDir === 1 ? '↑' : '↓'; arrow.classList.add('active'); }
   document.querySelectorAll('.table-header-cell.sortable').forEach(el => {
     el.classList.toggle('sorted', el.dataset.col === col);
   });
@@ -2894,6 +2901,7 @@ function applyFilters() {
       if (!group || !group.slugs.includes(p.domain)) return false;
     }
     if (activePriorityFilter !== 'all' && (p.priority || 'low') !== activePriorityFilter) return false;
+    if (activeClientFilter !== 'all' && (p.client || 'Personal') !== activeClientFilter) return false;
     if (searchTerm) {
       const haystack = [
         p.name, p.domain, p.client, p.why,
@@ -3193,6 +3201,7 @@ function buildFullCounts() {
   const statusCounts   = {};
   const priorityCounts = {};
   const domainCounts   = {};
+  const clientCounts   = {};
 
   for (const p of projectData) {
     statusCounts[p.status]         = (statusCounts[p.status]         || 0) + 1;
@@ -3200,8 +3209,10 @@ function buildFullCounts() {
     priorityCounts[pri]            = (priorityCounts[pri]            || 0) + 1;
     const grp = DOMAIN_GROUPS.find(g => g.slugs.includes(p.domain));
     if (grp) domainCounts[grp.label] = (domainCounts[grp.label] || 0) + 1;
+    const cli = p.client || 'Personal';
+    clientCounts[cli]              = (clientCounts[cli]              || 0) + 1;
   }
-  return { statusCounts, priorityCounts, domainCounts };
+  return { statusCounts, priorityCounts, domainCounts, clientCounts };
 }
 
 let _fullCounts = null;
@@ -3237,6 +3248,13 @@ function initColumnDropdowns() {
         { value: 'high',   label: 'High',   count: _fullCounts.priorityCounts['high']   || 0 },
         { value: 'medium', label: 'Medium', count: _fullCounts.priorityCounts['medium'] || 0 },
         { value: 'low',    label: 'Low',    count: _fullCounts.priorityCounts['low']    || 0 },
+      ]
+    },
+    {
+      id: 'client',
+      options: [
+        { value: 'all', label: 'All', count: total },
+        ...Object.keys(_fullCounts.clientCounts).sort().map(c => ({ value: c, label: c, count: _fullCounts.clientCounts[c] }))
       ]
     }
   ];
@@ -3297,6 +3315,7 @@ function toggleColDropdown(id, triggerEl) {
   // Highlight selected option
   const activeValue = id === 'domain'   ? activeDomainFilter
                     : id === 'status'   ? activeStatusFilter
+                    : id === 'client'   ? activeClientFilter
                     : activePriorityFilter;
   panel.querySelectorAll('.col-dropdown-option').forEach(opt => {
     opt.classList.toggle('selected', opt.dataset.value === activeValue);
@@ -3307,6 +3326,7 @@ function setColFilter(id, value) {
   if (id === 'domain')   activeDomainFilter   = value;
   if (id === 'status')   activeStatusFilter   = value;
   if (id === 'priority') activePriorityFilter = value;
+  if (id === 'client')   activeClientFilter   = value;
 
   // Update header cell active class
   const headerEl = document.getElementById('col-header-' + id);
@@ -3321,6 +3341,7 @@ function updateColChips(visibleCount) {
     { id: 'domain',   active: activeDomainFilter   !== 'all' },
     { id: 'status',   active: activeStatusFilter   !== 'all' },
     { id: 'priority', active: activePriorityFilter !== 'all' },
+    { id: 'client',   active: activeClientFilter   !== 'all' },
   ];
   configs.forEach(cfg => {
     const chip = document.getElementById('col-chip-' + cfg.id);
@@ -3335,6 +3356,15 @@ function updateColChips(visibleCount) {
 // ============================================================
 initColumnDropdowns();
 buildStats();
+// Initialise always-visible sort arrows
+document.querySelectorAll('.sort-arrow').forEach(el => { el.textContent = '↑↓'; });
+// Stamp generated date into header and footer
+(function() {
+  const el1 = document.getElementById('header-last-updated');
+  const el2 = document.getElementById('footer-generated-date');
+  if (el1) el1.textContent = generatedDate;
+  if (el2) el2.textContent = generatedDate;
+})();
 applyFilters();
 
 // ============================================================

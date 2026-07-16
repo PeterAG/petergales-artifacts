@@ -390,6 +390,7 @@
     padding: 11px var(--space-xs);
     font-size: 13px;
     color: var(--color-neutral-5);
+    min-width: 0;
   }
 
   .project-name {
@@ -405,6 +406,61 @@
     font-weight: 400;
     margin-top: 1px;
     line-height: 1.3;
+  }
+
+  /* Row-level Next Action + Quick Win — GL-003 §1A Candidate C pattern
+     (Batch B3, 2026-07-16). Replaces the row-level `why` sub-line; why
+     remains available in the modal only. */
+  .project-next-action {
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--color-neutral-4);
+    margin-top: 2px;
+    line-height: 1.35;
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    max-width: 100%;
+  }
+
+  .project-next-action .na-arrow {
+    color: var(--color-primary);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .project-next-action .na-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+  }
+
+  .project-quick-win {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: var(--radius-chip);
+    background: rgba(214,125,78,0.14);
+    color: var(--color-supporting-1);
+    font-size: 10px;
+    font-weight: 700;
+    max-width: 100%;
+    min-width: 0;
+    margin-top: 3px;
+  }
+
+  .project-quick-win .qw-spark {
+    color: var(--color-supporting-2);
+    flex-shrink: 0;
+  }
+
+  .project-quick-win .qw-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
   }
 
   /* ============================================================
@@ -1395,11 +1451,11 @@
 // ============================================================
 // GENERATED DATE — updated by Tools/generate_project_data.py on each run
 // ============================================================
-const generatedDate = "2026-07-13";
+const generatedDate = "2026-07-16";
 
 // ============================================================
 // MAINTENANCE REFERENCE — peter-os-projects-dashboard.html
-// Last updated: 2026-07-13
+// Last updated: 2026-07-16
 // ============================================================
 //
 // DATA SCHEMA — every field and what it produces in the UI
@@ -1492,6 +1548,8 @@ const projectData = [
     tags: ['electronics', 'declutter', 'inventory'],
     why: 'There are old electronic items, accessories, and cables in drawers and boxes that need to be evaluated. The goal is to decide what is useful to keep and what to do with the rest.',
     next_action: 'FIRST ACTION: Submit images of electronics items (grouped by drawer or box) for assessment. Items are currently stored in drawers and boxes.',
+    attention: null,
+    quick_win: null,
     action_points: ['FIRST ACTION: Submit images of electronics items (grouped by drawer or box) for assessment. Items are currently stored in drawers and boxes.', 'Review all items: keep, donate, recycle, or discard', 'Log any items to keep in the inventory'],
     artifacts: []
   },
@@ -1510,6 +1568,8 @@ const projectData = [
     tags: ['podcast', 'ai', 'content', 'jamaican-voice'],
     why: 'Peter\'s idea for a podcast with an AI co-host — conceived at Camy\'s place on 9 March 2025. The AI co-host has a distinct personality, a Jamaican voice, and ideally an evolving character over time. The show asks the questions few others are asking: job displacement, abundance, visions of a future that works for everyone. Peter reinstated this as a priority on 23 August 2025, noting it connects to expertise he is building for the [[remembering-app]] and to his broader AI thought leadership positioning.',
     next_action: 'Choose AI co-host name and personality brief',
+    attention: null,
+    quick_win: null,
     action_points: ['Choose AI co-host name and personality brief', 'Open ElevenLabs account and test Jamaican voice options', 'Draft first episode script or concept', 'Connect to Remembering App chatbot development work'],
     artifacts: []
   },
@@ -1528,6 +1588,8 @@ const projectData = [
     tags: ['income', 'offer', 'ai', 'consulting'],
     why: 'A business offer idea: conducting AI Audits — also called Opportunity Assessments — that assess a client\'s current systems and workflows to identify where AI could help. This connects to [[income-and-offer-clarity]] and Peter\'s goal of building a positioned, scalable consulting offer.',
     next_action: 'Create the structure for the AI Audit / Opportunity Assessment offer',
+    attention: null,
+    quick_win: null,
     action_points: ['Create the structure for the AI Audit / Opportunity Assessment offer', 'How to pitch it', 'What are the steps involved', 'Review the "Launching AI Initiatives" PDF — at `PKM/Documents/launching-ai-initiatives.pdf`', 'Review Kamil Blanc\'s framework for moving from free advice to premium projects'],
     artifacts: []
   },
@@ -1546,6 +1608,8 @@ const projectData = [
     tags: ['strategy', 'has', 'education', 'offer-design'],
     why: null,
     next_action: null,
+    attention: null,
+    quick_win: null,
     action_points: [],
     artifacts: []
   },
@@ -1564,6 +1628,8 @@ const projectData = [
     tags: ['workshop', 'ai', 'chamber-of-commerce', 'ai-human-connection'],
     why: 'Five-session Chamber of Commerce workshop series asking the questions before tools — purpose, people, and what kind of businesses we want to build.',
     next_action: 'Deliver series independently (Rudolph Hanamji collaboration ended)',
+    attention: null,
+    quick_win: null,
     action_points: ['Deliver series independently (Rudolph Hanamji collaboration ended)', 'Find a new co-presenter or develop delivery as solo facilitator', 'Define pricing model and marketing approach for the Chamber'],
     artifacts: []
   },
@@ -1582,6 +1648,8 @@ const projectData = [
     tags: ['ai', 'video', 'speaking', 'marketing'],
     why: 'A short video (1:30 to 2:00 minutes) that creates the need for an AI Intro or Alignment session as a first step toward an AI strategy. The video gives an audience a sense of Peter as a living personality: what he looks like, how he sounds, what he is like, offering something of value.',
     next_action: 'Choose the final opening and structure for the script',
+    attention: null,
+    quick_win: null,
     action_points: ['Choose the final opening and structure for the script', 'Record a rough cut for review', 'Decide on distribution channels (LinkedIn, website, YouTube)'],
     artifacts: []
   },
@@ -1600,6 +1668,8 @@ const projectData = [
     tags: ['ai', 'mastermind', 'community', 'revenue'],
     why: 'A structured group for AI-focused idea-sharing, skill-building, and collaboration. The concept serves multiple purposes: generates revenue, builds Peter\'s network, and demonstrates how to run a mastermind to others.',
     next_action: 'Define audience and format',
+    attention: null,
+    quick_win: null,
     action_points: ['Define audience and format', 'Determine whether to pilot as a free or paid group first', 'Explore connection to existing Chamber of Commerce workshop audience ([[ai-human-question-workshop-series]])'],
     artifacts: []
   },
@@ -1618,6 +1688,8 @@ const projectData = [
     tags: ['ai', 'event', 'thought-leadership', 'trinidad', 'community', 'positioning'],
     why: 'Peter wants to position himself as Trinidad\'s leading voice in AI and human-centered innovation. This event is the platform launch — a single large-scale event that establishes his identity as a national AI visionary, convenes local AI practitioners and stakeholders, and demonstrates to business and government that local expertise exists. It is also the launchpad for a permanent AI community and an annual national survey on AI adoption.',
     next_action: 'Confirm whether this is still an active intention or a parked idea',
+    attention: null,
+    quick_win: null,
     action_points: ['Confirm whether this is still an active intention or a parked idea', 'Define target date (Q3 2026 or later?)', 'Identify lead for sponsorship outreach', 'Draft event brief and vision statement (for venue and sponsor conversations)', 'Design the national AI survey', 'Identify and approach potential panelists'],
     artifacts: []
   },
@@ -1636,6 +1708,8 @@ const projectData = [
     tags: ['ara', 'community'],
     why: 'The ARA has not published end-of-year accounts for several years. This project reconciles and publishes accounts going back to approximately 2022. Publishing transparent financials is essential to community trust and governance.',
     next_action: 'Peter to write a narrative to accompany the published end-of-year accounts going back to ~2022. **Urgent as of 2026-06-20.**',
+    attention: null,
+    quick_win: null,
     action_points: ['Peter to write a narrative to accompany the published end-of-year accounts going back to ~2022. **Urgent as of 2026-06-20.**'],
     artifacts: []
   },
@@ -1654,6 +1728,8 @@ const projectData = [
     tags: ['ara', 'community', 'security'],
     why: 'Andalusia currently employs a night security guard. This project explores replacing the night guard with an automatic gate to reduce costs, improve reliability, and provide enforceable protocol and access logs. There is one entrance and exit to the estate.',
     next_action: 'Provide financing options summary to the community (flagged in source notes as "Provide Funding Options to Gem").',
+    attention: null,
+    quick_win: null,
     action_points: ['Provide financing options summary to the community (flagged in source notes as "Provide Funding Options to Gem").', 'Request an apples-to-apples comparison framework from Gem for evaluating vendor quotes.', 'Get a breakdown of the latest state-of-the-art keyless entry systems.', 'Decide on vendor and financing approach pending broader community consultation.'],
     artifacts: []
   },
@@ -1672,6 +1748,8 @@ const projectData = [
     tags: ['ara', 'andalusia', 'legal', 'property'],
     why: 'Converting Andalusia leaseholders to freehold title — removing lessor dependency on sales, transfers, and mortgages. 39 households interested.',
     next_action: 'Secure formal written agreement from Shivanand and Danny at $1/sq ft',
+    attention: null,
+    quick_win: null,
     action_points: ['Secure formal written agreement from Shivanand and Danny at $1/sq ft', 'Confirm meeting with Mark LaQuis', 'Clarify status of blocked leasehold transfers (Fransen, Dass, Grosberg, Farnum, Govia)', 'Obtain official receipt for December 2025 peppercorn payments from Shivanand'],
     artifacts: []
   },
@@ -1690,6 +1768,8 @@ const projectData = [
     tags: ['ara', 'community', 'infrastructure'],
     why: 'WASA repairs have left the roads in Andalusia badly damaged. The Ministry of Works (MOW) and WASA are collaborating in an unusual arrangement to help restore roads damaged by WASA repairs. Getting these roads repaired requires tracking all damage locations, communicating them to the responsible parties, and following up.',
     next_action: null,
+    attention: null,
+    quick_win: null,
     action_points: [],
     artifacts: []
   },
@@ -1708,6 +1788,8 @@ const projectData = [
     tags: ['body', 'rehab', 'knees', 'pfps'],
     why: 'Bilateral patellofemoral chondrosis confirmed by MRI (October 2025). The knees are the primary limiter on running, skipping, jumping, and most lower-body athletic activity. Resolving this is a prerequisite for [[achieve-running-jumping-fitness]].',
     next_action: 'Doc assessment of first MTP joint sensitivity before Phase 2',
+    attention: null,
+    quick_win: null,
     action_points: ['Doc assessment of first MTP joint sensitivity before Phase 2', 'Phase 2 planning session with Kinec', 'Continue Phase 1: glute-priority, foot/ankle strengthening, core, Tunturi bike'],
     artifacts: []
   },
@@ -1726,6 +1808,8 @@ const projectData = [
     tags: ['pension', 'family-retainer', 'trinidad'],
     why: 'Calvert Craigg, a lifelong trusted member of the extended Phillips-Gales household, was denied his Senior Citizens\' Pension on the erroneous basis that he had been out of Trinidad and Tobago for seven years during the preceding twenty. Since Pearl Phillips became incapacitated, Peter has taken on the role of helping Calvert navigate institutional and bureaucratic matters. Resolving this appeal restores a pension Calvert was always entitled to and provides him basic income security in his later years — especially important given his recent MPN diagnosis.',
     next_action: 'Confirm Calvert has been contacted by Aranguez office and collected written notification',
+    attention: null,
+    quick_win: null,
     action_points: ['Confirm Calvert has been contacted by Aranguez office and collected written notification', 'If no contact by ~2026-07-21, follow up with Ms. Baptiste at (868) 623-2608 Ext. 1208 / helen.baptiste@social.gov.tt', 'Once notification confirmed collected, update project status to `archived`'],
     artifacts: []
   },
@@ -1744,6 +1828,8 @@ const projectData = [
     tags: ['camy', 'health', 'family'],
     why: 'Camy sustained a severe crush injury to her wrist on June 24, 2026. Surgery has been confirmed and scheduled. This is the most significant health event in her life right now, and Peter is holding it closely. The recovery arc will extend through the summer and beyond. Peter\'s support — whether from a distance or in person — is part of how he shows up for her.',
     next_action: 'Confirm accommodation for August 2–16 (Varuna, [[derek-decaires]], or other).',
+    attention: null,
+    quick_win: null,
     action_points: ['Confirm accommodation for August 2–16 (Varuna, [[derek-decaires]], or other).', 'Check in with Camy on how she is managing one-handed ahead of July 9 surgery.', 'After July 20 follow-up: update this file with recovery prognosis and any changes to plan.'],
     artifacts: []
   },
@@ -1762,6 +1848,8 @@ const projectData = [
     tags: ['passport', 'canada', 'documents', 'identity'],
     why: 'Peter holds Canadian citizenship. A valid Canadian passport may be needed for travel, banking, and cross-border matters. No details about the current passport\'s expiry or renewal status are on file — this project file was created to capture the gap.',
     next_action: 'Confirm current Canadian passport expiry date',
+    attention: null,
+    quick_win: null,
     action_points: ['Confirm current Canadian passport expiry date', 'Determine if renewal is urgent or can be planned', 'Route to Harvey if any citizenship documentation considerations apply', '--', 'Gap identified: project review session 2026-06-20.*'],
     artifacts: []
   },
@@ -1780,6 +1868,8 @@ const projectData = [
     tags: ['ceal-green', 'agentic', 'ai'],
     why: 'Building an agentic AI system to allow [[ceal-green]] to execute its business operations. This is a concrete application of Peter\'s AI capabilities in a client context — and a proof of concept for the kind of offer he could make to other companies.',
     next_action: 'Working group session: Mark, Cecil, Peter — scope customer journey agentic build',
+    attention: null,
+    quick_win: null,
     action_points: ['Working group session: Mark, Cecil, Peter — scope customer journey agentic build', 'Define Peter\'s specific deliverables for the customer journey layer', '--', 'First named: [[2026-06-17-morning-voice-journal]]*'],
     artifacts: [
       { label: 'Customer Journey Overview', url: 'https://peterag.github.io/morevida-artifacts/ceal-green-customer-journey-project-overview.html' },
@@ -1801,11 +1891,13 @@ const projectData = [
     tags: ['ceal-green', 'customer-journey', 'strategy'],
     why: 'Peter is leading the design of the full CEAL Green customer journey — the designed arc from a prospect\'s first encounter with CEAL Green to a sustained relationship of trust and advocacy. This is not a content role; it is the experience design and systems architecture across all three phases.',
     next_action: 'Review CG Digital Transformation Roadmap and Ethniv\'s feedback session',
+    attention: null,
+    quick_win: null,
     action_points: ['Review CG Digital Transformation Roadmap and Ethniv\'s feedback session', 'Begin Phase 2 experience design — touchpoint mapping from first active step to commitment', 'Define handoff protocols between Phase 1 and Phase 2', 'Assess Customer Journey Manager formalisation timeline'],
     artifacts: [
       { label: 'Customer Journey Project Overview', url: 'https://peterag.github.io/morevida-artifacts/ceal-green-customer-journey-project-overview.html' },
       { label: 'Guiding Narrative Spine v0.6', url: '#', title: 'Local file — not published' },
-      { label: 'Strategy Review Synthesis (2026-07-09)', url: 'Deliverables/2026-07-09-ceal-green-strategy-review-synthesis.md', title: 'Local file — not published' },
+      { label: 'Strategy Review Synthesis (2026-07-09)', url: 'PKM/Documents/2026-07-09-ceal-green-strategy-review-synthesis.md', title: 'Local file — not published' },
     ]
   },
   {
@@ -1823,6 +1915,8 @@ const projectData = [
     tags: ['ceal-green', 'website', 'audit'],
     why: 'Cass has been briefed to evaluate the CEAL Green website. The audit will inform the content strategy and identify gaps between the brand guidelines, guiding narrative, and the live web presence. Peter gathered the relevant CEAL Green documents on June 9 in preparation.',
     next_action: 'Run the Cass audit session on June 11',
+    attention: null,
+    quick_win: null,
     action_points: ['Run the Cass audit session on June 11', 'Review findings against [[ceal-green-brand-guidelines]] and [[ceal-green-content-strategy]]'],
     artifacts: [
       { label: 'Website Audit', url: 'https://peterag.github.io/morevida-artifacts/ceal-green-website-audit-v2.html' },
@@ -1844,6 +1938,8 @@ const projectData = [
     tags: ['ceal-green', 'digital-transformation', 'customer-journey', 'ryan'],
     why: 'Peter is not responsible for delivering this roadmap — that is Ryan\'s and the CG team\'s work. However, Ryan wants the customer journey to be connected to business processes. Peter needs to be knowledgeable about this roadmap so the customer journey work he is leading can plug into the right business processes. See [[ceal-green-customer-journey-project-overview]].',
     next_action: 'Read the CG Digital Transformation Roadmap 2026 PDF',
+    attention: null,
+    quick_win: null,
     action_points: ['Read the CG Digital Transformation Roadmap 2026 PDF', 'Watch Ethniv\'s feedback on the roadmap', 'Identify which business processes connect to the customer journey work', 'Consider asking Jude to help process and synthesise what\'s relevant'],
     artifacts: []
   },
@@ -1862,6 +1958,8 @@ const projectData = [
     tags: ['finances', 'family', 'usa'],
     why: '[[pearl-phillips|Pearly]] continues to receive Computershare cheque payments in her name. These cheques are accumulating uncashed in a folder in Peter\'s desk drawer. The goal is to stop the accumulation and get the payments directed somewhere useful — either into her [[chase-bank|Chase account]] or transferred to [[cindel-webb|Cindel]].',
     next_action: 'Warren to advise on Computershare payment redirection or transfer process.',
+    attention: null,
+    quick_win: null,
     action_points: ['Warren to advise on Computershare payment redirection or transfer process.', 'Peter to count and tally cheques in desk drawer.', 'Determine which option (Chase redirect vs. transfer to Cindel) is more practical.'],
     artifacts: []
   },
@@ -1880,6 +1978,8 @@ const projectData = [
     tags: ['content', 'ai', 'curation', 'writing'],
     why: 'A scheduled, structured view of the content Peter will produce for a defined future period (weeks or months ahead). This connects the content curation and creation system to an actual publishing rhythm.',
     next_action: 'Test Perplexity Pro with sample queries on human AI stories and education topics',
+    attention: null,
+    quick_win: null,
     action_points: ['Test Perplexity Pro with sample queries on human AI stories and education topics', 'Set up Zapier automation for weekly digest to Google Docs', 'Define first content calendar period (next 3 to 4 weeks)'],
     artifacts: []
   },
@@ -1898,6 +1998,8 @@ const projectData = [
     tags: ['content', 'writing', 'system', 'ai', 'craft'],
     why: 'Peter writes by instinct. This project builds the operational infrastructure to capture, organize, and publish that instinct — without imposing frameworks that constrain the creative process. The system serves prose, copywriting, social posts, and presentations.',
     next_action: null,
+    attention: null,
+    quick_win: null,
     action_points: [],
     artifacts: []
   },
@@ -1916,6 +2018,8 @@ const projectData = [
     tags: ['admin', 'florida', 'license', 'usa'],
     why: 'Converting expired NY license to Florida — on hold pending a decision on whether pursuing it is worth the residency complexity.',
     next_action: 'Make the call: is it worth doing given the expired NY license and residency complexity?',
+    attention: null,
+    quick_win: null,
     action_points: ['Make the call: is it worth doing given the expired NY license and residency complexity?', 'If proceeding: confirm FL DMV requirements and gather two FL address proofs'],
     artifacts: []
   },
@@ -1934,6 +2038,8 @@ const projectData = [
     tags: ['system', 'craft', 'ssot'],
     why: 'Establishing a clear SSOT across tools, and deciding what role Craft actually plays now that HTML artifacts and the myPKA cockpit cover general visibility. Migration out of Craft is need-driven, not a job to clear the whole space.',
     next_action: 'Pull individual Craft documents into the vault as specific use cases arise — no scheduled full audit or second pass',
+    attention: null,
+    quick_win: null,
     action_points: ['Pull individual Craft documents into the vault as specific use cases arise — no scheduled full audit or second pass'],
     artifacts: []
   },
@@ -1952,6 +2058,8 @@ const projectData = [
     tags: ['legal', 'insurance', 'trinidad'],
     why: '[[dexter-borde]] ("Pig"), a school friend from Fatima class of 1978, slipped on the wet driveway at 45 Ness Place on August 8, 2021 and broke his femur. He subsequently filed a personal injury claim against [[pearl-phillips]] (property owner) and Peter (occupier). Beacon Insurance (Claim # 80840) is defending on their behalf. Legal officer is [[shivonne-francis]]. The matter has been ongoing since 2021 and went to court.',
     next_action: 'Respond to Jaggernauth with Netherlands travel details (country confirmed; time difference to be stated) before Sep 11, 2026 CMC',
+    attention: null,
+    quick_win: null,
     action_points: ['Respond to Jaggernauth with Netherlands travel details (country confirmed; time difference to be stated) before Sep 11, 2026 CMC', 'Confirm whether Pearl Phillips can be represented or excused from virtual attendance at Sep 11, 2026 CMC (Peter notes she cannot participate meaningfully)', 'Obtain and confirm virtual hearing link for Sep 11, 2026 at 9:55 a.m. (guidelines to be sent by Jaggernauth)', 'Monitor for any further correspondence from Gittens-Camacho (ecgclaw@yahoo.com)', 'Note: Amended Defence filed and served June 1, 2026 — this item is closed'],
     artifacts: []
   },
@@ -1970,6 +2078,8 @@ const projectData = [
     tags: ['netherlands', 'property', 'real-estate'],
     why: 'Apartment at Emmasingel 34, 9726 AJ Groningen — purchased 2000, rented out from ~2003, sold ~2018. Sale proceeds held in ASN Bank priverekening. Records documented for ASN account closure context and transfer-of-funds history.',
     next_action: null,
+    attention: null,
+    quick_win: null,
     action_points: [],
     artifacts: []
   },
@@ -1988,6 +2098,8 @@ const projectData = [
     tags: ['citizenship', 'netherlands', 'legal', 'identity', 'harvey'],
     why: 'Peter may be eligible for Dutch citizenship through Galesloot family heritage. A Dutch passport would provide EU citizenship and freedom of movement across the Netherlands and Europe. Harvey has this as an open item in his first-engagement brief.',
     next_action: 'Submit birth certificate to Team Inbox (Peter)',
+    attention: null,
+    quick_win: null,
     action_points: ['Submit birth certificate to Team Inbox (Peter)', 'Harvey to advise on documentation requirements for citizenship claim', 'Research eligibility criteria for citizenship through Galesloot parentage', '--', 'First surfaced: [[2026-06-04-20-30_max_warren-fiduciary-onboarding-ws005-s1]]. Harvey first-engagement brief includes "Dutch citizenship docs" as an open item.*'],
     artifacts: [
       { label: 'Harvey Legal Brief (2026-06-22)', url: '#', title: 'Local file — Deliverables/2026-06-22-asn-harvey-brief.md' },
@@ -2008,6 +2120,8 @@ const projectData = [
     tags: ['dutch', 'language', 'play', 'family', 'audio'],
     why: 'Dutch connects Peter to his father, his brother Walter, his sister Nicolette, and a part of himself he spent sixteen years living inside. The goal is not tourist Dutch — it is genuine fluency with a proper Netherlands accent. The September 2026 trip to the Netherlands is the first real-world test. Dutch citizenship, if pursued, makes the language even more meaningful.',
     next_action: 'Build a listening tracker: count how many times each story has been played, with a target-frequency measure (originally framed as 7x/week per story, but as the library grows the better measure is likely daily app use rather than per-story frequency — Peter flagged this open question 2026-07-10, see [[2026-07-10-camy-recovery-and-system-friction]]).',
+    attention: null,
+    quick_win: null,
     action_points: ['Build a listening tracker: count how many times each story has been played, with a target-frequency measure (originally framed as 7x/week per story, but as the library grows the better measure is likely daily app use rather than per-story frequency — Peter flagged this open question 2026-07-10, see [[2026-07-10-camy-recovery-and-system-friction]]).', 'Resolve "Gales"/"Galesloot" pronunciation inconsistency — phoneme tags in place but MaartenNeural still inconsistent across occurrences; try alternative IPA or different voice', 'Enter Azure Speech and Translator keys in the app Settings modal on first use at the GitHub Pages URL', 'Begin daily listening practice with the existing "About me" narrative (Dutch Practice App or existing MP3)', 'Build Clear Audio button — no current UI to delete saved audio without deleting the whole story', 'Resolve Anthropic API payment issue (cards declined in TT) to unlock the Explain feature (select Dutch text → grammar explanation)'],
     artifacts: [
       { label: 'Dutch Practice App', url: 'https://peterag.github.io/petergales-artifacts/dutch-practice-app.html' },
@@ -2028,6 +2142,8 @@ const projectData = [
     tags: ['fiduciary', 'compliance', 'legal', 'tax'],
     why: 'Warren, Ernst, and Harvey completed first-engagement review. Strategy: compliance going forward; quantify IRS exposure risk for prior years.',
     next_action: 'Ernst + Harvey: quantify IRS exposure risk for prior years',
+    attention: null,
+    quick_win: null,
     action_points: ['Ernst + Harvey: quantify IRS exposure risk for prior years', 'Apply the structured review model to the body domain (next phase)'],
     artifacts: []
   },
@@ -2046,6 +2162,8 @@ const projectData = [
     tags: ['mac', 'files', 'storage', 'ming', 'silas', 'organization'],
     why: 'No reliable system exists for managing files across Mac, cloud storage, or physical media. The result is messy folders, duplicates, no backup strategy, and difficulty finding documents. This project is about building a rock-solid file and cloud foundation with redundancy and efficiency at its core.',
     next_action: '**Q&A intake session** — Peter and the responsible agent (Ming) work through current state, priorities, and location-by-location vs. holistic approach decision',
+    attention: null,
+    quick_win: null,
     action_points: ['**Q&A intake session** — Peter and the responsible agent (Ming) work through current state, priorities, and location-by-location vs. holistic approach decision', 'Based on Q&A: agree on assessment order (MacBook → iCloud → Google Drive → external, or cross-location)', 'Phase 1: Reconnaissance — map all repositories (paths, sizes, dates, types; no content read)', 'Phase 2: Duplicate detection and removal (exact hash match; Peter approves summary before deletion)', 'Phase 3: Taxonomy proposal — Ming recommends new top-level hierarchy', 'Phase 4: Folder-level mapping and execution (Peter approves at folder level)', 'Phase 5: Maintenance routine setup for Desktop and Downloads'],
     artifacts: []
   },
@@ -2064,6 +2182,8 @@ const projectData = [
     tags: ['public-speaking', 'ai', 'human-connection', 'spirituality'],
     why: 'Peter\'s foundational narrative speech — a talk rooted in human connection that draws on spiritual and biblical sources. The core logic: the name of God as "I AM" has logical implications for what it means to be present and connected. AI plays a role in realising felt and experienced human connection.',
     next_action: 'Gather and consolidate all existing elements (notes, fragments, prior talks, related writing)',
+    attention: null,
+    quick_win: null,
     action_points: ['Gather and consolidate all existing elements (notes, fragments, prior talks, related writing)', 'Map the argument: "I AM" → presence → connection → AI\'s role', 'Identify target venues or audiences for a first delivery'],
     artifacts: []
   },
@@ -2076,12 +2196,14 @@ const projectData = [
     domain: 'body',
     target_date: '2026-09-30',
     closed_date: null,
-    lastUpdated: '2026-07-12',
+    lastUpdated: '2026-07-14',
     linked_goals: ['achieve-running-jumping-fitness'],
     linked_people: [],
     tags: ['body', 'rehab', 'elbow'],
     why: 'Golfer\'s elbow is the primary limiter on all grip and pulling work. Passive hangs, pull-ups, and farmer\'s carries are all blocked until it resolves. These movements are foundational to [[achieve-running-jumping-fitness]].',
     next_action: 'Implement Baar supplement protocol: 15 g gelatin/collagen + OJ at 12:30; primary Tyler Twist session at 13:30',
+    attention: null,
+    quick_win: null,
     action_points: ['Implement Baar supplement protocol: 15 g gelatin/collagen + OJ at 12:30; primary Tyler Twist session at 13:30', 'Shift primary adaptive session from morning (fasted) to 13:30 (fed, post-supplement)', 'Book medial epicondyle ultrasound with Dr. Lewis ahead of the 2026-07-31 date (per 2026-07-11 Doc recommendation)', '--', 'First logged: [[2026-06-06-voice-journal]]. Active condition tracked in [[current-body-status]].*'],
     artifacts: []
   },
@@ -2100,6 +2222,8 @@ const projectData = [
     tags: ['home', 'np45', 'trinidad', 'property'],
     why: '45 Ness Place, Andalusia, Maraval is Peter\'s home and primary property. This project file tracks ongoing maintenance, improvements, tenancy, and issues at the property. "Happiness is NP4" was the original Craft document title.',
     next_action: 'Confirm tenancy status and whether lease was executed',
+    attention: null,
+    quick_win: null,
     action_points: ['Confirm tenancy status and whether lease was executed', 'Formalize gas range installation decision', 'Add outdoor camera and Bluetooth speakers to insurance contents schedule at next renewal'],
     artifacts: []
   },
@@ -2118,6 +2242,8 @@ const projectData = [
     tags: ['strategy', 'has', 'roadmap', 'phase-1'],
     why: null,
     next_action: null,
+    attention: null,
+    quick_win: null,
     action_points: [],
     artifacts: []
   },
@@ -2136,6 +2262,8 @@ const projectData = [
     tags: ['legal', 'copyright', 'peteranthonygales.com'],
     why: 'In February 2025, the law firm [[higbee-and-associates]] sent Peter three copyright demand letters on behalf of three different news agencies, all relating to images used on his personal blog at peteranthonygales.com. Combined demand total: approximately $4,297 USD. Peter\'s defense: the site is non-commercial, he is a non-US resident, and the images came from royalty-free licensing services.',
     next_action: 'Confirm whether any follow-up correspondence was received from Higbee after March 2025',
+    attention: null,
+    quick_win: null,
     action_points: ['Confirm whether any follow-up correspondence was received from Higbee after March 2025', 'Confirm images were removed from peteranthonygales.com', 'If no response within 90 days of last exchange, treat as dormant'],
     artifacts: []
   },
@@ -2154,6 +2282,8 @@ const projectData = [
     tags: ['family', 'files', 'archival', 'documents', 'house'],
     why: 'Peter\'s parents left behind several filing cabinets full of old folders — documents accumulated over decades of family life. These files have never been systematically reviewed. Among them may be legal documents, property records, financial records, and personal papers of lasting importance.',
     next_action: 'Count and locate all filing cabinets (house and any other location)',
+    attention: null,
+    quick_win: null,
     action_points: ['Count and locate all filing cabinets (house and any other location)', 'Begin with the cabinet most likely to hold legal/property documents — search specifically for the deed to 45 Ness Place', 'If deed is not found in the cabinets, contact the family\'s lawyer or T&T Lands and Surveys Division', 'Once deed is located: log it in PKM/Documents/, note physical location, photograph or scan, link to [[happiness-is-np45]]', 'Develop a folder-by-folder processing log as work progresses'],
     artifacts: []
   },
@@ -2172,6 +2302,8 @@ const projectData = [
     tags: ['home', 'renovation', 'trinidad'],
     why: 'The family home in Trinidad was built by Peter\'s mother in the 1970s. She later expanded it to include an annex for Peter\'s brother Dario and his family. The house is now aging and needs significant renovation work. Peter sees restoring it as meaningful — both practically and symbolically.',
     next_action: 'Create a full list of needed repairs and improvements',
+    attention: null,
+    quick_win: null,
     action_points: ['Create a full list of needed repairs and improvements', 'Consult with Tyrel on scope', 'Research costs and sequencing'],
     artifacts: []
   },
@@ -2190,6 +2322,8 @@ const projectData = [
     tags: ['human-alignment', 'thesis', 'speaking', 'keynote', 'content-platform'],
     why: 'This is the intellectual spine of Peter\'s consulting and speaking practice. He positions himself as a Human Alignment Strategist. The thesis argues that human alignment — individual, relational, and collective — is the prerequisite for AI alignment and for a flourishing future. The thesis must be articulable as a 60-second elevator pitch, a 5-minute explanation, and a 30-45 minute keynote without changing shape.',
     next_action: 'Complete Sentence 5 (the AI/opportunity beat) in Peter\'s own spoken words',
+    attention: null,
+    quick_win: null,
     action_points: ['Complete Sentence 5 (the AI/opportunity beat) in Peter\'s own spoken words', 'Define what a Human Alignment Strategist actually does (the specific moves)', 'HA Thesis Session (~90 min) — extract 3-5 core sentences, then stress-test', 'Elevator pitch — three 60-second versions, said aloud'],
     artifacts: []
   },
@@ -2208,6 +2342,8 @@ const projectData = [
     tags: ['income', 'offer', 'positioning', 'strategy'],
     why: 'Peter named this on 2026-06-15 as a major concern that has been repeatedly deferred. The question of how he earns money — what offer, what structure, whether through a new business, an acquired company, or consulting — sits at the intersection of identity, dignity, and financial security. It connects to [[own-a-category-and-100k-tt-2026]] and the answer to "what do you do?"',
     next_action: 'Resume [[human-connection-and-alignment]] strategy sessions with Jude',
+    attention: null,
+    quick_win: null,
     action_points: ['Resume [[human-connection-and-alignment]] strategy sessions with Jude', 'Decide whether a new agent is warranted or whether Jude\'s scope expands', 'Surface prior thinking on offer design from old OS system', '--', 'First named: [[2026-06-15-year-accelerating-and-week-ahead]]*'],
     artifacts: []
   },
@@ -2226,6 +2362,8 @@ const projectData = [
     tags: ['ai-education', 'advisory', 'consulting'],
     why: '[[dominic-beaubrun|Dominic Beaubrun]] is leading AI adoption at the [[jamaica-observer|Jamaica Observer]]. He reached out to Peter to explore an advisory role on training design and AI strategy. No formal engagement agreement has been reached.',
     next_action: 'Review Observer AI strategy document (Dom to send — this is the blocker)',
+    attention: null,
+    quick_win: null,
     action_points: ['Review Observer AI strategy document (Dom to send — this is the blocker)', 'Investigate Leslie LeeFook\'s Incus hub platform as potential training resource', 'Share details of the agentic system Peter is developing with Dom'],
     artifacts: []
   },
@@ -2244,6 +2382,8 @@ const projectData = [
     tags: ['ai', 'automation', 'consulting'],
     why: 'An opportunity to help [[tyrel-olivier|Tyrel Olivier]]\'s company LandcomTT with AI-driven invoicing automation. Peter sees this as a learning and testing ground for practical AI application, and as a demonstration of readiness to create value with AI in a local business context.',
     next_action: 'Have a scoping conversation with Tyrel about invoicing pain points',
+    attention: null,
+    quick_win: null,
     action_points: ['Have a scoping conversation with Tyrel about invoicing pain points', 'Identify which AI or automation tools would fit', 'Determine engagement terms'],
     artifacts: []
   },
@@ -2262,6 +2402,8 @@ const projectData = [
     tags: ['estate', 'legal', 'finance'],
     why: 'Peter has not yet formalized a will. This project tracks the preparation of his own last will and testament, including identifying an executor, listing assets, handling password access, and designating beneficiaries. Also noted: Pearl\'s will (March 13, 2023) is already in Craft assets — see [[pearl-phillips]].',
     next_action: 'Decide on executor',
+    attention: null,
+    quick_win: null,
     action_points: ['Decide on executor', 'Consult Harvey for legal structure and requirements', 'Begin drafting via EQ Wills or similar platform'],
     artifacts: []
   },
@@ -2274,12 +2416,14 @@ const projectData = [
     domain: 'body',
     target_date: '2026-09-30',
     closed_date: null,
-    lastUpdated: '2026-07-09',
+    lastUpdated: '2026-07-14',
     linked_goals: ['achieve-running-jumping-fitness'],
     linked_people: ['dr-sean-lewis'],
     tags: ['body', 'rehab', 'knee', 'tendon', 'quad'],
     why: 'Two longitudinal tears in the left quadriceps tendon above the patella, confirmed by ultrasound (Dr. Sean Lewis, 2026-07-08). The goblet squat has been the recurring aggravator. The injury was previously misattributed — first to a lateral retinacular strain (February 2026), then to a VLF/fascial restriction (June 2026). The ultrasound resolved the diagnosis: the tissue is the tendon, not the fascia.',
     next_action: null,
+    attention: null,
+    quick_win: null,
     action_points: [],
     artifacts: []
   },
@@ -2298,6 +2442,8 @@ const projectData = [
     tags: ['consulting', 'ai', 'onboarding', 'client', 'trinidad'],
     why: 'Peter identified a business opportunity with [[azard-mohammed]] of [[little-amazon]]: high staff turnover at a multi-branch pet store is causing Azard to spend enormous time re-training new hires from scratch. The proposed solution is a systematised, always-available onboarding system using video, a knowledge hub, and an AI chatbot — removing the repetitive training burden from Azard.',
     next_action: 'Stalled — Azard has not provided Phase 1 voice memos since March 23',
+    attention: null,
+    quick_win: null,
     action_points: ['Stalled — Azard has not provided Phase 1 voice memos since March 23', 'Decide: re-engage, re-pitch, or let this sit?'],
     artifacts: []
   },
@@ -2316,6 +2462,8 @@ const projectData = [
     tags: ['video', 'content', 'trinidad', 'tnt', 'public-platform'],
     why: 'A video series with positive suggestions for improving quality of life in Trinidad and Tobago. Two purposes: build Peter\'s public profile and capture an audience. The tone is constructive, not complaining — framed around what is possible when people simply care about doing their work well.',
     next_action: 'Develop topic sequence: Intro, beach cleanup, passport office, broken tail light',
+    attention: null,
+    quick_win: null,
     action_points: ['Develop topic sequence: Intro, beach cleanup, passport office, broken tail light', 'Finish first video draft', 'Define action(s) you want viewers to take', 'Articulate purpose and opportunities more clearly'],
     artifacts: []
   },
@@ -2334,6 +2482,8 @@ const projectData = [
     tags: ['manuscript', 'writing', 'integrity', 'speakwrite'],
     why: 'Manuscript reframing integrity as being whole and complete — connected to Human Alignment Thesis. Enrollment at Manuscripts active; placement awaiting restructure.',
     next_action: 'Resolve the reframe: wrap the integrity thesis in the AI context',
+    attention: null,
+    quick_win: null,
     action_points: ['Resolve the reframe: wrap the integrity thesis in the AI context', 'Return to Manuscripts cohort once restructured'],
     artifacts: []
   },
@@ -2352,6 +2502,8 @@ const projectData = [
     tags: ['finance', 'automation', 'monthly'],
     why: 'Monthly accounts process (banks, statements, Google Sheets). Python processor script built by Mack. Target time 20-30 min. Closed June 13.',
     next_action: null,
+    attention: null,
+    quick_win: null,
     action_points: [],
     artifacts: []
   },
@@ -2370,6 +2522,8 @@ const projectData = [
     tags: ['mac', 'storage', 'moxie', 'hardware'],
     why: 'The M1 MacBook Air (called Moxie) has run out of storage space. The SanDisk 2TB Extreme Portable SSD is also full. This is a blocker for file management, backups, and day-to-day work.',
     next_action: 'Check other disks to see if Apple Music is already stored on another drive',
+    attention: null,
+    quick_win: null,
     action_points: ['Check other disks to see if Apple Music is already stored on another drive', 'Run CleanMyMac to identify large old files for deletion', 'Decide on long-term storage solution for Apple Music'],
     artifacts: []
   },
@@ -2388,6 +2542,8 @@ const projectData = [
     tags: ['peter-os', 'system-design', 'mypka-cockpit'],
     why: null,
     next_action: null,
+    attention: null,
+    quick_win: null,
     action_points: [],
     artifacts: []
   },
@@ -2406,6 +2562,8 @@ const projectData = [
     tags: ['travel', 'netherlands', 'camy', 'urgent', 'family-reunion'],
     why: 'Reconnecting with family and friends in the Netherlands. More context to be added by Peter in a future session.',
     next_action: 'Alert Walter and Geert of the trip and get availability — done; Walter has now returned a full proposed itinerary (2026-07-13)',
+    attention: null,
+    quick_win: null,
     action_points: ['Alert Walter and Geert of the trip and get availability — done; Walter has now returned a full proposed itinerary (2026-07-13)', 'Confirm the itinerary back to Walter (WhatsApp group)', 'Pick Belgian city (Bruges/Ghent/Antwerp) and Southern Europe city break destination', 'Confirm exact travel dates and update target_date in frontmatter', 'Lock the two self-booked city-break stays', 'Verify [[asn-bank]] account is active and accessible while abroad'],
     artifacts: []
   },
@@ -2424,6 +2582,8 @@ const projectData = [
     tags: ['writing', 'ai-literacy', 'jamaica', 'content'],
     why: 'Peter conceived a multi-article series for the [[jamaica-observer]] titled "What AI Means for Us in the Caribbean." Sent to [[dominic-beaubrun|Dominic Beaubrun]] on 5 March 2026. The series was written in Ulysses. The pitch document is filed as [[observer-ai-article-series-pitch-20260304]].',
     next_action: 'Follow up with Dom on article series status',
+    attention: null,
+    quick_win: null,
     action_points: ['Follow up with Dom on article series status', 'Determine if series can be pitched elsewhere (e.g. Trinidad Guardian, Caribbean publications) if Observer does not respond'],
     artifacts: []
   },
@@ -2442,6 +2602,8 @@ const projectData = [
     tags: ['home', 'painting', 'renovation', 'trinidad'],
     why: 'Repainting the front wall, iron fence, gates, and gazebo metalwork at the family home ("Happiness Is...") in Andalusia. Wall top and iron fence moving from white to off-white and grey. Part of the broader [[house-renovation]] effort.',
     next_action: 'Tally final costs and determine paint left over',
+    attention: null,
+    quick_win: null,
     action_points: ['Tally final costs and determine paint left over'],
     artifacts: []
   },
@@ -2460,6 +2622,8 @@ const projectData = [
     tags: ['pearl', 'family', 'eulogy', 'advance-planning'],
     why: null,
     next_action: null,
+    attention: null,
+    quick_win: null,
     action_points: [],
     artifacts: []
   },
@@ -2478,6 +2642,8 @@ const projectData = [
     tags: ['family', 'funeral', 'pearl', 'estate'],
     why: '[[pearl-phillips]] is 96 years old and in declining health. Peter wants her funeral wishes documented and the preparations made in advance. Pearl has expressed her wishes informally and Peter wants them captured properly. Peter noted this as "Working on now" in his Tickler Notes.',
     next_action: 'Retrieve the Google Docs draft from Craft and review',
+    attention: null,
+    quick_win: null,
     action_points: ['Retrieve the Google Docs draft from Craft and review', 'Discuss with family (Donna, Cindel, etc.) to coordinate'],
     artifacts: []
   },
@@ -2496,6 +2662,8 @@ const projectData = [
     tags: ['tax', 'family', 'usa', 'army-pension'],
     why: '[[pearl-phillips|Pearl Phillips]] (Peter\'s mother) receives two US income streams: an Army survivor pension (~$645 USD/month) and Social Security (~$400 USD/month). Tax is withheld from these payments. Peter suspects the withholding rate may be too high and wants Harvey and Ernst to assess whether Pearl is entitled to claim some back.',
     next_action: 'Harvey and Ernst to advise on withholding rules applicable to Pearl\'s situation',
+    attention: null,
+    quick_win: null,
     action_points: ['Harvey and Ernst to advise on withholding rules applicable to Pearl\'s situation', 'Determine if a W-8BEN or similar form should be filed to reduce withholding', 'Determine if any prior overpayments are recoverable'],
     artifacts: []
   },
@@ -2514,6 +2682,8 @@ const projectData = [
     tags: ['system', 'onboarding', 'closed'],
     why: 'This project gives Max and the full myPKA team the foundational context they need to serve Peter effectively. Without Domains, Goals, Projects, and a seeded CRM, every capture is context-free and every routing decision is a guess. This project fixes that. It also determines whether the current 9-specialist team is the right team, or whether new agents need to be hired first.',
     next_action: null,
+    attention: null,
+    quick_win: null,
     action_points: [],
     artifacts: []
   },
@@ -2532,6 +2702,8 @@ const projectData = [
     tags: ['pgp', 'personal-guiding-philosophy', 'workshop', 'offer', 'human-alignment'],
     why: 'Peter wants to develop a workshop (or online course) to help individuals define their own Personal Guiding Philosophy (PGP). This is both a personal practice and a commercial offer. It connects directly to [[human-alignment-thesis]] — alignment requires a named centre to align to, and the PGP is what makes alignment operational for the individual. It also feeds [[remembering-app]] — the practice of regularly returning to your centre.',
     next_action: 'Develop the workshop curriculum structure',
+    attention: null,
+    quick_win: null,
     action_points: ['Develop the workshop curriculum structure', 'Determine format: live workshop, online course, or hybrid', 'Pricing strategy relative to existing market ($105-$995 range)', 'How does the PGP connect to the Remembering App commercially?'],
     artifacts: []
   },
@@ -2550,6 +2722,8 @@ const projectData = [
     tags: ['identity', 'positioning', 'jude'],
     why: 'Peter wants to arrive at a clear, confident answer to the question: "What do you do?" This covers his offer, his identity, and his positioning in the market. He works on this with [[jude]].',
     next_action: 'Resume sessions with [[jude]] — first session 2026-06-17',
+    attention: null,
+    quick_win: null,
     action_points: ['Resume sessions with [[jude]] — first session 2026-06-17', 'Document the draft answer as it emerges', '--', 'First named: [[2026-06-17-morning-voice-journal]]*'],
     artifacts: []
   },
@@ -2568,6 +2742,8 @@ const projectData = [
     tags: ['system-design', 'max', 'agents'],
     why: 'The system that gives Peter project visibility, proactive surfacing, and a domain overview — the three experiences the OS must deliver.',
     next_action: '**Open fresh session — Session 1: Define the experience** (ready to start)',
+    attention: null,
+    quick_win: null,
     action_points: ['**Open fresh session — Session 1: Define the experience** (ready to start)', 'Session 2: Design to close gaps (after Session 1)', 'Build / configure the delivery mechanism', '--', 'First named: [[2026-06-17-morning-voice-journal]]*'],
     artifacts: []
   },
@@ -2586,6 +2762,8 @@ const projectData = [
     tags: ['files', 'family', 'organisation'],
     why: 'Cabinets of unprocessed physical files left by Peter\'s mother have gone unaddressed for years. Going through them is a meaningful but avoided task. At some point it must be done.',
     next_action: 'Assess volume and location of cabinets.',
+    attention: null,
+    quick_win: null,
     action_points: ['Assess volume and location of cabinets.', 'Schedule a first session to begin sorting.', 'Decide disposition categories: keep, scan, discard.'],
     artifacts: []
   },
@@ -2604,6 +2782,8 @@ const projectData = [
     tags: ['mission', 'peter-os', 'system-design'],
     why: 'Build and evolve a personal OS — powered by AI agents — giving a commanding view of everything that matters, surfacing what needs attention before Peter has to ask.',
     next_action: 'Run 1-month benchmark review on 2026-07-17',
+    attention: null,
+    quick_win: null,
     action_points: ['Run 1-month benchmark review on 2026-07-17', 'Review project dashboard entries — validate status, priority, next action per project', '--'],
     artifacts: [
       { label: 'Experience Spec', url: 'https://peterag.github.io/petergales-artifacts/2026-06-17-project-vantage-experience-spec.html' },
@@ -2625,6 +2805,8 @@ const projectData = [
     tags: ['system', 'dashboard', 'visibility'],
     why: 'Peter named this on 2026-06-15 as a clear need: a single view showing all active projects, what is prioritized, what has been completed, and whether he is hitting his daily practice targets. Without this, the volume of open threads is invisible and hard to act on.',
     next_action: 'Decide format and owner',
+    attention: null,
+    quick_win: null,
     action_points: ['Decide format and owner', 'List all active projects and their statuses as the first dataset', 'Define practice tracking fields', '--', 'First named: [[2026-06-15-year-accelerating-and-week-ahead]]*'],
     artifacts: []
   },
@@ -2643,6 +2825,8 @@ const projectData = [
     tags: ['receipts', 'finance', 'automation', 'workflow'],
     why: 'Paper receipts fade. Folders of physical receipts are unreadable over time and cannot be searched. Peter needs a digital capture workflow that preserves receipt data reliably — and ideally extracts the text automatically into a structured format (Google Sheet) for audit purposes.',
     next_action: 'Document exactly what Peter wants to do with receipts and what the ideal output looks like',
+    attention: null,
+    quick_win: null,
     action_points: ['Document exactly what Peter wants to do with receipts and what the ideal output looks like', 'Research available apps for receipt scanning and OCR-to-spreadsheet', 'Decide: personal workflow vs. product concept — clarify before investing in build'],
     artifacts: []
   },
@@ -2661,6 +2845,8 @@ const projectData = [
     tags: ['self', 'identity', 'design', 'iris', 'pgp', 'integrity'],
     why: 'Peter wants a personal version of the Remembering app — a daily practice of returning to his centre. The output is screensavers for his iPhone and desktop displaying quotes and reminders about who he is and what he is creating. The goal is to interrupt drift and reinforce identity on a daily basis.',
     next_action: '**Prerequisite — content migration check:** Confirm all relevant PGP content (affirmations, prayers, creeds, Field Training material, Avatar content, Peter\'s own writing) has been migrated from Craft and other sources into the vault. Do not begin the practice until this is verified.',
+    attention: null,
+    quick_win: null,
     action_points: ['**Prerequisite — content migration check:** Confirm all relevant PGP content (affirmations, prayers, creeds, Field Training material, Avatar content, Peter\'s own writing) has been migrated from Craft and other sources into the vault. Do not begin the practice until this is verified.', 'Rate existing affirmation statements 1–10 in the content Google Sheet', 'Define the content scope: whose words, what themes', 'Brief Iris on the visual treatment', 'Build a small quote bank to seed the first screensavers', 'Decide: personal practice first, then commercial? Or develop in parallel?'],
     artifacts: []
   },
@@ -2679,6 +2865,8 @@ const projectData = [
     tags: ['maintenance', 'home', 'automation', 'silas'],
     why: 'No current system exists to log when items were last replaced or when maintenance was last performed. This leads to missed maintenance windows and no alerts when filters, batteries, or other consumables need attention.',
     next_action: 'Define the full list of items to track (batteries, water filters, appliances, etc.)',
+    attention: null,
+    quick_win: null,
     action_points: ['Define the full list of items to track (batteries, water filters, appliances, etc.)', 'Design the data structure — likely a Silas database project', 'Build the tracker with alert capability'],
     artifacts: []
   },
@@ -2697,6 +2885,8 @@ const projectData = [
     tags: ['trinidad-and-tobago', 'news', 'ai', 'automation', 'workflow'],
     why: 'Peter wants a curated weekly digest of T&T news — not real-time, but a structured summary of the past 7 days — to stay informed on local developments without the overhead of monitoring multiple sources manually.',
     next_action: 'Define the delivery mechanism (Google Doc, email digest, Craft page?)',
+    attention: null,
+    quick_win: null,
     action_points: ['Define the delivery mechanism (Google Doc, email digest, Craft page?)', 'Set up the Gemini-based extraction workflow', 'Test against a sample Guardian edition and validate classification accuracy'],
     artifacts: []
   },
@@ -2715,6 +2905,8 @@ const projectData = [
     tags: ['website', 'marketing', 'brand'],
     why: 'Peter\'s public website (peteranthonygales.com) is a primary marketing touchpoint. Keeping it aligned with his evolving positioning is essential for credibility when speaking, pitching workshops, or generating inbound interest.',
     next_action: 'Brief Charta on a custom-designed website concept',
+    attention: null,
+    quick_win: null,
     action_points: ['Brief Charta on a custom-designed website concept', 'Define pages and content sections needed', 'Decide on platform (Carrd vs. GitHub Pages vs. other)'],
     artifacts: []
   },
@@ -2733,6 +2925,8 @@ const projectData = [
     tags: ['manuscript', 'writing', 'character', 'integrity', 'speakwrite'],
     why: 'Manuscript exploring the foundational character question — linked to Making Integrity Sexy and Wise While Wrong as potential chapters of one book.',
     next_action: null,
+    attention: null,
+    quick_win: null,
     action_points: [],
     artifacts: []
   },
@@ -2751,6 +2945,8 @@ const projectData = [
     tags: ['manuscript', 'writing', 'epistemic-humility', 'speakwrite'],
     why: 'The epistemic stance that makes integrity liveable — being wrong should feel like relief. Earlier drafts written 2022-2023. Parked at concept stage.',
     next_action: null,
+    attention: null,
+    quick_win: null,
     action_points: [],
     artifacts: []
   },
@@ -2769,6 +2965,8 @@ const projectData = [
     tags: ['home', 'workspace', 'organization'],
     why: 'A cluttered, disorganized workspace is a friction point for focused work. The goal is a clean, functional, organized space that supports concentration and signals care for the environment Peter spends most of his working day in.',
     next_action: 'Clear the center of the room — remove the tripod to a designated storage spot and deal with the items on the folded table/cot',
+    attention: null,
+    quick_win: null,
     action_points: ['Clear the center of the room — remove the tripod to a designated storage spot and deal with the items on the folded table/cot', 'Surface-clear the desk: remove anything that is not daily-use equipment', 'Do a shelf audit: photograph the shelves, decide what stays and what goes', 'Sweep and address the floor area'],
     artifacts: []
   }
@@ -3009,7 +3207,8 @@ function renderTable(projects) {
       <div class="project-cell">
         ${p.parent ? `<div style="font-size:10px;color:var(--color-supporting-2);font-weight:600;letter-spacing:0.04em;margin-bottom:2px;">↳ sub-project</div>` : ''}
         <div class="project-name">${p.name}</div>
-        ${p.why ? `<div class="project-name-sub">${p.why.substring(0, 72)}${p.why.length > 72 ? '…' : ''}</div>` : ''}
+        ${p.next_action ? `<div class="project-next-action"><span class="na-arrow">→</span><span class="na-text">${p.next_action}</span></div>` : ''}
+        ${p.quick_win ? `<div class="project-quick-win"><span class="qw-spark">⚡</span><span class="qw-text">${p.quick_win}</span></div>` : ''}
       </div>
       <div class="project-cell">${domainChip(p.domain)}</div>
       <div class="project-cell">${statusBadge(p.status)}</div>
@@ -3067,6 +3266,21 @@ function openModal(id) {
     <div style="border-left:3px solid var(--color-neutral-2);background:var(--color-neutral-1);padding:12px 16px;border-radius:0 4px 4px 0;margin-bottom:20px;">
       <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--color-neutral-3);margin-bottom:5px;">Next Action</div>
       <div style="font-size:13px;color:var(--color-neutral-3);font-style:italic;">Not recorded — open a session to define the next step.</div>
+    </div>`;
+  }
+
+  // Quick Win callout
+  if (p.quick_win) {
+    bodyHTML += `
+    <div style="border-left:3px solid #D67D4E;background:rgba(214,125,78,0.08);padding:12px 16px;border-radius:0 4px 4px 0;margin-bottom:20px;">
+      <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#5E3A2B;margin-bottom:5px;">⚡ Quick Win</div>
+      <div style="font-size:14px;color:#1A1A1A;line-height:1.5;">${p.quick_win}</div>
+    </div>`;
+  } else {
+    bodyHTML += `
+    <div style="border-left:3px solid var(--color-neutral-2);background:var(--color-neutral-1);padding:12px 16px;border-radius:0 4px 4px 0;margin-bottom:20px;">
+      <div style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--color-neutral-3);margin-bottom:5px;">⚡ Quick Win</div>
+      <div style="font-size:13px;color:var(--color-neutral-3);font-style:italic;">Not recorded — no quick win identified yet.</div>
     </div>`;
   }
 
@@ -3456,7 +3670,7 @@ const artifactsData = [
   { title: 'Dutch Practice App', date: '2026-07-08', author: 'Max', purpose: 'Single-file browser app for Dutch language practice. Enter English text, translate to Dutch via Azure Translator, generate audio via Azure TTS (MaartenNeural), listen with sentence-level subtitles. Stories, translations, and audio persist in IndexedDB. Keys stored in localStorage via Settings modal.', file: 'dutch-practice-app', type: 'HTML', url: 'https://peterag.github.io/petergales-artifacts/dutch-practice-app.html', project: 'Dutch Language Practice', client: 'Personal', domain: 'play' },
   { title: 'Customer Journey Project Overview', date: '2026-06-18', author: 'Charta', purpose: 'Living HTML project overview for the CEAL Green Customer Journey — project identity, phased build steps, org roles, and status tracking. Shared reference for both this project and the agentic-platform sub-project.', file: 'ceal-green-customer-journey-project-overview', type: 'HTML', url: 'https://peterag.github.io/morevida-artifacts/ceal-green-customer-journey-project-overview.html', project: 'CEAL Green Customer Journey', client: 'CEAL Green', domain: 'work' },
   { title: 'Guiding Narrative Spine v0.6', date: '2026-05-01', author: 'Ryan Roper (CEAL Green)', purpose: 'Final-approved CEAL Green Guiding Narrative Spine v0.6 — the authoritative brand foundation document (core proposition, 6 narrative sections, DRIVEN values, Build Now close). Everything downstream (brand guidelines, website audit, copy) derives from this.', file: 'PKM/Clients/ceal-green-guiding-narrative', type: 'Markdown', url: null, project: 'CEAL Green Customer Journey', client: 'CEAL Green', domain: 'work' },
-  { title: 'Strategy Review Synthesis (2026-07-09)', date: '2026-07-09', author: 'Max', purpose: 'Synthesis of Jude\'s and Nolan\'s strategy reviews of the CEAL Green Customer Journey implementation — Peter\'s responsibility for the prospect-first-contact-to-ongoing-client system and business processes.', file: '2026-07-09-ceal-green-strategy-review-synthesis', type: 'Markdown', url: 'Deliverables/2026-07-09-ceal-green-strategy-review-synthesis.md', project: 'CEAL Green Customer Journey', client: 'CEAL Green', domain: 'work' },
+  { title: 'Strategy Review Synthesis (2026-07-09)', date: '2026-07-09', author: 'Max', purpose: 'Synthesis of Jude\'s and Nolan\'s strategy reviews of the CEAL Green Customer Journey implementation — Peter\'s responsibility for the prospect-first-contact-to-ongoing-client system and business processes.', file: '2026-07-09-ceal-green-strategy-review-synthesis', type: 'Markdown', url: 'PKM/Documents/2026-07-09-ceal-green-strategy-review-synthesis.md', project: 'CEAL Green Customer Journey', client: 'CEAL Green', domain: 'work' },
   { title: 'Harvey Legal Brief (2026-06-22)', date: '2026-06-22', author: 'Harvey', purpose: 'Fiduciary Team legal brief on ASN Bank CRS fiscal residency declaration, Dutch domicile status, ius sanguinis citizenship path, and a possible FBAR obligation flag. Coordinated in parallel with Warren and Ernst.', file: '2026-06-22-asn-harvey-brief', type: 'Markdown', url: null, project: 'Dutch Citizenship Documentation', client: 'Personal', domain: 'self' },
 ];
 

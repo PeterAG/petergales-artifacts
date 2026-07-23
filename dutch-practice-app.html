@@ -1033,6 +1033,7 @@ const state = {
   audioUrl: null,
   audioElement: null,
   isPlaying: false,
+  currentPlaybackRate: 1.0, // SSOT for what rate the mounted <audio> element should play at right now
 };
 
 /* ═══════════════════════════════════════════════════════
@@ -1691,9 +1692,22 @@ async function generateAudio(speed) {
 
 async function regenerateAtSpeed(speed) {
   if (!state.translatedText) return;
+  const spd = parseFloat(speed);
+
+  // Instant, reliable speed change — apply playbackRate to the live audio
+  // element immediately so the control ALWAYS has an audible, zero-latency
+  // effect, independent of the Azure re-synthesis call below succeeding.
+  // This is the fix for the regression where a failed/slow TTS regeneration
+  // call left the old audio silently playing at the previous speed with only
+  // a small, easy-to-miss notice as the failure signal.
+  state.speed = spd;
+  if (state.audioElement) {
+    state.currentPlaybackRate = spd;
+    state.audioElement.playbackRate = spd;
+  }
+
   els.speedLoading.classList.add('visible');
   try {
-    const spd = parseFloat(speed);
     const ssml = buildSSML(state.translatedText, state.lang, spd);
     const blob = await callAzureTTS(ssml);
     state.audioBlob = blob;
@@ -1701,7 +1715,9 @@ async function regenerateAtSpeed(speed) {
     const currentTime = state.audioElement ? state.audioElement.currentTime : 0;
     if (state.audioUrl) URL.revokeObjectURL(state.audioUrl);
     state.audioUrl = URL.createObjectURL(blob);
-    mountAudio(state.audioUrl, currentTime, wasPlaying);
+    // The freshly-synthesized clip already has the correct natural cadence
+    // baked in via Azure's prosody rate, so the mounted element plays at 1.0.
+    mountAudio(state.audioUrl, currentTime, wasPlaying, 1.0);
     state.speed = spd;
 
     // Persist updated audio
@@ -1712,7 +1728,10 @@ async function regenerateAtSpeed(speed) {
       await dbPut('stories', story);
     }
   } catch (e) {
-    showNotice(els.audioStatus, `Speed change failed: ${e.message}`);
+    // Azure re-synthesis failed — the playbackRate change above already
+    // applied, so the user still hears the correct speed. Surface the
+    // failure clearly rather than letting it look like a no-op.
+    showNotice(els.audioStatus, `Speed change applied (fast mode) — natural-speed regeneration failed: ${e.message}`);
   } finally {
     els.speedLoading.classList.remove('visible');
   }
@@ -1721,7 +1740,7 @@ async function regenerateAtSpeed(speed) {
 /* ═══════════════════════════════════════════════════════
    PLAYER
 ═══════════════════════════════════════════════════════ */
-function mountAudio(url, seekTo = 0, autoplay = false) {
+function mountAudio(url, seekTo = 0, autoplay = false, rate = 1.0) {
   if (state.audioElement) {
     state.audioElement.pause();
     state.audioElement.src = '';
@@ -1730,7 +1749,28 @@ function mountAudio(url, seekTo = 0, autoplay = false) {
   state.audioElement = audio;
   state.isPlaying = false;
 
+  // Every blob mounted here (fresh generation, regeneration, or a saved
+  // story reload) was already synthesized via buildSSML() with the target
+  // speed baked into the prosody rate — so playbackRate stays at 1.0 by
+  // default. regenerateAtSpeed's instant pre-network-response correction
+  // (applied directly to state.audioElement, and mirrored into
+  // state.currentPlaybackRate) is the only path that uses a non-1.0 rate,
+  // as a stopgap while the true resynthesis is in flight.
+  state.currentPlaybackRate = rate;
+  audio.playbackRate = state.currentPlaybackRate;
+
+  // state.currentPlaybackRate is the single source of truth for "what rate
+  // should the currently-mounted element be playing at right now" — both
+  // listeners below read it live (not a closured `rate`) so they stay
+  // correct even if regenerateAtSpeed's instant stopgap updates it after
+  // this element was mounted, while the true resynthesis is still in flight.
   audio.addEventListener('loadedmetadata', () => {
+    // iOS Safari (Peter's daily-use platform for this app) has a known
+    // quirk where playbackRate set on a freshly-created, not-yet-loaded
+    // Audio() can be silently reset back to 1.0 once metadata loads.
+    // Re-assert it here so the rate reliably sticks on iPhone, not just
+    // in desktop browsers.
+    audio.playbackRate = state.currentPlaybackRate;
     els.timeTotal.textContent = fmtTime(audio.duration);
     els.scrubber.max = audio.duration;
     if (seekTo > 0) audio.currentTime = Math.min(seekTo, audio.duration);
@@ -1741,6 +1781,13 @@ function mountAudio(url, seekTo = 0, autoplay = false) {
     els.timeCurrent.textContent = fmtTime(audio.currentTime);
     els.scrubber.value = audio.currentTime;
     renderSubtitle();
+  });
+
+  // Extra iOS Safari safety net: some iOS versions reset playbackRate to
+  // 1.0 specifically at play-start, even after it was set post-loadedmetadata.
+  // Re-assert once more right as playback begins.
+  audio.addEventListener('play', () => {
+    if (audio.playbackRate !== state.currentPlaybackRate) audio.playbackRate = state.currentPlaybackRate;
   });
 
   audio.addEventListener('ended', () => {

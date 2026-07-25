@@ -57,7 +57,6 @@
     /* Status colors — GL-003 §13b (Iris, 2026-06-20) */
     --status-active-bg:   #9B2D30; --status-active-text:   #F9F7F2; /* Garnet / Alabaster */
     --status-planning-bg: #4A6741; --status-planning-text: #F9F7F2; /* Fern / Alabaster */
-    --status-on-hold-bg:  #8A6438; --status-on-hold-text:  #F9F7F2; /* Bark / Alabaster */
     --status-parked-bg:   #4A4540; --status-parked-text:   #F9F7F2; /* Stone / Alabaster */
     --status-closed-bg:   #E8C0A3; --status-closed-text:   #1A1A1A; /* Soft Sand / Ebon */
 
@@ -495,7 +494,6 @@
 
   .badge-status-active   { background: var(--status-active-bg);   color: var(--status-active-text); }
   .badge-status-planning { background: var(--status-planning-bg);  color: var(--status-planning-text); }
-  .badge-status-on-hold  { background: var(--status-on-hold-bg);   color: var(--status-on-hold-text); }
   .badge-status-parked   { background: var(--status-parked-bg);    color: var(--status-parked-text); }
   .badge-status-closed   { background: var(--status-closed-bg);    color: var(--status-closed-text); }
 
@@ -1486,7 +1484,7 @@ const generatedDate = "2026-07-25";
 // parent        string   id of parent project. TABLE: renders amber "↳ sub-project"
 //                        label above name. MODAL: renders clickable parent link.
 //                        DATA-ONLY field — no rendering code change needed to use it.
-// status        string   'active'|'planning'|'on-hold'|'parked'|'closed'
+// status        string   'active'|'planning'|'parked'|'closed'
 //                        TABLE: status badge. Controls filter tab counts.
 // priority      string   'high'|'medium'|'low'. TABLE: priority badge. MODAL: metadata grid.
 // domain        string   'work'|'personal'|'health'|'family'|'learning'|...
@@ -1597,7 +1595,7 @@ const projectData = [
   {
     id: 'ai-audit-offer',
     name: 'AI Audit Offer',
-    status: 'on-hold',
+    status: 'parked',
     priority: 'low',
     client: 'Personal',
     domain: 'work',
@@ -1757,7 +1755,7 @@ const projectData = [
   {
     id: 'ara-leasehold-freehold-conversion',
     name: 'ARA Leasehold to Freehold Conversion',
-    status: 'on-hold',
+    status: 'parked',
     priority: 'medium',
     client: 'ARA',
     domain: 'membership',
@@ -1930,7 +1928,7 @@ const projectData = [
     domain: 'work',
     target_date: '2026-06-11',
     closed_date: '2026-06-20',
-    lastUpdated: '2026-07-21',
+    lastUpdated: '2026-07-25',
     linked_goals: ['create-customer-journey-ceal-green'],
     linked_people: ['ryan-roper'],
     tags: ['ceal-green', 'website', 'audit'],
@@ -2191,7 +2189,7 @@ const projectData = [
   {
     id: 'gales-signature-speech',
     name: 'Gales Signature Speech',
-    status: 'on-hold',
+    status: 'parked',
     priority: 'high',
     client: 'Personal',
     domain: 'work',
@@ -2351,7 +2349,7 @@ const projectData = [
   {
     id: 'jamaica-observer-ai-adoption',
     name: 'Jamaica Observer AI Adoption Advisory',
-    status: 'on-hold',
+    status: 'parked',
     priority: 'medium',
     client: 'Jamaica Observer',
     domain: 'work',
@@ -2431,7 +2429,7 @@ const projectData = [
   {
     id: 'little-amazon-onboarding-system',
     name: 'Little Amazon Onboarding System',
-    status: 'on-hold',
+    status: 'parked',
     priority: 'low',
     client: 'Personal',
     domain: 'work',
@@ -2451,7 +2449,7 @@ const projectData = [
   {
     id: 'make-tnt-sweet-again',
     name: 'Make T&T Sweet Again',
-    status: 'on-hold',
+    status: 'parked',
     priority: 'low',
     client: 'Personal',
     domain: 'work',
@@ -2537,7 +2535,7 @@ const projectData = [
     domain: 'self',
     target_date: null,
     closed_date: null,
-    lastUpdated: '2026-07-21',
+    lastUpdated: '2026-07-25',
     linked_goals: [],
     linked_people: [],
     tags: ['peter-os', 'system-design', 'mypka-cockpit'],
@@ -2571,7 +2569,7 @@ const projectData = [
   {
     id: 'observer-ai-article-series',
     name: 'Observer AI Article Series — What AI Means for Us in the Caribbean',
-    status: 'on-hold',
+    status: 'parked',
     priority: 'low',
     client: 'Jamaica Observer',
     domain: 'work',
@@ -2817,7 +2815,7 @@ const projectData = [
     domain: 'self',
     target_date: '2027-06-17',
     closed_date: null,
-    lastUpdated: '2026-07-21',
+    lastUpdated: '2026-07-25',
     linked_goals: [],
     linked_people: [],
     tags: ['mission', 'peter-os', 'system-design'],
@@ -3030,7 +3028,7 @@ const domainColors = {
 };
 
 const priorityOrder = { high: 0, medium: 1, low: 2 };
-const statusOrder   = { active: 0, planning: 1, 'on-hold': 2, parked: 3, closed: 4 };
+const statusOrder   = { active: 0, planning: 1, parked: 2, closed: 3 };
 
 const DOMAIN_GROUPS = [
   { label: 'Education',      slugs: ['education'] },
@@ -3073,7 +3071,7 @@ function completenessScore(p) {
 // RENDER HELPERS
 // ============================================================
 function statusBadge(status) {
-  const label = status === 'on-hold' ? 'On Hold' : status.charAt(0).toUpperCase() + status.slice(1);
+  const label = status.charAt(0).toUpperCase() + status.slice(1);
   return `<span class="badge badge-status-${status}">${label}</span>`;
 }
 
@@ -3509,7 +3507,6 @@ function initColumnDropdowns() {
         { value: 'all', label: 'All statuses', count: total },
         { value: 'active',   label: 'Active',   count: _fullCounts.statusCounts['active']   || 0 },
         { value: 'planning', label: 'Planning',  count: _fullCounts.statusCounts['planning'] || 0 },
-        { value: 'on-hold',  label: 'On Hold',   count: _fullCounts.statusCounts['on-hold']  || 0 },
         { value: 'parked',   label: 'Parked',    count: _fullCounts.statusCounts['parked']   || 0 },
         { value: 'closed',   label: 'Closed',    count: _fullCounts.statusCounts['closed']   || 0 },
       ]
@@ -3692,7 +3689,7 @@ const artifactsData = [
   { title: 'CEAL Green Copy Recommendations', date: '2026-06-11', author: 'Cass', purpose: 'CEAL Green copy recommendations — Options A/B/C for every copy element rated. Standalone brief for copywriter; keyed to finding numbers in the findings register.', file: '2026-06-10-ceal-green-website-audit/ceal-green-copy-recommendations', type: 'Markdown', url: null, project: 'CEAL Green Audit', client: 'CEAL Green', domain: 'work' },
   { title: 'CEAL Green Logo & Wordmark Evaluation', date: '2026-06-11', author: 'Cass', purpose: 'CEAL Green logo + wordmark evaluation. Ryan Roper\'s circular logo assessed against brand guidelines. Verdict: vector redraw required. Alignment: bottom-justify. Alt A (interpunct) recommended for wordmark differentiation.', file: '2026-06-10-ceal-green-website-audit/logo-evaluation/ceal-green-logo-wordmark-evaluation', type: 'HTML', url: 'https://peterag.github.io/morevida-artifacts/2026-06-11-ceal-green-logo-evaluation.html', project: 'CEAL Green Audit', client: 'CEAL Green', domain: 'work' },
   { title: 'CEAL Green Website Audit HTML v1', date: '2026-06-11', author: 'Charta', purpose: 'CEAL Green website audit HTML report — v1 static build. Published at https://peterag.github.io/morevida-artifacts/2026-06-10-ceal-green-website-audit.html. Note: v1 is formatted Markdown only; interactive annotated screenshot rebuild deferred to next session. Superseded 2026-07-25 by the v2 interactive build.', file: '2026-06-10-ceal-green-website-audit/ceal-green-website-audit', type: 'HTML', url: 'https://peterag.github.io/morevida-artifacts/2026-06-10-ceal-green-website-audit.html', project: 'CEAL Green Audit', client: 'CEAL Green', domain: 'work', status: 'superseded', superseded_date: '2026-07-25' },
-  { title: 'Website Audit', date: '2026-06-15', author: 'Charta + Max', purpose: 'CEAL Green website audit — v2 interactive HTML artifact. Annotated screenshot viewer with 62 severity-coded pins (8C/27Ma/18Mi/9W), Works-only filter, and modal popups.', file: '2026-06-10-ceal-green-website-audit/ceal-green-website-audit-v2', type: 'HTML', url: 'https://peterag.github.io/morevida-artifacts/ceal-green-website-audit-v2.html', project: 'CEAL Green Website Audit', client: 'CEAL Green', domain: 'work', status: 'pending-approval', supersedes: '2026-06-10-ceal-green-website-audit/ceal-green-website-audit' },
+  { title: 'Website Audit', date: '2026-06-15', author: 'Charta + Max', purpose: 'CEAL Green website audit — v2 interactive HTML artifact, client-approved 2026-07-25. Annotated screenshot viewer with 62 severity-coded pins (8C/27Ma/18Mi/9W), Works-only filter, and modal popups.', file: '2026-06-10-ceal-green-website-audit/ceal-green-website-audit-v2', type: 'HTML', url: 'https://peterag.github.io/morevida-artifacts/ceal-green-website-audit-v2.html', project: 'CEAL Green Website Audit', client: 'CEAL Green', domain: 'work', status: 'current', supersedes: '2026-06-10-ceal-green-website-audit/ceal-green-website-audit', approved_date: '2026-07-25' },
   { title: 'CEAL Green Excel Alignment Report', date: '2026-06-15', author: 'Cass + Max', purpose: 'CEAL Green Excel alignment report — maps Ryan\'s 14-row approved change list against Cass\'s audit findings. Sections: Strong (8), Partial (5), No Mistakes (0), Unaddressed Critical/Major gaps.', file: '2026-06-10-ceal-green-website-audit/ceal-green-excel-alignment-report', type: 'Markdown', url: null, project: 'CEAL Green Audit', client: 'CEAL Green', domain: 'work' },
   { title: 'CG Publication & Event Research', date: '2026-06-13', author: 'Rees', purpose: 'Research brief: Global TT (govt agency, not a publication), Caribex Sport (does not exist), CariPhil, Family Offices, Hotel Conferences, Chambers of Commerce (Suriname/Guyana/T&T), SEOGS 2026 (speaker call closed Feb 2026).', file: 'rees-cg-publication-event-research-2026-06-13', type: 'Markdown', url: null, project: 'System', client: 'CEAL Green', domain: 'work' },
   { title: 'Caribbean Airlines Magazine Research', date: '2026-06-13', author: 'Rees', purpose: 'Caribbean Airlines in-flight magazine confirmed as Caribbean Beat (MEP Publishers). Editor: Caroline Taylor; bimonthly; contributor programme via caribbean-beat.com/submissions. Fit for CEAL Green conditional on human/place story angle.', file: 'rees-caribbean-airlines-magazine-2026-06-13', type: 'Markdown', url: null, project: 'System', client: 'CEAL Green', domain: 'work' },

@@ -322,6 +322,21 @@
     color: var(--color-neutral-0);
   }
 
+  .filter-status-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .filter-status-toggle input[type="checkbox"] {
+    accent-color: var(--color-primary);
+    cursor: pointer;
+    width: 14px;
+    height: 14px;
+  }
+
   /* ============================================================
      PROJECT TABLE
   ============================================================ */
@@ -1357,7 +1372,6 @@
         <select class="filter-select" id="artifactTypeSelect" onchange="renderArtifacts()">
           <option value="all">All types</option>
           <option value="HTML">HTML</option>
-          <option value="Markdown">Markdown</option>
           <option value="Spreadsheet">Spreadsheet</option>
         </select>
       </div>
@@ -1378,6 +1392,13 @@
         <select class="filter-select" id="artifactDomainSelect" onchange="renderArtifacts()">
           <option value="all">All domains</option>
         </select>
+      </div>
+      <div class="filter-divider"></div>
+      <div class="filter-group">
+        <label class="filter-status-toggle" for="artifactShowAllStatuses">
+          <input type="checkbox" id="artifactShowAllStatuses" onchange="renderArtifacts()">
+          <span class="filter-label" style="margin-right:0;">Show superseded / pending-approval</span>
+        </label>
       </div>
       <div class="filter-divider"></div>
       <div class="filter-group">
@@ -2196,7 +2217,7 @@ const projectData = [
     domain: 'body',
     target_date: '2026-09-30',
     closed_date: null,
-    lastUpdated: '2026-07-24',
+    lastUpdated: '2026-07-25',
     linked_goals: ['achieve-running-jumping-fitness'],
     linked_people: [],
     tags: ['body', 'rehab', 'elbow'],
@@ -2806,6 +2827,7 @@ const projectData = [
     quick_win: null,
     action_points: ['Run 1-month benchmark review on 2026-07-17', 'Review project dashboard entries — validate status, priority, next action per project', '--'],
     artifacts: [
+      { label: 'Experience Spec', url: 'https://peterag.github.io/petergales-artifacts/2026-06-17-project-vantage-experience-spec.html' },
       { label: 'Project Vantage', url: 'https://peterag.github.io/petergales-artifacts/project-vantage-charter.html' },
     ]
   },
@@ -3669,7 +3691,8 @@ const artifactsData = [
   { title: 'CEAL Green Website Audit Findings', date: '2026-06-11', author: 'Cass', purpose: 'CEAL Green website audit findings register. 37 findings (8 Critical, 19 Major, 10 Minor, 7 Works) across 6 pages. Severity-ordered with specific change instructions. Competitive benchmarks from 5 peers included.', file: '2026-06-10-ceal-green-website-audit/ceal-green-website-audit-findings', type: 'Markdown', url: null, project: 'CEAL Green Audit', client: 'CEAL Green', domain: 'work' },
   { title: 'CEAL Green Copy Recommendations', date: '2026-06-11', author: 'Cass', purpose: 'CEAL Green copy recommendations — Options A/B/C for every copy element rated. Standalone brief for copywriter; keyed to finding numbers in the findings register.', file: '2026-06-10-ceal-green-website-audit/ceal-green-copy-recommendations', type: 'Markdown', url: null, project: 'CEAL Green Audit', client: 'CEAL Green', domain: 'work' },
   { title: 'CEAL Green Logo & Wordmark Evaluation', date: '2026-06-11', author: 'Cass', purpose: 'CEAL Green logo + wordmark evaluation. Ryan Roper\'s circular logo assessed against brand guidelines. Verdict: vector redraw required. Alignment: bottom-justify. Alt A (interpunct) recommended for wordmark differentiation.', file: '2026-06-10-ceal-green-website-audit/logo-evaluation/ceal-green-logo-wordmark-evaluation', type: 'HTML', url: 'https://peterag.github.io/morevida-artifacts/2026-06-11-ceal-green-logo-evaluation.html', project: 'CEAL Green Audit', client: 'CEAL Green', domain: 'work' },
-  { title: 'Website Audit', date: '2026-06-15', author: 'Charta + Max', purpose: 'CEAL Green website audit — v2 interactive HTML artifact. Annotated screenshot viewer with 62 severity-coded pins (8C/27Ma/18Mi/9W), Works-only filter, and modal popups.', file: '2026-06-10-ceal-green-website-audit/ceal-green-website-audit-v2', type: 'HTML', url: 'https://peterag.github.io/morevida-artifacts/ceal-green-website-audit-v2.html', project: 'CEAL Green Website Audit', client: 'CEAL Green', domain: 'work' },
+  { title: 'CEAL Green Website Audit HTML v1', date: '2026-06-11', author: 'Charta', purpose: 'CEAL Green website audit HTML report — v1 static build. Published at https://peterag.github.io/morevida-artifacts/2026-06-10-ceal-green-website-audit.html. Note: v1 is formatted Markdown only; interactive annotated screenshot rebuild deferred to next session. Superseded 2026-07-25 by the v2 interactive build.', file: '2026-06-10-ceal-green-website-audit/ceal-green-website-audit', type: 'HTML', url: 'https://peterag.github.io/morevida-artifacts/2026-06-10-ceal-green-website-audit.html', project: 'CEAL Green Audit', client: 'CEAL Green', domain: 'work', status: 'superseded', superseded_date: '2026-07-25' },
+  { title: 'Website Audit', date: '2026-06-15', author: 'Charta + Max', purpose: 'CEAL Green website audit — v2 interactive HTML artifact. Annotated screenshot viewer with 62 severity-coded pins (8C/27Ma/18Mi/9W), Works-only filter, and modal popups.', file: '2026-06-10-ceal-green-website-audit/ceal-green-website-audit-v2', type: 'HTML', url: 'https://peterag.github.io/morevida-artifacts/ceal-green-website-audit-v2.html', project: 'CEAL Green Website Audit', client: 'CEAL Green', domain: 'work', status: 'pending-approval', supersedes: '2026-06-10-ceal-green-website-audit/ceal-green-website-audit' },
   { title: 'CEAL Green Excel Alignment Report', date: '2026-06-15', author: 'Cass + Max', purpose: 'CEAL Green Excel alignment report — maps Ryan\'s 14-row approved change list against Cass\'s audit findings. Sections: Strong (8), Partial (5), No Mistakes (0), Unaddressed Critical/Major gaps.', file: '2026-06-10-ceal-green-website-audit/ceal-green-excel-alignment-report', type: 'Markdown', url: null, project: 'CEAL Green Audit', client: 'CEAL Green', domain: 'work' },
   { title: 'CG Publication & Event Research', date: '2026-06-13', author: 'Rees', purpose: 'Research brief: Global TT (govt agency, not a publication), Caribex Sport (does not exist), CariPhil, Family Offices, Hotel Conferences, Chambers of Commerce (Suriname/Guyana/T&T), SEOGS 2026 (speaker call closed Feb 2026).', file: 'rees-cg-publication-event-research-2026-06-13', type: 'Markdown', url: null, project: 'System', client: 'CEAL Green', domain: 'work' },
   { title: 'Caribbean Airlines Magazine Research', date: '2026-06-13', author: 'Rees', purpose: 'Caribbean Airlines in-flight magazine confirmed as Caribbean Beat (MEP Publishers). Editor: Caroline Taylor; bimonthly; contributor programme via caribbean-beat.com/submissions. Fit for CEAL Green conditional on human/place story angle.', file: 'rees-caribbean-airlines-magazine-2026-06-13', type: 'Markdown', url: null, project: 'System', client: 'CEAL Green', domain: 'work' },
@@ -3682,7 +3705,8 @@ const artifactsData = [
   { title: 'Maraval Dredging Contacts', date: '2026-06-17', author: 'Rees', purpose: 'Maraval River dredging contact directory for Andalusia Residents Association. Correct authority: DMBC (not "Diego Martin East"). Correct councillor: Damian Fournillier (Moka/Boissiere #2). Government change May 2025 flagged.', file: '2026-06-17-maraval-dredging-contacts', type: 'Markdown', url: null, project: 'ARA', client: 'ARA', domain: 'membership' },
   { title: 'Andalusia Dredging Email Draft', date: '2026-06-18', author: 'Will + Max', purpose: 'Formal email draft — urgent dredging request to DMBC CEO Ms. Beverly Haywood. Copies: Mayor Glasgow-Warner, Councillor Fournillier, Colm Imbert MP, Ministry of Works. Ready to send pending Minister Jearlean John\'s email address confirmation.', file: '2026-06-17-andalusia-dredging-email-draft', type: 'Markdown', url: null, project: 'ARA', client: 'ARA', domain: 'membership' },
   { title: 'Graphic Design Principles Brief', date: '2026-06-18', author: 'Rees', purpose: 'Robin Williams CRAP/PARC canon + color-in-sequential-layouts research. Grounds GL-003 and Charta/Iris contracts in established doctrine. 8 specific GL-003 recommendations.', file: '2026-06-18-rees-graphic-design-principles-brief', type: 'Markdown', url: null, project: 'System', client: 'Personal', domain: 'self' },
-  { title: 'Project Vantage', date: '2026-06-18', author: 'Charta', purpose: 'Project Vantage two-tab HTML charter (v5, current/approved — supersedes the 2026-06-17 standalone Experience Spec, which is retired). Tab 1: Peace/Power/Purpose + Living System experience spec. Tab 2: phased build plan (Phases 1-4) with benchmark checkpoint cards.', file: 'project-vantage-charter', type: 'HTML', url: 'https://peterag.github.io/petergales-artifacts/project-vantage-charter.html', project: 'Project Vantage', client: 'Personal', domain: 'self' },
+  { title: 'Experience Spec', date: '2026-06-17', author: 'Charta', purpose: 'Project Vantage experience spec — Peace / Power / Purpose + Living System. Self-contained HTML using GL-003 design system. Three-pillar architecture with open-bottom pillars on foundation slab. Benchmark review dates: 2026-07-17, 2026-09-17, 2027-06-17. Superseded 2026-07-25 by the two-tab Charter (v5), which folds this spec into its Tab 1.', file: '2026-06-17-project-vantage-experience-spec', type: 'HTML', url: 'https://peterag.github.io/petergales-artifacts/2026-06-17-project-vantage-experience-spec.html', project: 'Project Vantage', client: 'Personal', domain: 'self', status: 'superseded', superseded_date: '2026-07-25' },
+  { title: 'Project Vantage', date: '2026-06-18', author: 'Charta', purpose: 'Project Vantage two-tab HTML charter (v5, current — supersedes the 2026-06-17 standalone Experience Spec, which is retired). Tab 1: Peace/Power/Purpose + Living System experience spec. Tab 2: phased build plan (Phases 1-4) with benchmark checkpoint cards.', file: 'project-vantage-charter', type: 'HTML', url: 'https://peterag.github.io/petergales-artifacts/project-vantage-charter.html', project: 'Project Vantage', client: 'Personal', domain: 'self', status: 'current', supersedes: '2026-06-17-project-vantage-experience-spec' },
   { title: 'Projects Dashboard', date: '2026-06-20', author: 'Charta', purpose: 'Living projects dashboard — all PKM projects in a sortable/filterable table. Row-click opens modal with Next Action callout, Steps (numbered/sequential), Action Points (parallel), Completed Steps toggle, document links, metadata grid, completeness bar. 40+ projects loaded. Live at https://peterag.github.io/petergales-artifacts/peter-os-projects-dashboard.html', file: 'peter-os-projects-dashboard', type: 'HTML', url: 'https://peterag.github.io/petergales-artifacts/peter-os-projects-dashboard.html', project: 'Project Vantage', client: 'Personal', domain: 'self' },
   { title: 'Dutch Practice App', date: '2026-07-08', author: 'Max', purpose: 'Single-file browser app for Dutch language practice. Enter English text, translate to Dutch via Azure Translator, generate audio via Azure TTS (MaartenNeural), listen with sentence-level subtitles. Stories, translations, and audio persist in IndexedDB. Keys stored in localStorage via Settings modal.', file: 'dutch-practice-app', type: 'HTML', url: 'https://peterag.github.io/petergales-artifacts/dutch-practice-app.html', project: 'Dutch Language Practice', client: 'Personal', domain: 'play' },
   { title: 'Customer Journey Project Overview', date: '2026-06-18', author: 'Charta', purpose: 'Living HTML project overview for the CEAL Green Customer Journey — project identity, phased build steps, org roles, and status tracking. Shared reference for both this project and the agentic-platform sub-project.', file: 'ceal-green-customer-journey-project-overview', type: 'HTML', url: 'https://peterag.github.io/morevida-artifacts/ceal-green-customer-journey-project-overview.html', project: 'CEAL Green Customer Journey', client: 'CEAL Green', domain: 'work' },
@@ -3755,8 +3779,19 @@ function renderArtifacts() {
   const clientVal  = document.getElementById('artifactClientSelect').value;
   const domainVal  = document.getElementById('artifactDomainSelect').value;
   const term       = (document.getElementById('artifactSearch').value || '').toLowerCase().trim();
+  const showAllStatuses = document.getElementById('artifactShowAllStatuses').checked;
 
   let items = artifactsData.filter(a => {
+    // Catalog scope: this view surfaces things worth a live/dedicated link
+    // (HTML, Spreadsheet) — never Markdown, regardless of what the Type
+    // filter offers or what's present in artifactsData. Enforced here so
+    // Markdown rows stay excluded even if the data layer regenerates.
+    if (a.type === 'Markdown') return false;
+    // Lifecycle default: only current-status artifacts (status absent ==
+    // current) unless the "Show superseded / pending-approval" toggle is
+    // checked. The toggle is never persisted — it always starts unchecked
+    // on page load, per GL-002 v2.2 artifact lifecycle schema.
+    if (!showAllStatuses && a.status && a.status !== 'current') return false;
     if (typeVal    !== 'all' && a.type    !== typeVal)    return false;
     if (projectVal !== 'all' && a.project !== projectVal) return false;
     if (clientVal  !== 'all' && a.client  !== clientVal)  return false;

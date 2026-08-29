@@ -1082,9 +1082,31 @@
     color: var(--color-primary);
   }
   .col-filter-caret {
-    margin-left: 3px;
+    /* Visual glyph is tiny (~5px), so the clickable box is padded well past it —
+       a real mouse click must reliably land on this element, not just a
+       getBoundingClientRect()-perfect one. min-width/min-height give a ~24px
+       hit target per WCAG 2.5.5-style target-size guidance; margin-left keeps
+       it visually and spatially separated from any adjacent sort-arrow. */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: var(--space-md);
+    min-height: var(--space-md);
+    margin-left: var(--space-xs);
+    padding: calc(var(--space-xs) / 2);
     font-size: 9px;
     opacity: 0.7;
+    border-radius: var(--radius-xs);
+    vertical-align: middle;
+  }
+  .col-filter-caret:hover {
+    opacity: 1;
+    background: var(--color-neutral-1);
+  }
+  .col-filter-caret:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 1px;
+    opacity: 1;
   }
   .col-active-chip {
     display: inline-flex;
@@ -1344,7 +1366,7 @@
   <div class="table-wrapper">
     <div class="table-header">
       <div class="table-header-cell sortable" data-col="name" onclick="applySort('name')">Project <span class="sort-arrow" id="sort-name"></span></div>
-      <div class="table-header-cell sortable col-filterable" id="col-header-attention" data-col="attention" onclick="applySort('attention')">Attention <span class="sort-arrow" id="sort-attention"></span><span class="col-filter-caret" onclick="event.stopPropagation(); toggleColDropdown('attention', this.parentElement)">▾</span><span class="col-active-chip" id="col-chip-attention" style="display:none;"></span></div>
+      <div class="table-header-cell sortable col-filterable" id="col-header-attention" data-col="attention" onclick="applySort('attention')">Attention <span class="sort-arrow" id="sort-attention"></span><span class="col-filter-caret" role="button" tabindex="0" aria-label="Filter by attention" onclick="event.stopPropagation(); toggleColDropdown('attention', this.parentElement)" onkeyup="if(event.key==='Enter'||event.key===' '){event.preventDefault(); event.stopPropagation(); toggleColDropdown('attention', this.parentElement);}">▾</span><span class="col-active-chip" id="col-chip-attention" style="display:none;"></span></div>
       <div class="table-header-cell col-filterable" id="col-header-priority" onclick="toggleColDropdown('priority', this)">Priority <span class="col-filter-caret">▾</span><span class="col-active-chip" id="col-chip-priority" style="display:none;"></span></div>
       <div class="table-header-cell col-filterable" id="col-header-status" onclick="toggleColDropdown('status', this)">Status <span class="col-filter-caret">▾</span><span class="col-active-chip" id="col-chip-status" style="display:none;"></span></div>
       <div class="table-header-cell col-filterable" id="col-header-domain" onclick="toggleColDropdown('domain', this)">Domain <span class="col-filter-caret">▾</span><span class="col-active-chip" id="col-chip-domain" style="display:none;"></span></div>

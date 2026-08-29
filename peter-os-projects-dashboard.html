@@ -60,6 +60,13 @@
     --status-parked-bg:   #4A4540; --status-parked-text:   #F9F7F2; /* Stone / Alabaster */
     --status-closed-bg:   #E8C0A3; --status-closed-text:   #1A1A1A; /* Soft Sand / Ebon */
 
+    /* Attention colors — mirrors GL-003 §13b status pattern; assigned Felix 2026-08-29 per
+       Peter's decision to replace the Target column with Attention (Deferred #90/#91). */
+    --attention-focus-bg:    #9B2D30; --attention-focus-text:    #F9F7F2; /* Garnet / Alabaster — actively driving, highest urgency */
+    --attention-waiting-bg:  #B45309; --attention-waiting-text:  #F9F7F2; /* Amber / Alabaster — blocked, needs unblocking */
+    --attention-monitor-bg:  #4A4540; --attention-monitor-text: #F9F7F2; /* Stone / Alabaster — watching, mid-low visibility */
+    --attention-maintain-bg: #E8C0A3; --attention-maintain-text:#1A1A1A; /* Soft Sand / Ebon — steady state, recedes */
+
     /* Priority */
     --priority-high: #9B2D30;
     --priority-medium: #B45309;
@@ -348,7 +355,7 @@
 
   .table-header {
     display: grid;
-    grid-template-columns: 2.4fr 1.1fr 0.9fr 0.7fr 0.8fr 0.9fr 0.7fr;
+    grid-template-columns: 2.4fr 0.9fr 0.7fr 0.9fr 1.1fr 0.8fr 0.7fr;
     gap: 0;
     padding: 0 var(--space-md);
     border-bottom: 1px solid var(--color-neutral-2);
@@ -380,7 +387,7 @@
 
   .project-row {
     display: grid;
-    grid-template-columns: 2.4fr 1.1fr 0.9fr 0.7fr 0.8fr 0.9fr 0.7fr;
+    grid-template-columns: 2.4fr 0.9fr 0.7fr 0.9fr 1.1fr 0.8fr 0.7fr;
     gap: 0;
     padding: 0 var(--space-md);
     border-bottom: 1px solid var(--color-neutral-1);
@@ -500,6 +507,11 @@
   .badge-priority-high   { background: rgba(155,45,48,0.12); color: var(--color-primary); border: 1px solid rgba(155,45,48,0.25); }
   .badge-priority-medium { background: rgba(180,83,9,0.10);  color: #B45309; border: 1px solid rgba(180,83,9,0.22); }
   .badge-priority-low    { background: rgba(107,114,128,0.10); color: #6b7280; border: 1px solid rgba(107,114,128,0.2); }
+
+  .badge-attention-focus    { background: var(--attention-focus-bg);    color: var(--attention-focus-text); }
+  .badge-attention-waiting  { background: var(--attention-waiting-bg);  color: var(--attention-waiting-text); }
+  .badge-attention-monitor  { background: var(--attention-monitor-bg);  color: var(--attention-monitor-text); }
+  .badge-attention-maintain { background: var(--attention-maintain-bg); color: var(--attention-maintain-text); }
 
   .domain-chip {
     display: inline-flex;
@@ -1332,11 +1344,11 @@
   <div class="table-wrapper">
     <div class="table-header">
       <div class="table-header-cell sortable" data-col="name" onclick="applySort('name')">Project <span class="sort-arrow" id="sort-name"></span></div>
-      <div class="table-header-cell col-filterable" id="col-header-domain" onclick="toggleColDropdown('domain', this)">Domain <span class="col-filter-caret">▾</span><span class="col-active-chip" id="col-chip-domain" style="display:none;"></span></div>
-      <div class="table-header-cell col-filterable" id="col-header-status" onclick="toggleColDropdown('status', this)">Status <span class="col-filter-caret">▾</span><span class="col-active-chip" id="col-chip-status" style="display:none;"></span></div>
+      <div class="table-header-cell sortable" data-col="attention" onclick="applySort('attention')">Attention <span class="sort-arrow" id="sort-attention"></span></div>
       <div class="table-header-cell col-filterable" id="col-header-priority" onclick="toggleColDropdown('priority', this)">Priority <span class="col-filter-caret">▾</span><span class="col-active-chip" id="col-chip-priority" style="display:none;"></span></div>
+      <div class="table-header-cell col-filterable" id="col-header-status" onclick="toggleColDropdown('status', this)">Status <span class="col-filter-caret">▾</span><span class="col-active-chip" id="col-chip-status" style="display:none;"></span></div>
+      <div class="table-header-cell col-filterable" id="col-header-domain" onclick="toggleColDropdown('domain', this)">Domain <span class="col-filter-caret">▾</span><span class="col-active-chip" id="col-chip-domain" style="display:none;"></span></div>
       <div class="table-header-cell col-filterable" id="col-header-client" onclick="toggleColDropdown('client', this)">Client <span class="col-filter-caret">▾</span><span class="col-active-chip" id="col-chip-client" style="display:none;"></span></div>
-      <div class="table-header-cell sortable" data-col="deadline" onclick="applySort('deadline')">Target <span class="sort-arrow" id="sort-deadline"></span></div>
       <div class="table-header-cell sortable" data-col="lastUpdated" onclick="applySort('lastUpdated')">Updated <span class="sort-arrow" id="sort-lastUpdated"></span></div>
     </div>
     <div id="projectTableBody">
@@ -1487,6 +1499,9 @@ const generatedDate = "2026-08-29";
 // status        string   'active'|'planning'|'parked'|'closed'
 //                        TABLE: status badge. Controls filter tab counts.
 // priority      string   'high'|'medium'|'low'. TABLE: priority badge. MODAL: metadata grid.
+// attention     string   'focus'|'maintain'|'monitor'|'waiting' (GL-002 canonical). TABLE:
+//                        attention badge (replaces the old Target column, 2026-08-29). Not
+//                        yet surfaced in the modal — target_date remains there instead.
 // domain        string   'work'|'personal'|'health'|'family'|'learning'|...
 //                        TABLE: coloured domain chip (colours from domainColors map).
 // client        string   TABLE: shown in Client column. MODAL: metadata grid.
@@ -1520,6 +1535,7 @@ const generatedDate = "2026-08-29";
 // completenessScore(p)     Returns 0–6. Edit here to add/remove scored fields.
 // statusBadge(status)      Returns badge HTML. Add new status strings here + CSS.
 // priorityBadge(priority)  Returns badge HTML. Add new priority levels here + CSS.
+// attentionBadge(attention) Returns badge HTML. Add new attention values here + CSS.
 // domainChip(domain)       Returns chip HTML. Add new domains to domainColors map.
 // formatDate(d)            'YYYY-MM-DD' → 'D Mon YYYY'. Pure utility — don't touch.
 // formatPeople(arr)        Slug array → name chip HTML. Reads peopleIndex.
@@ -3194,8 +3210,9 @@ const domainColors = {
   work:        { bg: '#9B2D30', text: '#F9F7F2' }, // Garnet
 };
 
-const priorityOrder = { high: 0, medium: 1, low: 2 };
-const statusOrder   = { active: 0, planning: 1, parked: 2, closed: 3 };
+const priorityOrder  = { high: 0, medium: 1, low: 2 };
+const statusOrder    = { active: 0, planning: 1, parked: 2, closed: 3 };
+const attentionOrder = { focus: 0, waiting: 1, monitor: 2, maintain: 3 };
 
 const DOMAIN_GROUPS = [
   { label: 'Education',      slugs: ['education'] },
@@ -3245,6 +3262,12 @@ function statusBadge(status) {
 function priorityBadge(priority) {
   if (!priority) return '<span style="color:var(--color-neutral-3);font-size:12px;">—</span>';
   return `<span class="badge badge-priority-${priority}">${priority.toUpperCase()}</span>`;
+}
+
+function attentionBadge(attention) {
+  if (!attention) return '<span style="color:var(--color-neutral-3);font-size:12px;">—</span>';
+  const label = attention.charAt(0).toUpperCase() + attention.slice(1);
+  return `<span class="badge badge-attention-${attention}">${label}</span>`;
 }
 
 function domainChip(domain) {
@@ -3347,9 +3370,9 @@ function applyFilters() {
         va = a.domain || 'zzz';
         vb = b.domain || 'zzz';
         break;
-      case 'deadline':
-        va = a.target_date || '9999-99-99';
-        vb = b.target_date || '9999-99-99';
+      case 'attention':
+        va = attentionOrder[a.attention] ?? 9;
+        vb = attentionOrder[b.attention] ?? 9;
         break;
       case 'lastUpdated':
         va = a.lastUpdated || '0000-00-00';
@@ -3416,11 +3439,11 @@ function renderTable(projects) {
         ${p.next_action ? `<div class="project-next-action"><span class="na-arrow">→</span><span class="na-text">${p.next_action}</span></div>` : ''}
         ${p.quick_win ? `<div class="project-quick-win"><span class="qw-spark">⚡</span><span class="qw-text">${p.quick_win}</span></div>` : ''}
       </div>
-      <div class="project-cell">${domainChip(p.domain)}</div>
-      <div class="project-cell">${statusBadge(p.status)}</div>
+      <div class="project-cell">${attentionBadge(p.attention)}</div>
       <div class="project-cell">${priorityBadge(p.priority)}</div>
+      <div class="project-cell">${statusBadge(p.status)}</div>
+      <div class="project-cell">${domainChip(p.domain)}</div>
       <div class="project-cell" style="font-size:12px;color:var(--color-neutral-3);">${p.client || '—'}</div>
-      <div class="project-cell" style="font-size:12px;color:var(--color-neutral-4);">${formatDate(p.target_date)}</div>
       <div class="project-cell"><span class="${age.cls}" style="font-size:12px;">${age.label}</span></div>
     </div>`;
   }

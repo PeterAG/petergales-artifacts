@@ -66,6 +66,7 @@
     --attention-waiting-bg:  #B45309; --attention-waiting-text:  #F9F7F2; /* Amber / Alabaster — blocked, needs unblocking */
     --attention-monitor-bg:  #4A4540; --attention-monitor-text: #F9F7F2; /* Stone / Alabaster — watching, mid-low visibility */
     --attention-maintain-bg: #E8C0A3; --attention-maintain-text:#1A1A1A; /* Soft Sand / Ebon — steady state, recedes */
+    --attention-dormant-bg:  #DDD3C6; --attention-dormant-text: #1A1A1A; /* Pale Neutral / Ebon — deliberately shelved, quietest of the five; added 2026-08-30 per Peter (Deferred #90/#91 follow-up) */
 
     /* Priority */
     --priority-high: #9B2D30;
@@ -512,6 +513,7 @@
   .badge-attention-waiting  { background: var(--attention-waiting-bg);  color: var(--attention-waiting-text); }
   .badge-attention-monitor  { background: var(--attention-monitor-bg);  color: var(--attention-monitor-text); }
   .badge-attention-maintain { background: var(--attention-maintain-bg); color: var(--attention-maintain-text); }
+  .badge-attention-dormant  { background: var(--attention-dormant-bg);  color: var(--attention-dormant-text); }
 
   .domain-chip {
     display: inline-flex;
@@ -1521,7 +1523,7 @@ const generatedDate = "2026-08-30";
 // status        string   'active'|'planning'|'parked'|'closed'
 //                        TABLE: status badge. Controls filter tab counts.
 // priority      string   'high'|'medium'|'low'. TABLE: priority badge. MODAL: metadata grid.
-// attention     string   'focus'|'maintain'|'monitor'|'waiting' (GL-002 canonical). TABLE:
+// attention     string   'focus'|'maintain'|'monitor'|'waiting'|'dormant' (GL-002 canonical). TABLE:
 //                        attention badge (replaces the old Target column, 2026-08-29). Not
 //                        yet surfaced in the modal — target_date remains there instead.
 // domain        string   'work'|'personal'|'health'|'family'|'learning'|...

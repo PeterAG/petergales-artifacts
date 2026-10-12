@@ -1238,6 +1238,10 @@
   .header-cockpit-link:hover { background: rgba(249,247,242,0.12); border-color: var(--color-neutral-0); }
   .header-cockpit-link:focus-visible { outline: 2px solid var(--color-neutral-0); outline-offset: 2px; }
   .header-cockpit-link svg { flex: none; }
+  /* Touch target: 44px minimum on mobile (WCAG 2.5.5). */
+  @media (max-width: 767px) {
+    .header-cockpit-link { min-height: 44px; }
+  }
 
   /* ============================================================
      ARTIFACTS TABLE
@@ -1537,11 +1541,11 @@
 // ============================================================
 // GENERATED DATE — updated by Tools/generate_project_data.py on each run
 // ============================================================
-const generatedDate = "2026-10-11";
+const generatedDate = "2026-10-12";
 
 // ============================================================
 // MAINTENANCE REFERENCE — peter-os-projects-dashboard.html
-// Last updated: 2026-10-11
+// Last updated: 2026-10-12
 // ============================================================
 //
 // DATA SCHEMA — every field and what it produces in the UI
@@ -2262,7 +2266,7 @@ const projectData = [
     domain: 'self',
     target_date: '2026-09-30',
     closed_date: '2026-08-17',
-    lastUpdated: '2026-08-30',
+    lastUpdated: '2026-10-11',
     linked_goals: [],
     linked_people: [],
     tags: ['system', 'craft', 'ssot'],

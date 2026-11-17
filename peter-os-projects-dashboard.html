@@ -60,7 +60,7 @@
     --status-active-bg:   #9B2D30; --status-active-text:   #F9F7F2; /* Garnet / Alabaster */
     --status-planning-bg: #4A6741; --status-planning-text: #F9F7F2; /* Fern / Alabaster */
     --status-parked-bg:   #4A4540; --status-parked-text:   #F9F7F2; /* Stone / Alabaster */
-    --status-closed-bg:   #E8C0A3; --status-closed-text:   #1A1A1A; /* Soft Sand / Ebon */
+    --status-ended-bg:    #E8C0A3; --status-ended-text:    #1A1A1A; /* Soft Sand / Ebon */
 
     /* Attention colors — mirrors GL-003 §13b status pattern; assigned Felix 2026-08-29 per
        Peter's decision to replace the Target column with Attention (Deferred #90/#91). */
@@ -73,7 +73,7 @@
     /* Priority */
     --priority-high: #9B2D30;
     --priority-medium: #B45309;
-    --priority-low: #6b7280;
+    --priority-low: #4A4540; /* Stone — darkened from #6b7280 for 4.5:1 at 11px (QA M2) */
 
     /* Spacing */
     --space-xs: 8px;
@@ -346,6 +346,14 @@
     height: 14px;
   }
 
+  .filter-status-toggle input[type="checkbox"]:focus-visible {
+    outline: 2px solid var(--color-primary); /* Garnet on Alabaster, 6.9:1 */
+    outline-offset: 2px;
+  }
+  @media (forced-colors: active) {
+    .filter-status-toggle input[type="checkbox"]:focus-visible { outline: 2px solid Highlight; box-shadow: none; }
+  }
+
   /* ============================================================
      PROJECT TABLE
   ============================================================ */
@@ -505,11 +513,13 @@
   .badge-status-active   { background: var(--status-active-bg);   color: var(--status-active-text); }
   .badge-status-planning { background: var(--status-planning-bg);  color: var(--status-planning-text); }
   .badge-status-parked   { background: var(--status-parked-bg);    color: var(--status-parked-text); }
-  .badge-status-closed   { background: var(--status-closed-bg);    color: var(--status-closed-text); }
+  .badge-status-ended    { background: var(--status-ended-bg);     color: var(--status-ended-text); }
+  .badge-status-outcome  { font-weight: 500; opacity: 0.85; }
 
   .badge-priority-high   { background: rgba(155,45,48,0.12); color: var(--color-primary); border: 1px solid rgba(155,45,48,0.25); }
   .badge-priority-medium { background: rgba(180,83,9,0.10);  color: #B45309; border: 1px solid rgba(180,83,9,0.22); }
-  .badge-priority-low    { background: rgba(107,114,128,0.10); color: #6b7280; border: 1px solid rgba(107,114,128,0.2); }
+  .badge-priority-not-applicable { background: rgba(74,69,64,0.06); color: var(--priority-low); border: 1px dashed rgba(74,69,64,0.4); }
+  .badge-priority-low    { background: rgba(74,69,64,0.08); color: var(--priority-low); border: 1px solid rgba(74,69,64,0.25); }
 
   .badge-attention-focus    { background: var(--attention-focus-bg);    color: var(--attention-focus-text); }
   .badge-attention-waiting  { background: var(--attention-waiting-bg);  color: var(--attention-waiting-text); }
@@ -1403,6 +1413,10 @@
               style="display:none;position:absolute;right:6px;border:none;background:none;cursor:pointer;color:var(--color-neutral-3);font-size:14px;line-height:1;padding:0;width:18px;height:18px;align-items:center;justify-content:center;"
               title="Clear search">&#x2715;</button>
     </div>
+    <label class="filter-status-toggle" for="showEndedToggle" style="white-space:nowrap;">
+      <input type="checkbox" id="showEndedToggle" onchange="showEnded = this.checked; applyFilters();">
+      <span class="filter-label" style="margin-right:0;">Show ended</span>
+    </label>
   </div>
   <!-- Table -->
   <div class="table-wrapper">
@@ -1546,11 +1560,11 @@
 // ============================================================
 // GENERATED DATE — updated by Tools/generate_project_data.py on each run
 // ============================================================
-const generatedDate = "2026-10-31";
+const generatedDate = "2026-11-17";
 
 // ============================================================
 // MAINTENANCE REFERENCE — peter-os-projects-dashboard.html
-// Last updated: 2026-10-31
+// Last updated: 2026-11-17
 // ============================================================
 //
 // DATA SCHEMA — every field and what it produces in the UI
@@ -1560,9 +1574,10 @@ const generatedDate = "2026-10-31";
 // parent        string   id of parent project. TABLE: renders amber "↳ sub-project"
 //                        label above name. MODAL: renders clickable parent link.
 //                        DATA-ONLY field — no rendering code change needed to use it.
-// status        string   'active'|'planning'|'parked'|'closed'
+// status        string   'planning'|'active'|'parked'|'ended'  (GL-002; ended projects hidden by default)
+// outcome       string   'completed'|'abandoned'|'superseded'|null. Set only when status is 'ended'. Shown beside the Ended badge.
 //                        TABLE: status badge. Controls filter tab counts.
-// priority      string   'high'|'medium'|'low'. TABLE: priority badge. MODAL: metadata grid.
+// priority      string   'high'|'medium'|'low'|'not-applicable' (sorts last). TABLE: priority badge. MODAL: metadata grid.
 // attention     string   'focus'|'maintain'|'monitor'|'waiting'|'dormant' (GL-002 canonical). TABLE:
 //                        attention badge (replaces the old Target column, 2026-08-29). Not
 //                        yet surfaced in the modal — target_date remains there instead.
@@ -1636,6 +1651,7 @@ const projectData = [
     id: 'accessory-electronics-assessment',
     name: 'Accessory & Electronics Assessment',
     status: 'parked',
+    outcome: null,
     priority: 'low',
     client: 'Personal',
     domain: 'money',
@@ -1655,13 +1671,14 @@ const projectData = [
   {
     id: 'agent-terminal-launcher',
     name: 'Agent Terminal Launcher',
-    status: 'abandoned',
-    priority: 'high',
+    status: 'ended',
+    outcome: 'abandoned',
+    priority: 'not-applicable',
     client: 'Personal',
     domain: 'education',
     target_date: null,
-    closed_date: null,
-    lastUpdated: '2026-10-11',
+    closed_date: '2026-11-09',
+    lastUpdated: '2026-11-09',
     linked_goals: ['build-ai-knowledge-and-offer'],
     linked_people: [],
     tags: ['ai', 'build', 'mac', 'automation', 'terminal'],
@@ -1675,13 +1692,14 @@ const projectData = [
   {
     id: 'ai-and-i-podcast',
     name: 'AI&I Podcast',
-    status: 'active',
+    status: 'planning',
+    outcome: null,
     priority: 'high',
     client: 'Personal',
     domain: 'work',
     target_date: null,
     closed_date: null,
-    lastUpdated: '2026-10-07',
+    lastUpdated: '2026-11-09',
     linked_goals: [],
     linked_people: [],
     tags: ['podcast', 'ai', 'content', 'jamaican-voice'],
@@ -1696,6 +1714,7 @@ const projectData = [
     id: 'ai-audit-offer',
     name: 'AI Audit Offer',
     status: 'parked',
+    outcome: null,
     priority: 'low',
     client: 'Personal',
     domain: 'work',
@@ -1716,6 +1735,7 @@ const projectData = [
     id: 'ai-directory-panel-and-trade-show',
     name: 'AI Directory, Panel Discussion, and Trade Show',
     status: 'planning',
+    outcome: null,
     priority: 'medium',
     client: 'Personal',
     domain: 'work',
@@ -1735,13 +1755,14 @@ const projectData = [
   {
     id: 'ai-educational-offer-strategy',
     name: 'AI Educational Offer Strategy',
-    status: 'archived',
-    priority: 'high',
+    status: 'ended',
+    outcome: 'abandoned',
+    priority: 'not-applicable',
     client: 'Personal',
     domain: 'work',
     target_date: null,
-    closed_date: null,
-    lastUpdated: '2026-10-22',
+    closed_date: '2026-11-09',
+    lastUpdated: '2026-11-09',
     linked_goals: [],
     linked_people: [],
     tags: ['strategy', 'human-alignment-strategist', 'education', 'offer-design', 'superseded'],
@@ -1756,18 +1777,19 @@ const projectData = [
     id: 'ai-expertise-curriculum',
     name: 'AI Expertise Curriculum',
     status: 'planning',
+    outcome: null,
     priority: 'medium',
     client: 'Personal',
     domain: 'education',
     target_date: null,
     closed_date: null,
-    lastUpdated: '2026-10-06',
+    lastUpdated: '2026-11-09',
     linked_goals: ['build-ai-knowledge-and-offer'],
     linked_people: [],
     tags: ['ai', 'learning', 'curriculum', 'skills', 'needs-definition'],
     why: 'Peter feels behind on AI. He wants a clear list of the skills he needs to build, and a learning curriculum that uses existing or new AI tools to build them. This project is his own development as an AI practitioner. It is separate from the offers he sells to others: [[ai-audit-offer]] covers client assessments, and the retired [[ai-educational-offer-strategy]] (consolidated into the Master Strategy) covers education offers for audiences. The project supports [[build-ai-knowledge-and-offer]] and continues the mood recorded in [[project-vantage]].',
     next_action: 'Review Ming\'s baseline skills list and turn it into Peter\'s own skills list.',
-    attention: null,
+    attention: 'dormant',
     quick_win: null,
     action_points: ['Review Ming\'s baseline skills list and turn it into Peter\'s own skills list.', 'Peter chooses a starting track (Max recommends writing-identity workflow).', 'Decide which communities and inputs to follow, and who monitors each.', 'Define scope and target date when Peter has time.'],
     artifacts: []
@@ -1776,6 +1798,7 @@ const projectData = [
     id: 'ai-human-question-workshop-series',
     name: 'ai-human-question-workshop-series',
     status: 'planning',
+    outcome: null,
     priority: 'low',
     client: 'Personal',
     domain: 'work',
@@ -1796,6 +1819,7 @@ const projectData = [
     id: 'ai-intro-video',
     name: 'AI Intro Video',
     status: 'planning',
+    outcome: null,
     priority: 'low',
     client: 'Personal',
     domain: 'work',
@@ -1816,6 +1840,7 @@ const projectData = [
     id: 'ai-roundtable-mastermind',
     name: 'AI Roundtable / Mastermind Group',
     status: 'parked',
+    outcome: null,
     priority: 'low',
     client: 'Personal',
     domain: 'membership',
@@ -1836,6 +1861,7 @@ const projectData = [
     id: 'ai-thought-leadership-summit',
     name: 'AI Thought Leadership Summit + Innovation Expo',
     status: 'parked',
+    outcome: null,
     priority: 'low',
     client: 'Personal',
     domain: 'work',
@@ -1856,12 +1882,13 @@ const projectData = [
     id: 'andalusia-car-wash-community-response',
     name: 'Andalusia Car Wash — Community Response',
     status: 'active',
-    priority: 'medium',
+    outcome: null,
+    priority: 'low',
     client: 'ARA',
     domain: 'membership',
     target_date: '2026-10-13',
     closed_date: null,
-    lastUpdated: '2026-10-11',
+    lastUpdated: '2026-11-09',
     linked_goals: [],
     linked_people: ['keith-downes', 'rishi-dass', 'richard-freeman', 'donna-bryden', 'michael-bryden', 'josh-fransen', 'sonja-sinaswee', 'keith-manickchan', 'jeremy-pagee', 'alatashe-girvan'],
     tags: ['ara', 'community'],
@@ -1875,13 +1902,14 @@ const projectData = [
   {
     id: 'ara-accounts-reconciliation',
     name: 'ARA Accounts Reconciliation',
-    status: 'done',
-    priority: 'high',
+    status: 'ended',
+    outcome: 'completed',
+    priority: 'not-applicable',
     client: 'ARA',
     domain: 'membership',
     target_date: '2026-08-21',
     closed_date: '2026-08-26',
-    lastUpdated: '2026-08-26',
+    lastUpdated: '2026-11-09',
     linked_goals: [],
     linked_people: ['keith-downes', 'thomas-inkim', 'derek-decaires', 'josh-fransen'],
     tags: ['ara', 'community'],
@@ -1896,6 +1924,7 @@ const projectData = [
     id: 'ara-automatic-gate',
     name: 'ARA Automatic Gate',
     status: 'active',
+    outcome: null,
     priority: 'high',
     client: 'ARA',
     domain: 'membership',
@@ -1916,6 +1945,7 @@ const projectData = [
     id: 'ara-leasehold-freehold-conversion',
     name: 'ARA Leasehold to Freehold Conversion',
     status: 'parked',
+    outcome: null,
     priority: 'medium',
     client: 'ARA',
     domain: 'membership',
@@ -1935,13 +1965,14 @@ const projectData = [
   {
     id: 'ara-road-repair',
     name: 'ARA Road Repair — WASA Damage',
-    status: 'closed',
-    priority: 'low',
+    status: 'ended',
+    outcome: 'completed',
+    priority: 'not-applicable',
     client: 'ARA',
     domain: 'membership',
     target_date: null,
     closed_date: '2026-03-24',
-    lastUpdated: '2026-07-21',
+    lastUpdated: '2026-11-09',
     linked_goals: [],
     linked_people: ['anson-marshall', 'latoya-smith-greaves'],
     tags: ['ara', 'community', 'infrastructure'],
@@ -1956,12 +1987,13 @@ const projectData = [
     id: 'bilateral-pfps',
     name: 'Bilateral Patellofemoral Syndrome Rehab',
     status: 'active',
-    priority: 'high',
+    outcome: null,
+    priority: 'medium',
     client: 'Personal',
     domain: 'body',
     target_date: '2026-12-31',
     closed_date: null,
-    lastUpdated: '2026-10-02',
+    lastUpdated: '2026-11-09',
     linked_goals: ['achieve-running-jumping-fitness'],
     linked_people: [],
     tags: ['body', 'rehab', 'knees', 'pfps'],
@@ -1976,6 +2008,7 @@ const projectData = [
     id: 'business-tax-loss-review',
     name: 'Business Tax Loss Review',
     status: 'active',
+    outcome: null,
     priority: 'high',
     client: 'Personal',
     domain: 'money',
@@ -1995,19 +2028,20 @@ const projectData = [
   {
     id: 'calvert-pension-claim',
     name: 'Calvert Pension Claim',
-    status: 'closed',
-    priority: 'low',
+    status: 'ended',
+    outcome: 'completed',
+    priority: 'not-applicable',
     client: 'Personal',
     domain: 'family',
     target_date: '2026-10-15',
     closed_date: '2026-09-06',
-    lastUpdated: '2026-09-08',
+    lastUpdated: '2026-11-09',
     linked_goals: [],
     linked_people: ['calvert-craigg', 'helen-francis-baptiste'],
     tags: ['pension', 'family-retainer', 'trinidad'],
     why: 'Calvert Craigg, a lifelong trusted member of the extended Phillips-Gales household, was denied his Senior Citizens\' Pension on the erroneous basis that he had been out of Trinidad and Tobago for seven years during the preceding twenty. Since Pearl Phillips became incapacitated, Peter has taken on the role of helping Calvert navigate institutional and bureaucratic matters. Resolving this appeal restores a pension Calvert was always entitled to and provides him basic income security in his later years — especially important given his recent MPN diagnosis.',
     next_action: null,
-    attention: 'none',
+    attention: null,
     quick_win: null,
     action_points: [],
     artifacts: []
@@ -2015,19 +2049,20 @@ const projectData = [
   {
     id: 'camy-wrist-recovery-2026',
     name: 'Camy Wrist Recovery 2026',
-    status: 'active',
-    priority: 'medium',
+    status: 'ended',
+    outcome: 'completed',
+    priority: 'not-applicable',
     client: 'Personal',
     domain: 'family',
     target_date: null,
-    closed_date: null,
-    lastUpdated: '2026-10-30',
+    closed_date: '2026-11-09',
+    lastUpdated: '2026-11-09',
     linked_goals: [],
     linked_people: ['camille-ojar', 'sage-franco'],
     tags: ['camy', 'health', 'family'],
     why: 'Camy sustained a severe crush injury to her wrist on June 24, 2026. Surgery has been confirmed and scheduled. This is the most significant health event in her life right now, and Peter is holding it closely. The recovery arc will extend through the summer and beyond. Peter\'s support — whether from a distance or in person — is part of how he shows up for her.',
     next_action: 'Confirm accommodation for August 2–16 (Varuna, [[derek-decaires]], or other).',
-    attention: 'waiting',
+    attention: null,
     quick_win: null,
     action_points: ['Confirm accommodation for August 2–16 (Varuna, [[derek-decaires]], or other).', 'Check in with Camy on how she is managing one-handed ahead of July 9 surgery.', 'After July 20 follow-up: update this file with recovery prognosis and any changes to plan.'],
     artifacts: []
@@ -2036,12 +2071,13 @@ const projectData = [
     id: 'canadian-passport-renewal',
     name: 'Canadian Passport Renewal',
     status: 'active',
+    outcome: null,
     priority: 'low',
     client: 'Personal',
     domain: 'self',
     target_date: '2026-12-31',
     closed_date: null,
-    lastUpdated: '2026-08-17',
+    lastUpdated: '2026-11-11',
     linked_goals: [],
     linked_people: [],
     tags: ['passport', 'canada', 'documents', 'identity'],
@@ -2049,13 +2085,14 @@ const projectData = [
     next_action: '**2026-08-06 — old passport number/dates found.** A scan dropped in Team Inbox contains a photocopy of the actual old (expired) Canadian passport: No. **PC500578**, issued **2001-12-17**, expired **2006-12-17**. Full detail at [[canadian-old-passport-and-citizenship-id-copy]]. This answers the "previously held passport" question that Section 3 of the PPTC153 form needs — **but the application form as filled has "N/A" in the Number/Date fields**, filled before this scan surfaced. See [[peter-gales-pptc153-passport-application-canada]] and the agent-flags.md entry (2026-08-06) — worth Peter filling in PC500578 / 2001-12-17 by hand before submitting.',
     attention: 'waiting',
     quick_win: 'Search for the actual Proof of Citizenship card',
-    action_points: ['**2026-08-06 — old passport number/dates found.** A scan dropped in Team Inbox contains a photocopy of the actual old (expired) Canadian passport: No. **PC500578**, issued **2001-12-17**, expired **2006-12-17**. Full detail at [[canadian-old-passport-and-citizenship-id-copy]]. This answers the "previously held passport" question that Section 3 of the PPTC153 form needs — **but the application form as filled has "N/A" in the Number/Date fields**, filled before this scan surfaced. See [[peter-gales-pptc153-passport-application-canada]] and the agent-flags.md entry (2026-08-06) — worth Peter filling in PC500578 / 2001-12-17 by hand before submitting.', '**2026-08-06 — PPTC153 application form completed.** Guarantor: [[camille-ojar|Camille Ojar]] (passport AL825724). References: [[chris-elliott|Chris Elliott]] and [[derek-jaglal|Derek Jaglal]]. 10-year validity requested. Full detail at [[peter-gales-pptc153-passport-application-canada]].', '**2026-07-18 — found, resolves the hard part:** the core proof-of-citizenship document is already on file — [[canadian-citizenship-certificate|Canadian Citizenship Certificate]] (Citizenship No. 6446027, dated December 23, 1985), digital copy at `PKM/Documents/Canadian Citizenship Certificate.pdf`, also indexed in `PKM/Documents/personal-id-and-legal-docs.md`. This is what a new application needs in place of the old (untraceable) passport.', '**Narrower remaining question:** confirm the current IRCC application process for a Canadian citizen applying for their first passport from overseas (T&T) — which form, guarantor requirements, photo specs, submission address/method. Smaller scope now that citizenship proof is in hand. **Answered 2026-07-18 — see section below.**', 'Search [[processing-and-archival]] files only if the old (expired decades ago) passport itself is wanted for reference — not required for the application given the citizenship certificate covers the proof requirement.', 'Route to Harvey if any citizenship documentation considerations apply', '--'],
+    action_points: ['**2026-08-06 — old passport number/dates found.** A scan dropped in Team Inbox contains a photocopy of the actual old (expired) Canadian passport: No. **PC500578**, issued **2001-12-17**, expired **2006-12-17**. Full detail at [[canadian-old-passport-and-citizenship-id-copy]]. This answers the "previously held passport" question that Section 3 of the PPTC153 form needs — **but the application form as filled has "N/A" in the Number/Date fields**, filled before this scan surfaced. See [[peter-gales-pptc153-passport-application-canada]] and the agent-flags.md entry (2026-08-06) — worth Peter filling in PC500578 / 2001-12-17 by hand before submitting.', '**2026-08-06 — PPTC153 application form completed.** Guarantor: [[camille-ojar|Camille Ojar]] (passport AL825724). References: [[chris-elliott|Chris Elliott]] and [[derek-jaglall|Derek Jaglal]]. 10-year validity requested. Full detail at [[peter-gales-pptc153-passport-application-canada]].', '**2026-07-18 — found, resolves the hard part:** the core proof-of-citizenship document is already on file — [[canadian-citizenship-certificate|Canadian Citizenship Certificate]] (Citizenship No. 6446027, dated December 23, 1985), digital copy at `PKM/Documents/Canadian Citizenship Certificate.pdf`, also indexed in `PKM/Documents/personal-id-and-legal-docs.md`. This is what a new application needs in place of the old (untraceable) passport.', '**Narrower remaining question:** confirm the current IRCC application process for a Canadian citizen applying for their first passport from overseas (T&T) — which form, guarantor requirements, photo specs, submission address/method. Smaller scope now that citizenship proof is in hand. **Answered 2026-07-18 — see section below.**', 'Search [[processing-and-archival]] files only if the old (expired decades ago) passport itself is wanted for reference — not required for the application given the citizenship certificate covers the proof requirement.', 'Route to Harvey if any citizenship documentation considerations apply', '--'],
     artifacts: []
   },
   {
     id: 'capital-allocation-netherlands-etrade',
     name: 'Capital Allocation (Netherlands + E-Trade)',
     status: 'active',
+    outcome: null,
     priority: 'high',
     client: 'Personal',
     domain: 'money',
@@ -2076,12 +2113,13 @@ const projectData = [
     id: 'ceal-green-agentic-platform',
     name: 'CEAL Green Agentic Platform',
     status: 'planning',
+    outcome: null,
     priority: 'medium',
     client: 'CEAL Green',
     domain: 'work',
     target_date: '2026-12-31',
     closed_date: null,
-    lastUpdated: '2026-10-23',
+    lastUpdated: '2026-11-11',
     linked_goals: [],
     linked_people: ['marc-sutton', 'cecile-george'],
     tags: ['ceal-green', 'agentic', 'ai'],
@@ -2099,18 +2137,19 @@ const projectData = [
     id: 'ceal-green-customer-journey',
     name: 'CEAL Green Customer Journey',
     status: 'active',
-    priority: 'high',
+    outcome: null,
+    priority: 'medium',
     client: 'CEAL Green',
     domain: 'work',
     target_date: '2026-12-31',
     closed_date: null,
-    lastUpdated: '2026-08-19',
+    lastUpdated: '2026-11-09',
     linked_goals: ['own-a-category-and-100k-tt-2026'],
     linked_people: ['ryan-roper'],
     tags: ['ceal-green', 'customer-journey', 'strategy'],
     why: 'Peter is leading the design of the full CEAL Green customer journey — the designed arc from a prospect\'s first encounter with CEAL Green to a sustained relationship of trust and advocacy. This is not a content role; it is the experience design and systems architecture across all three phases.',
     next_action: 'Read CG Digital Transformation Roadmap PDF (2026-08-18) — Ethniv\'s feedback session still unwatched',
-    attention: 'focus',
+    attention: 'monitor',
     quick_win: 'Confirm a date for the Phase 1 agentic build test session with Marc Sutton (requested, pending)',
     action_points: ['Read CG Digital Transformation Roadmap PDF (2026-08-18) — Ethniv\'s feedback session still unwatched', 'Confirm date for Phase 1 agentic build test session with Marc Sutton (requested 2026-08-18, pending)', 'Hold working session to define outline/structure of a Phase 2 document (agentic design + implied business processes, incl. Tools & Systems section), and identify CG inputs needed — next Tuesday weekly, chairman + chief engineer attending, Ryan absent', 'Ask Ryan for an inventory of CG\'s existing and anticipated business processes (input to the mapping stage, not the design driver)', 'Begin Phase 2 experience design — touchpoint mapping from first active step to commitment (sequenced after the outline session above)', 'Define handoff protocols between Phase 1 and Phase 2', 'Assess whether the expanded content-manager/agent-liaison role is too much scope for one person', 'Assess Customer Journey Manager formalisation timeline'],
     artifacts: [
@@ -2122,13 +2161,14 @@ const projectData = [
   {
     id: 'ceal-green-website-audit',
     name: 'CEAL Green Website Audit',
-    status: 'closed',
-    priority: 'low',
+    status: 'ended',
+    outcome: 'completed',
+    priority: 'not-applicable',
     client: 'CEAL Green',
     domain: 'work',
     target_date: '2026-06-11',
     closed_date: '2026-06-20',
-    lastUpdated: '2026-07-25',
+    lastUpdated: '2026-11-09',
     linked_goals: ['create-customer-journey-ceal-green'],
     linked_people: ['ryan-roper'],
     tags: ['ceal-green', 'website', 'audit'],
@@ -2145,13 +2185,14 @@ const projectData = [
   {
     id: 'cg-digital-transformation-roadmap',
     name: 'CG Digital Transformation Roadmap',
-    status: 'done',
-    priority: 'high',
+    status: 'ended',
+    outcome: 'completed',
+    priority: 'not-applicable',
     client: 'CEAL Green',
     domain: 'work',
     target_date: '2026-12-31',
     closed_date: '2026-08-27',
-    lastUpdated: '2026-08-30',
+    lastUpdated: '2026-11-09',
     linked_goals: [],
     linked_people: [],
     tags: ['ceal-green', 'digital-transformation', 'customer-journey', 'ryan'],
@@ -2166,6 +2207,7 @@ const projectData = [
     id: 'computershare-pearly-payments',
     name: 'Resolve Computershare Payments for Pearly',
     status: 'parked',
+    outcome: null,
     priority: 'medium',
     client: 'Family',
     domain: 'family',
@@ -2186,6 +2228,7 @@ const projectData = [
     id: 'content-calendar',
     name: 'Content Calendar',
     status: 'parked',
+    outcome: null,
     priority: 'low',
     client: 'Personal',
     domain: 'work',
@@ -2205,13 +2248,14 @@ const projectData = [
   {
     id: 'content-curation-and-creation-system',
     name: 'Content Curation and Creation System',
-    status: 'closed',
-    priority: 'low',
+    status: 'ended',
+    outcome: 'completed',
+    priority: 'not-applicable',
     client: 'Personal',
     domain: 'work',
     target_date: null,
-    closed_date: null,
-    lastUpdated: '2026-07-21',
+    closed_date: '2026-11-09',
+    lastUpdated: '2026-11-09',
     linked_goals: [],
     linked_people: [],
     tags: ['content', 'writing', 'system', 'ai', 'craft'],
@@ -2226,18 +2270,19 @@ const projectData = [
     id: 'content-input-system',
     name: 'Content Input System',
     status: 'planning',
+    outcome: null,
     priority: 'medium',
     client: 'Personal',
     domain: 'work',
     target_date: null,
     closed_date: null,
-    lastUpdated: '2026-10-06',
+    lastUpdated: '2026-11-09',
     linked_goals: [],
     linked_people: [],
     tags: ['content', 'news', 'newsletters', 'podcasts', 'information-architecture', 'ai'],
     why: 'Peter names a lack of a system for content consumption by category. His inbox is "a mountain of unread newsletters" and there is a matching mountain of podcasts, some important to keeping up with AI. Requested by Peter on 2026-10-06 as a project with sub-projects. Source: [[2026-10-06-remembering-app-morning-audio-structural-support-for-habits-and-the-systems-gap]].',
     next_action: 'Peter and Max decide the parent and sub-project structure.',
-    attention: 'monitor',
+    attention: 'focus',
     quick_win: null,
     action_points: ['Peter and Max decide the parent and sub-project structure.'],
     artifacts: []
@@ -2245,19 +2290,20 @@ const projectData = [
   {
     id: 'convert-ny-license-fl',
     name: 'Convert NY License to Florida Driver\'s License',
-    status: 'parked',
+    status: 'active',
+    outcome: null,
     priority: 'medium',
     client: 'Personal',
     domain: 'self',
     target_date: null,
     closed_date: null,
-    lastUpdated: '2026-08-30',
+    lastUpdated: '2026-11-09',
     linked_goals: [],
     linked_people: [],
     tags: ['admin', 'florida', 'license', 'usa'],
     why: 'Converting expired NY license to Florida — on hold pending a decision on whether pursuing it is worth the residency complexity.',
     next_action: 'Make the call: is it worth doing given the expired NY license and residency complexity?',
-    attention: 'waiting',
+    attention: 'focus',
     quick_win: 'Ask the value of this in a Claude session.',
     action_points: ['Make the call: is it worth doing given the expired NY license and residency complexity?', 'If proceeding: confirm FL DMV requirements and gather two FL address proofs', '2026-10-31 (Peter, weekly session): Max opens a short session that starts with questions, then a written pros and cons on replacing the NY license with a Florida one (benefits of holding a valid US license; worst case of moving back; the sworn residency statement, with Harvey). Peter only reads it. Working idea: a trip to Orlando with Camy in early February 2027, before the 2027-02-24 window closes. Verify the one-year window against the Florida DMV.'],
     artifacts: []
@@ -2265,13 +2311,14 @@ const projectData = [
   {
     id: 'craft-migration',
     name: 'Craft Migration',
-    status: 'closed',
-    priority: 'medium',
+    status: 'ended',
+    outcome: 'completed',
+    priority: 'not-applicable',
     client: 'Personal',
     domain: 'self',
     target_date: '2026-09-30',
     closed_date: '2026-08-17',
-    lastUpdated: '2026-10-11',
+    lastUpdated: '2026-11-09',
     linked_goals: [],
     linked_people: [],
     tags: ['system', 'craft', 'ssot'],
@@ -2286,6 +2333,7 @@ const projectData = [
     id: 'dexter-borde-injury-claim',
     name: 'Dexter Borde Personal Injury Claim',
     status: 'active',
+    outcome: null,
     priority: 'low',
     client: 'Personal',
     domain: 'money',
@@ -2305,13 +2353,14 @@ const projectData = [
   {
     id: 'dutch-apartment',
     name: 'Dutch Apartment',
-    status: 'closed',
-    priority: 'low',
+    status: 'ended',
+    outcome: 'completed',
+    priority: 'not-applicable',
     client: 'Personal',
     domain: 'self',
     target_date: null,
     closed_date: '2018-12-31',
-    lastUpdated: '2026-08-30',
+    lastUpdated: '2026-11-09',
     linked_goals: [],
     linked_people: [],
     tags: ['netherlands', 'property', 'real-estate'],
@@ -2326,6 +2375,7 @@ const projectData = [
     id: 'dutch-citizenship',
     name: 'Dutch Citizenship Documentation',
     status: 'parked',
+    outcome: null,
     priority: 'medium',
     client: 'Personal',
     domain: 'self',
@@ -2348,18 +2398,19 @@ const projectData = [
     id: 'dutch-language-practice',
     name: 'Dutch Language Practice',
     status: 'active',
-    priority: 'high',
+    outcome: null,
+    priority: 'medium',
     client: 'Personal',
     domain: 'play',
     target_date: '2027-07-01',
     closed_date: null,
-    lastUpdated: '2026-08-30',
+    lastUpdated: '2026-11-09',
     linked_goals: ['learn-to-speak-dutch'],
     linked_people: ['walter-galesloot', 'nicolette-galesloot'],
     tags: ['dutch', 'language', 'play', 'family', 'audio'],
     why: 'Dutch connects Peter to his father, his brother Walter, his sister Nicolette, and a part of himself he spent sixteen years living inside. The goal is not tourist Dutch — it is genuine fluency with a proper Netherlands accent. The September 2026 trip to the Netherlands is the first real-world test. Dutch citizenship, if pursued, makes the language even more meaningful.',
     next_action: 'Build a listening tracker: count how many times each story has been played, with a target-frequency measure (originally framed as 7x/week per story, but as the library grows the better measure is likely daily app use rather than per-story frequency — Peter flagged this open question 2026-07-10, see [[2026-07-10-camy-recovery-and-system-friction]]).',
-    attention: 'maintain',
+    attention: 'focus',
     quick_win: 'Create shorter stories and a tracker to track how many times I listened to the dutch audio, or how many minutes I used the app every day.',
     action_points: ['Build a listening tracker: count how many times each story has been played, with a target-frequency measure (originally framed as 7x/week per story, but as the library grows the better measure is likely daily app use rather than per-story frequency — Peter flagged this open question 2026-07-10, see [[2026-07-10-camy-recovery-and-system-friction]]).', 'Resolve "Gales"/"Galesloot" pronunciation inconsistency — phoneme tags in place but MaartenNeural still inconsistent across occurrences; try alternative IPA or different voice', 'Enter Azure Speech and Translator keys in the app Settings modal on first use at the GitHub Pages URL', 'Begin daily listening practice with the existing "About me" narrative (Dutch Practice App or existing MP3)', 'Build Clear Audio button — no current UI to delete saved audio without deleting the whole story', 'Resolve Anthropic API payment issue (cards declined in TT) to unlock the Explain feature (select Dutch text → grammar explanation)'],
     artifacts: [
@@ -2370,6 +2421,7 @@ const projectData = [
     id: 'fiduciary-follow-up',
     name: 'Fiduciary Follow-up',
     status: 'active',
+    outcome: null,
     priority: 'high',
     client: 'Personal',
     domain: 'money',
@@ -2390,18 +2442,19 @@ const projectData = [
     id: 'file-management',
     name: 'File Management',
     status: 'active',
+    outcome: null,
     priority: 'medium',
     client: 'Personal',
     domain: 'work',
     target_date: null,
     closed_date: null,
-    lastUpdated: '2026-10-02',
+    lastUpdated: '2026-11-09',
     linked_goals: [],
     linked_people: [],
     tags: ['mac', 'files', 'storage', 'ming', 'silas', 'organization'],
     why: 'No reliable system exists for managing files across Mac, cloud storage, or physical media. The result is messy folders, duplicates, no backup strategy, and difficulty finding documents. This project is about building a rock-solid file and cloud foundation with redundancy and efficiency at its core.',
     next_action: '**Q&A intake session** — Peter and the responsible agent (Ming) work through current state, priorities, and location-by-location vs. holistic approach decision',
-    attention: 'monitor',
+    attention: 'focus',
     quick_win: 'Confirm whether `File_Management_System.xlsx` and `Documents_Organization_Plan.txt` still exist — unblocks resuming without redoing prior work',
     action_points: ['**Q&A intake session** — Peter and the responsible agent (Ming) work through current state, priorities, and location-by-location vs. holistic approach decision', 'Based on Q&A: agree on assessment order (MacBook → iCloud → Google Drive → external, or cross-location)', 'Phase 1: Reconnaissance — map all repositories (paths, sizes, dates, types; no content read)', 'Phase 2: Duplicate detection and removal (exact hash match; Peter approves summary before deletion)', 'Phase 3: Taxonomy proposal — Ming recommends new top-level hierarchy', 'Phase 4: Folder-level mapping and execution (Peter approves at folder level)', 'Phase 5: Maintenance routine setup for Desktop and Downloads'],
     artifacts: []
@@ -2410,6 +2463,7 @@ const projectData = [
     id: 'gales-signature-speech',
     name: 'Gales Signature Speech',
     status: 'parked',
+    outcome: null,
     priority: 'high',
     client: 'Personal',
     domain: 'work',
@@ -2430,12 +2484,13 @@ const projectData = [
     id: 'golfers-elbow-rehab',
     name: 'Resolve Golfer\'s Elbow (Right Arm)',
     status: 'active',
-    priority: 'high',
+    outcome: null,
+    priority: 'medium',
     client: 'Personal',
     domain: 'body',
     target_date: '2026-12-31',
     closed_date: null,
-    lastUpdated: '2026-10-11',
+    lastUpdated: '2026-11-17',
     linked_goals: ['achieve-running-jumping-fitness'],
     linked_people: [],
     tags: ['body', 'rehab', 'elbow'],
@@ -2450,6 +2505,7 @@ const projectData = [
     id: 'happiness-is-np45',
     name: 'Happiness is NP45',
     status: 'active',
+    outcome: null,
     priority: 'medium',
     client: 'Personal',
     domain: 'money',
@@ -2469,13 +2525,14 @@ const projectData = [
   {
     id: 'has-phase-1-roadmap',
     name: 'HAS Phase 1 Roadmap',
-    status: 'archived',
-    priority: 'high',
+    status: 'ended',
+    outcome: 'abandoned',
+    priority: 'not-applicable',
     client: 'Personal',
     domain: 'work',
     target_date: null,
-    closed_date: null,
-    lastUpdated: '2026-08-24',
+    closed_date: '2026-11-09',
+    lastUpdated: '2026-11-09',
     linked_goals: [],
     linked_people: [],
     tags: ['strategy', 'human-alignment-strategist', 'roadmap', 'phase-1', 'superseded'],
@@ -2489,13 +2546,14 @@ const projectData = [
   {
     id: 'higbee-copyright-claims',
     name: 'Higbee & Associates Copyright Claims Defense',
-    status: 'closed',
-    priority: 'high',
+    status: 'ended',
+    outcome: 'completed',
+    priority: 'not-applicable',
     client: 'Personal',
     domain: 'work',
     target_date: null,
     closed_date: '2026-07-17',
-    lastUpdated: '2026-07-21',
+    lastUpdated: '2026-11-09',
     linked_goals: [],
     linked_people: [],
     tags: ['legal', 'copyright', 'peteranthonygales.com'],
@@ -2510,18 +2568,19 @@ const projectData = [
     id: 'house-renovation',
     name: 'House Renovation',
     status: 'planning',
+    outcome: null,
     priority: 'medium',
     client: 'Personal',
     domain: 'money',
     target_date: '2027-12-31',
     closed_date: null,
-    lastUpdated: '2026-10-24',
+    lastUpdated: '2026-11-09',
     linked_goals: [],
     linked_people: ['tyrel-olivier', 'donna-woon-sam', 'calvert-craigg'],
     tags: ['home', 'renovation', 'trinidad'],
     why: 'The family home in Trinidad was built by Peter\'s mother in the 1970s. She later expanded it to include an annex for Peter\'s brother Dario and his family. The house is now aging and needs significant renovation work. Peter sees restoring it as meaningful — both practically and symbolically.',
     next_action: 'Create a full list of needed repairs and improvements',
-    attention: 'waiting',
+    attention: 'focus',
     quick_win: 'Schedule a one to two pomodoro session to this planning.',
     action_points: ['Create a full list of needed repairs and improvements', 'Consult with Tyrel on scope', 'Research costs and sequencing'],
     artifacts: []
@@ -2529,13 +2588,14 @@ const projectData = [
   {
     id: 'human-alignment-thesis',
     name: 'Human Alignment Thesis',
-    status: 'archived',
-    priority: 'high',
+    status: 'ended',
+    outcome: 'abandoned',
+    priority: 'not-applicable',
     client: 'Personal',
     domain: 'work',
     target_date: '2027-06-30',
-    closed_date: null,
-    lastUpdated: '2026-10-28',
+    closed_date: '2026-11-09',
+    lastUpdated: '2026-11-09',
     linked_goals: [],
     linked_people: [],
     tags: ['human-alignment', 'thesis', 'speaking', 'keynote', 'content-platform'],
@@ -2550,6 +2610,7 @@ const projectData = [
     id: 'incapacity-and-emergency-access-planning',
     name: 'Incapacity and Emergency Access Planning',
     status: 'active',
+    outcome: null,
     priority: 'high',
     client: 'Personal',
     domain: 'money',
@@ -2570,12 +2631,13 @@ const projectData = [
     id: 'income-and-offer-clarity',
     name: 'Income and Offer Clarity',
     status: 'planning',
+    outcome: null,
     priority: 'high',
     client: 'Personal',
     domain: 'work',
     target_date: '2026-11-30',
     closed_date: null,
-    lastUpdated: '2026-10-11',
+    lastUpdated: '2026-10-31',
     linked_goals: ['own-a-category-and-100k-tt-2026', 'build-ai-knowledge-and-offer'],
     linked_people: [],
     tags: ['income', 'offer', 'positioning', 'strategy'],
@@ -2590,12 +2652,13 @@ const projectData = [
     id: 'jamaica-observer-ai-adoption',
     name: 'Jamaica Observer AI Adoption Advisory',
     status: 'parked',
-    priority: 'medium',
+    outcome: null,
+    priority: 'low',
     client: 'Jamaica Observer',
     domain: 'work',
     target_date: '2026-12-31',
     closed_date: null,
-    lastUpdated: '2026-07-25',
+    lastUpdated: '2026-11-09',
     linked_goals: [],
     linked_people: ['dominic-beaubrun', 'leslie-leefook'],
     tags: ['ai-education', 'advisory', 'consulting'],
@@ -2609,13 +2672,14 @@ const projectData = [
   {
     id: 'kirtan-choir',
     name: 'Kirtan Choir',
-    status: 'idea',
+    status: 'planning',
+    outcome: null,
     priority: 'low',
     client: 'Personal',
     domain: 'spirituality',
     target_date: null,
     closed_date: null,
-    lastUpdated: '2026-10-30',
+    lastUpdated: '2026-11-09',
     linked_goals: [],
     linked_people: ['camille-ojar'],
     tags: ['singing', 'community', 'spirituality'],
@@ -2630,6 +2694,7 @@ const projectData = [
     id: 'landcomtt-ai-invoicing',
     name: 'LandcomTT AI Invoicing Automation',
     status: 'parked',
+    outcome: null,
     priority: 'low',
     client: 'Personal',
     domain: 'work',
@@ -2650,6 +2715,7 @@ const projectData = [
     id: 'last-will-and-testament-planning',
     name: 'Last Will & Testament (Peter)',
     status: 'planning',
+    outcome: null,
     priority: 'high',
     client: 'Personal',
     domain: 'money',
@@ -2670,12 +2736,13 @@ const projectData = [
     id: 'left-quad-tendon-rehab',
     name: 'Left Quadriceps Tendon Rehab',
     status: 'active',
-    priority: 'high',
+    outcome: null,
+    priority: 'low',
     client: 'Personal',
     domain: 'body',
     target_date: '2026-12-31',
     closed_date: null,
-    lastUpdated: '2026-10-02',
+    lastUpdated: '2026-11-09',
     linked_goals: ['achieve-running-jumping-fitness'],
     linked_people: ['dr-sean-lewis'],
     tags: ['body', 'rehab', 'knee', 'tendon', 'quad'],
@@ -2690,6 +2757,7 @@ const projectData = [
     id: 'little-amazon-onboarding-system',
     name: 'Little Amazon Onboarding System',
     status: 'parked',
+    outcome: null,
     priority: 'low',
     client: 'Personal',
     domain: 'work',
@@ -2710,6 +2778,7 @@ const projectData = [
     id: 'make-tnt-sweet-again',
     name: 'Make T&T Sweet Again',
     status: 'active',
+    outcome: null,
     priority: 'low',
     client: 'Personal',
     domain: 'work',
@@ -2737,6 +2806,7 @@ const projectData = [
     id: 'making-integrity-sexy',
     name: 'Making Integrity Sexy',
     status: 'parked',
+    outcome: null,
     priority: 'low',
     client: 'Personal',
     domain: 'work',
@@ -2756,19 +2826,20 @@ const projectData = [
   {
     id: 'market-input-scout-activation',
     name: 'Market Input — Scout Activation',
-    status: 'planning',
-    priority: 'medium',
+    status: 'active',
+    outcome: null,
+    priority: 'high',
     client: 'Personal',
     domain: 'work',
     target_date: null,
     closed_date: null,
-    lastUpdated: '2026-10-27',
+    lastUpdated: '2026-11-09',
     linked_goals: [],
     linked_people: [],
     tags: ['scout', 'content', 'market-intelligence'],
     why: 'Peter wants a standing intelligence feed under one umbrella — "Market Input" — that fuels his content creation and keeps him current in his focus areas: content ideas, market updates, market alerts, and other categories not yet defined. This is a new [[Team/Scout - Environmental Intelligence/AGENTS|Scout]] category onboarding, not a one-off research request — Scout already runs a fully specified category (AI/world intelligence, per SOP-051) but has no live category built yet for Peter\'s own content/market-input use case.',
     next_action: null,
-    attention: 'waiting',
+    attention: 'focus',
     quick_win: null,
     action_points: [],
     artifacts: []
@@ -2777,18 +2848,19 @@ const projectData = [
     id: 'master-bathroom-renovation',
     name: 'Master Bathroom Renovation',
     status: 'planning',
+    outcome: null,
     priority: 'medium',
     client: 'Personal',
     domain: 'money',
     target_date: '2027-03-31',
     closed_date: null,
-    lastUpdated: '2026-10-24',
+    lastUpdated: '2026-11-09',
     linked_goals: [],
     linked_people: [],
     tags: ['home', 'renovation', 'trinidad'],
     why: 'Peter wants to fund and begin the renovation of his bathroom at 45 Ness Place ("Happiness") early next year (target start early 2027). Funding is by selling US dollars; Warren and Ernst join later for the sale and its tax effect. Part of [[house-renovation]].',
     next_action: 'Vision session with Max in the week of 2026-11-02, where Peter describes what he wants. Question list: [[2026-10-24-bathroom-renovation-discovery-questions]].',
-    attention: 'monitor',
+    attention: 'focus',
     quick_win: null,
     action_points: ['Vision session with Max in the week of 2026-11-02, where Peter describes what he wants. Question list: [[2026-10-24-bathroom-renovation-discovery-questions]].', 'After the first session, revisit whether a dedicated agent is needed.', 'Bring in Warren and Ernst for the dollar sale and tax effect.'],
     artifacts: []
@@ -2796,19 +2868,20 @@ const projectData = [
   {
     id: 'max-librarian-reliability-and-foundation-cadence',
     name: 'Max — Librarian Reliability & Foundation Steward Cadence',
-    status: 'active',
-    priority: 'high',
+    status: 'ended',
+    outcome: 'superseded',
+    priority: 'not-applicable',
     client: 'Personal',
     domain: 'self',
     target_date: null,
-    closed_date: null,
-    lastUpdated: '2026-08-30',
+    closed_date: '2026-11-09',
+    lastUpdated: '2026-11-09',
     linked_goals: [],
     linked_people: [],
     tags: ['system', 'max', 'reliability'],
     why: 'Peter asked directly (2026-08-18) whether Max has the proper structures in place to fulfill all four duties (Orchestrator, Librarian, Session-Log Author, Foundation Steward). Honest answer: two do not. This project tracks fixing both, standing, without needing Peter to raise it again.',
     next_action: 'Run the overdue SOP-050 System Retrospective (steps 1–5) — done 2026-08-18, see `Deliverables/2026-08-18-sop050-system-retrospective.md`',
-    attention: 'maintain',
+    attention: null,
     quick_win: null,
     action_points: ['Run the overdue SOP-050 System Retrospective (steps 1–5) — done 2026-08-18, see `Deliverables/2026-08-18-sop050-system-retrospective.md`', 'Step 6 proposal approved by Peter same day: build the gender-pronoun pre-send check + extend it as a CLAUDE.md/AGENTS.md structural-drift check — build dispatched 2026-08-18', 'SOP-050 Step 3a fix: reroute from Ming to Rees, with a carefully scoped standing research brief (source list, cadence, output location) presented to Peter before going live — see [[PKM/Deferred|Deferred]] #73. Explicit priority, not done today.', 'Feed retrospective findings into SOP-050\'s own family-tracking (repair-log.md, constraint-register.md) at the next run', '--', 'First surfaced: 2026-08-18 morning session — Peter\'s direct question "Do you think you have the proper structures in place to fulfill all four?"*'],
     artifacts: []
@@ -2816,13 +2889,14 @@ const projectData = [
   {
     id: 'monthly-checklist-workflow',
     name: 'Monthly Checklist Workflow',
-    status: 'closed',
-    priority: 'low',
+    status: 'ended',
+    outcome: 'completed',
+    priority: 'not-applicable',
     client: 'Personal',
     domain: 'money',
     target_date: null,
     closed_date: '2026-06-13',
-    lastUpdated: '2026-07-21',
+    lastUpdated: '2026-11-09',
     linked_goals: [],
     linked_people: [],
     tags: ['finance', 'automation', 'monthly'],
@@ -2837,6 +2911,7 @@ const projectData = [
     id: 'moxie-storage',
     name: 'Moxie Storage',
     status: 'parked',
+    outcome: null,
     priority: 'low',
     client: 'Personal',
     domain: 'work',
@@ -2856,13 +2931,14 @@ const projectData = [
   {
     id: 'mypka-cockpit-and-dashboard-roles',
     name: 'myPKA Cockpit & Dashboard — roles, document surfacing, and folder navigation',
-    status: 'closed',
-    priority: 'medium',
+    status: 'ended',
+    outcome: 'completed',
+    priority: 'not-applicable',
     client: 'Personal',
     domain: 'self',
     target_date: null,
     closed_date: '2026-07-25',
-    lastUpdated: '2026-07-28',
+    lastUpdated: '2026-11-09',
     linked_goals: [],
     linked_people: [],
     tags: ['peter-os', 'system-design', 'mypka-cockpit'],
@@ -2877,6 +2953,7 @@ const projectData = [
     id: 'name-recall-memory-game',
     name: 'Name-Recall Memory Game',
     status: 'parked',
+    outcome: null,
     priority: 'medium',
     client: 'Personal',
     domain: 'self',
@@ -2896,19 +2973,20 @@ const projectData = [
   {
     id: 'netherlands-departure-checklist',
     name: 'Netherlands Departure Checklist',
-    status: 'closed',
-    priority: 'high',
+    status: 'ended',
+    outcome: 'completed',
+    priority: 'not-applicable',
     client: 'Personal',
     domain: 'self',
     target_date: '2026-09-08',
-    closed_date: null,
-    lastUpdated: '2026-09-08',
+    closed_date: '2026-11-09',
+    lastUpdated: '2026-11-09',
     linked_goals: [],
     linked_people: [],
     tags: ['travel', 'checklist', 'netherlands'],
     why: 'Peter departs for the Netherlands ~2026-09-08 (returns ~09-29). This is a standing, reusable departure checklist — successor to the never-built Canada version ([[Deferred]] #47, closed 2026-08-17, superseded by this) — pulled from what\'s already tracked in the obligation register and active projects rather than started blank, per the original instruction.',
     next_action: 'Revisit this list at each weekly session between now and departure — add items as they surface, check off as resolved.',
-    attention: 'focus',
+    attention: null,
     quick_win: null,
     action_points: ['Revisit this list at each weekly session between now and departure — add items as they surface, check off as resolved.', '--', 'First built: 2026-08-17, SOP-043 weekly session, backlog burn-down batch — successor to [[Deferred]] #47.*'],
     artifacts: []
@@ -2916,19 +2994,20 @@ const projectData = [
   {
     id: 'netherlands-visit-sep-2026',
     name: 'Netherlands Visit Sep 2026',
-    status: 'closed',
-    priority: 'high',
+    status: 'ended',
+    outcome: 'completed',
+    priority: 'not-applicable',
     client: 'Personal',
     domain: 'family',
     target_date: '2026-09-08',
-    closed_date: null,
-    lastUpdated: '2026-10-03',
+    closed_date: '2026-11-09',
+    lastUpdated: '2026-11-11',
     linked_goals: [],
-    linked_people: ['camille-ojar', 'walter-galesloot', 'evelien-brouwers', 'nicolette-galesloot', 'hans-driessen', 'geert', 'johan', 'mia-mathijssen', 'sarah-valk', 'marianne-reinders', 'wia-aalders', 'maarten-burger', 'matthias-niederpruem'],
+    linked_people: ['camille-ojar', 'walter-galesloot', 'evelien-brouwers', 'nicolette-galesloot', 'hans-driessen', 'geert', 'johan', 'mia-mathijssen', 'sarah-valk', 'marianne-reinders', 'wia-alders', 'maarten-burger', 'matthias-niederpruem'],
     tags: ['travel', 'netherlands', 'camy', 'urgent', 'family-reunion'],
     why: 'Reconnecting with family and friends in the Netherlands. More context to be added by Peter in a future session.',
     next_action: 'Alert Walter and Geert of the trip and get availability — done; Walter has now returned a full proposed itinerary (2026-07-13)',
-    attention: 'maintain',
+    attention: null,
     quick_win: 'Agree on go or no go to Lisbon trip and when I will stay with Nicolette',
     action_points: ['Alert Walter and Geert of the trip and get availability — done; Walter has now returned a full proposed itinerary (2026-07-13)', 'Confirm the itinerary back to Walter (WhatsApp group)', 'Pick Belgian city (Bruges/Ghent/Antwerp) and Southern Europe city break destination', 'Confirm exact travel dates and update target_date in frontmatter', 'Lock the two self-booked city-break stays', 'Verify [[asn-bank]] account is active and accessible while abroad'],
     artifacts: []
@@ -2937,6 +3016,7 @@ const projectData = [
     id: 'observer-ai-article-series',
     name: 'Observer AI Article Series — What AI Means for Us in the Caribbean',
     status: 'parked',
+    outcome: null,
     priority: 'low',
     client: 'Jamaica Observer',
     domain: 'work',
@@ -2957,6 +3037,7 @@ const projectData = [
     id: 'paint-front-wall-gates-fences',
     name: 'Paint Front Wall, Gates and Fences — Happiness Is',
     status: 'active',
+    outcome: null,
     priority: 'low',
     client: 'Personal',
     domain: 'money',
@@ -2976,13 +3057,14 @@ const projectData = [
   {
     id: 'pearl-funeral-preparation',
     name: 'Pearl — Funeral Preparation',
-    status: 'active',
-    priority: 'medium',
+    status: 'planning',
+    outcome: null,
+    priority: 'high',
     client: 'Personal',
     domain: 'family',
     target_date: null,
     closed_date: null,
-    lastUpdated: '2026-10-24',
+    lastUpdated: '2026-11-09',
     linked_goals: [],
     linked_people: ['pearl-phillips'],
     tags: ['pearl', 'family', 'eulogy', 'advance-planning'],
@@ -2996,13 +3078,14 @@ const projectData = [
   {
     id: 'pearl-funeral-wishes',
     name: 'Pearl Funeral Wishes and Preparations',
-    status: 'closed',
+    status: 'planning',
+    outcome: null,
     priority: 'high',
     client: 'Personal',
     domain: 'family',
     target_date: null,
     closed_date: '2026-07-17',
-    lastUpdated: '2026-07-21',
+    lastUpdated: '2026-11-09',
     linked_goals: [],
     linked_people: ['pearl-phillips'],
     tags: ['family', 'funeral', 'pearl', 'estate'],
@@ -3017,6 +3100,7 @@ const projectData = [
     id: 'pearl-probate-preparation',
     name: 'Pearl — Probate Preparation',
     status: 'planning',
+    outcome: null,
     priority: 'medium',
     client: 'Personal',
     domain: 'family',
@@ -3037,6 +3121,7 @@ const projectData = [
     id: 'pearly-tax-withholding-review',
     name: 'Pearly Tax Withholding Review',
     status: 'active',
+    outcome: null,
     priority: 'medium',
     client: 'Family',
     domain: 'family',
@@ -3056,13 +3141,14 @@ const projectData = [
   {
     id: 'peter-os-scaffold-setup',
     name: 'Peter OS — Scaffold Setup',
-    status: 'closed',
-    priority: 'low',
+    status: 'ended',
+    outcome: 'completed',
+    priority: 'not-applicable',
     client: 'Personal',
     domain: 'self',
     target_date: '2026-07-01',
     closed_date: '2026-06-17',
-    lastUpdated: '2026-07-21',
+    lastUpdated: '2026-11-09',
     linked_goals: [],
     linked_people: [],
     tags: ['system', 'onboarding', 'closed'],
@@ -3077,6 +3163,7 @@ const projectData = [
     id: 'pgp-workshop',
     name: 'PGP Workshop',
     status: 'parked',
+    outcome: null,
     priority: 'low',
     client: 'Personal',
     domain: 'work',
@@ -3097,6 +3184,7 @@ const projectData = [
     id: 'positioning-what-do-you-do',
     name: '"What do you do?" — Positioning',
     status: 'active',
+    outcome: null,
     priority: 'high',
     client: 'Personal',
     domain: 'work',
@@ -3116,13 +3204,14 @@ const projectData = [
   {
     id: 'proactive-visibility-system',
     name: 'Peter OS — Proactive Visibility System',
-    status: 'closed',
-    priority: 'medium',
+    status: 'ended',
+    outcome: 'completed',
+    priority: 'not-applicable',
     client: 'Personal',
     domain: 'self',
     target_date: '2027-03-31',
     closed_date: '2026-07-17',
-    lastUpdated: '2026-08-30',
+    lastUpdated: '2026-11-09',
     linked_goals: [],
     linked_people: ['jude'],
     tags: ['system-design', 'max', 'agents'],
@@ -3136,13 +3225,14 @@ const projectData = [
   {
     id: 'process-mothers-cabinet-files',
     name: 'Process Mother\'s Cabinet Files',
-    status: 'closed',
-    priority: 'low',
+    status: 'ended',
+    outcome: 'completed',
+    priority: 'not-applicable',
     client: 'Family',
     domain: 'family',
     target_date: '2027-03-31',
     closed_date: '2026-07-17',
-    lastUpdated: '2026-07-21',
+    lastUpdated: '2026-11-09',
     linked_goals: [],
     linked_people: ['pearl-phillips'],
     tags: ['files', 'family', 'organisation'],
@@ -3157,18 +3247,19 @@ const projectData = [
     id: 'processing-and-archival',
     name: 'Processing and Archival',
     status: 'planning',
+    outcome: null,
     priority: 'medium',
     client: 'Personal',
     domain: 'family',
     target_date: null,
     closed_date: null,
-    lastUpdated: '2026-10-24',
+    lastUpdated: '2026-11-09',
     linked_goals: [],
     linked_people: ['pearl-phillips'],
     tags: ['family', 'files', 'archival', 'documents', 'house'],
     why: 'Peter\'s parents left behind several filing cabinets full of old folders — documents accumulated over decades of family life. These files have never been systematically reviewed. Among them may be legal documents, property records, financial records, and personal papers of lasting importance.',
     next_action: 'Count and locate all filing cabinets (house and any other location)',
-    attention: 'monitor',
+    attention: 'focus',
     quick_win: 'Schedule a pomodoro to create a plan to eat the elephant one bite at a time',
     action_points: ['Count and locate all filing cabinets (house and any other location)', 'Begin with the cabinet most likely to hold legal/property documents — search specifically for the deed to 45 Ness Place', 'If deed is not found in the cabinets, contact the family\'s lawyer or T&T Lands and Surveys Division', 'Once deed is located: log it in PKM/Documents/, note physical location, photograph or scan, link to [[happiness-is-np45]]', 'Develop a folder-by-folder processing log as work progresses'],
     artifacts: []
@@ -3177,12 +3268,13 @@ const projectData = [
     id: 'project-vantage',
     name: 'Project Vantage',
     status: 'active',
+    outcome: null,
     priority: 'high',
     client: 'Personal',
     domain: 'self',
     target_date: '2027-06-17',
     closed_date: null,
-    lastUpdated: '2026-10-29',
+    lastUpdated: '2026-11-09',
     linked_goals: [],
     linked_people: [],
     tags: ['mission', 'peter-os', 'system-design'],
@@ -3200,12 +3292,13 @@ const projectData = [
     id: 'projects-dashboard',
     name: 'Projects Dashboard',
     status: 'active',
-    priority: 'high',
+    outcome: null,
+    priority: 'low',
     client: 'Personal',
     domain: 'self',
     target_date: null,
     closed_date: null,
-    lastUpdated: '2026-08-30',
+    lastUpdated: '2026-11-09',
     linked_goals: [],
     linked_people: [],
     tags: ['system', 'dashboard', 'visibility'],
@@ -3220,6 +3313,7 @@ const projectData = [
     id: 'receipts-capture',
     name: 'Receipts Capture System',
     status: 'planning',
+    outcome: null,
     priority: 'low',
     client: 'Personal',
     domain: 'work',
@@ -3240,38 +3334,40 @@ const projectData = [
     id: 'remembering-app',
     name: 'Remembering App',
     status: 'active',
+    outcome: null,
     priority: 'high',
     client: 'Personal',
     domain: 'self',
     target_date: '2027-03-31',
     closed_date: null,
-    lastUpdated: '2026-10-28',
+    lastUpdated: '2026-11-13',
     linked_goals: ['meditation-and-remembering-goal'],
     linked_people: ['camille-ojar'],
-    tags: ['self', 'identity', 'design', 'iris', 'pgp', 'integrity'],
+    tags: ['self', 'identity', 'design', 'charta', 'pgp', 'integrity'],
     why: 'Peter wants a personal version of the Remembering app — a daily practice of returning to his centre. The output is screensavers for his iPhone and desktop displaying quotes and reminders about who he is and what he is creating. The goal is to interrupt drift and reinforce identity on a daily basis.',
     next_action: '**2026-10-24:** Plan how content from various sources is fed in. First step: identify the content Peter wants to be exposed to, and how and when. Practice reminders (Dutch, bongo) and a quotes rotation will use it. Estimated 1 hour next week.',
     attention: 'monitor',
     quick_win: 'Describe MVP. Look for competitive offers. Schedule session to fully describe the remembering app',
-    action_points: ['**2026-10-24:** Plan how content from various sources is fed in. First step: identify the content Peter wants to be exposed to, and how and when. Practice reminders (Dutch, bongo) and a quotes rotation will use it. Estimated 1 hour next week.', '**2026-07-25 (SOP-043):** Hold a session to fully describe the MVP — sequenced after Monday\'s narrative-spine session (Thu 07-30, Block 1) since both draw on the same personal-narrative/PGP material.', '**New (2026-07-17):** Document the two new ideas prominently in the app\'s core explanation — morning content curation vs. news, and a religious-app market comparison (starting with Hinduism)', '**Prerequisite — content migration check:** Confirm all relevant PGP content (affirmations, prayers, creeds, Field Training material, Avatar content, Peter\'s own writing) has been migrated from Craft and other sources into the vault. Do not begin the practice until this is verified.', 'Rate existing affirmation statements 1–10 in the content Google Sheet', 'Define the content scope: whose words, what themes', 'Brief Iris on the visual treatment', 'Build a small quote bank to seed the first screensavers', 'Decide: personal practice first, then commercial? Or develop in parallel?'],
+    action_points: ['**2026-10-24:** Plan how content from various sources is fed in. First step: identify the content Peter wants to be exposed to, and how and when. Practice reminders (Dutch, bongo) and a quotes rotation will use it. Estimated 1 hour next week.', '**2026-07-25 (SOP-043):** Hold a session to fully describe the MVP — sequenced after Monday\'s narrative-spine session (Thu 07-30, Block 1) since both draw on the same personal-narrative/PGP material.', '**New (2026-07-17):** Document the two new ideas prominently in the app\'s core explanation — morning content curation vs. news, and a religious-app market comparison (starting with Hinduism)', '**Prerequisite — content migration check:** Confirm all relevant PGP content (affirmations, prayers, creeds, Field Training material, Avatar content, Peter\'s own writing) has been migrated from Craft and other sources into the vault. Do not begin the practice until this is verified.', 'Rate existing affirmation statements 1–10 in the content Google Sheet', 'Define the content scope: whose words, what themes', 'Brief Charta on the visual treatment', 'Build a small quote bank to seed the first screensavers', 'Decide: personal practice first, then commercial? Or develop in parallel?'],
     artifacts: []
   },
   {
     id: 'renewable-energy-learning',
     name: 'Renewable Energy Learning',
     status: 'planning',
+    outcome: null,
     priority: 'medium',
     client: 'Personal',
     domain: 'education',
     target_date: null,
     closed_date: null,
-    lastUpdated: '2026-10-06',
+    lastUpdated: '2026-11-09',
     linked_goals: [],
     linked_people: [],
     tags: ['renewable-energy', 'learning', 'gemini', 'ceal-green'],
     why: 'Peter wants a structured education on renewable energy, tied to his chosen directions and his involvement with [[ceal-green]]. Source: [[2026-10-06-remembering-app-morning-audio-structural-support-for-habits-and-the-systems-gap]].',
     next_action: 'List the renewable energy topics to learn, in priority order.',
-    attention: 'monitor',
+    attention: 'focus',
     quick_win: 'Continue the Gemini electricity session',
     action_points: ['List the renewable energy topics to learn, in priority order.'],
     artifacts: []
@@ -3280,6 +3376,7 @@ const projectData = [
     id: 'replacement-maintenance-tracker',
     name: 'Create Replacement and Maintenance Tracker',
     status: 'parked',
+    outcome: null,
     priority: 'low',
     client: 'Personal',
     domain: 'money',
@@ -3300,18 +3397,19 @@ const projectData = [
     id: 'sagicor-health-claims-automation',
     name: 'Sagicor Health Claims Automation',
     status: 'parked',
+    outcome: null,
     priority: 'medium',
     client: 'Personal',
     domain: 'money',
     target_date: null,
     closed_date: null,
-    lastUpdated: '2026-09-08',
+    lastUpdated: '2026-11-09',
     linked_goals: [],
     linked_people: ['gary-almandoz', 'jeannine-dieffenthaller', 'dr-nicola-alcala'],
     tags: ['insurance', 'health', 'automation', 'finance'],
     why: 'Peter has a $10,000/calendar-year deductible on his Sagicor Health Protector policy ([[health-insurance-sagicor]]) and needs every medical expense tracked against it — otherwise there\'s no way to know how much of the deductible has been met, or when coverage kicks in for the year. Filing itself is also manual and multi-step today (see [[sagicor-health-claims-filing-workflow]]): photograph the claim form/receipts, route through Scanner Pro and Google Drive, assemble and send an email to Sagicor, log the submission separately. Peter wants this to work the way [[monthly-checklist-workflow]] does — he supplies the raw material (claim forms, receipts), and an automation does as much of the assembly/filing/logging as possible.',
     next_action: '**Deferred by Peter to October 2026** (2026-08-29) — do not surface or offer to schedule the briefing session before then. Peter reiterated wanting the automation on 2026-09-08 (departure day) — this is a second data point, not a request to move the date up.',
-    attention: null,
+    attention: 'dormant',
     quick_win: null,
     action_points: ['**Deferred by Peter to October 2026** (2026-08-29) — do not surface or offer to schedule the briefing session before then. Peter reiterated wanting the automation on 2026-09-08 (departure day) — this is a second data point, not a request to move the date up.', 'Schedule the dedicated briefing session Peter asked for.', 'At that session: confirm scope against [[sagicor-health-claims-filing-workflow]]\'s existing notes, decide where the deductible running total lives, and assign a specialist (likely Mack for the automation, Silas if a new tracking store is needed).', 'Log the known pending claims above (Dr. Lewis 2026-08-28, DPT shot 2026-09-07, Dr. Alcala visits, Dr. Lewis pre-departure visits, blood test) once the filing/tracking mechanism exists.', '**Return-from-trip reminder (Peter\'s explicit ask, 2026-09-08):** on his return from the Netherlands, file the $450 DPT/tetanus claim and the outstanding Dr. Lewis visit claims with Sagicor. See flag in `agent-flags.md`.'],
     artifacts: []
@@ -3320,6 +3418,7 @@ const projectData = [
     id: 'tt-news-summary',
     name: 'Trinidad and Tobago News Summary',
     status: 'parked',
+    outcome: null,
     priority: 'low',
     client: 'Personal',
     domain: 'work',
@@ -3340,6 +3439,7 @@ const projectData = [
     id: 'watchwords-speech',
     name: 'Watchwords Speech',
     status: 'planning',
+    outcome: null,
     priority: 'low',
     client: 'Personal',
     domain: 'work',
@@ -3360,6 +3460,7 @@ const projectData = [
     id: 'website-update',
     name: 'Website Update',
     status: 'active',
+    outcome: null,
     priority: 'low',
     client: 'Personal',
     domain: 'work',
@@ -3380,6 +3481,7 @@ const projectData = [
     id: 'what-kind-of-a-person-are-you',
     name: 'What Kind of a Person Are You',
     status: 'parked',
+    outcome: null,
     priority: 'low',
     client: 'Personal',
     domain: 'work',
@@ -3399,19 +3501,20 @@ const projectData = [
   {
     id: 'window-arranger-app',
     name: 'Window Arranger App',
-    status: 'planning',
-    priority: 'medium',
+    status: 'active',
+    outcome: null,
+    priority: 'low',
     client: 'Personal',
     domain: 'education',
     target_date: null,
     closed_date: null,
-    lastUpdated: '2026-10-28',
+    lastUpdated: '2026-11-09',
     linked_goals: ['build-ai-knowledge-and-offer'],
     linked_people: [],
     tags: ['ai', 'build', 'mac', 'automation', 'needs-definition'],
     why: 'Peter often needs two or three apps visible at once to get work done, and loses time finding where each one is (which screen, which Space). He moves apps by hand into a shared Space or onto the other display, or layers them so one edge shows. The goal is a personal Mac tool: select the open apps or documents that matter right now, and have them laid out for simultaneous visibility using the screen space available (sometimes only the MacBook, sometimes the MacBook plus the HP monitor).',
     next_action: null,
-    attention: null,
+    attention: 'monitor',
     quick_win: null,
     action_points: [],
     artifacts: []
@@ -3420,6 +3523,7 @@ const projectData = [
     id: 'wise-while-wrong',
     name: 'Wise While Wrong',
     status: 'parked',
+    outcome: null,
     priority: 'low',
     client: 'Personal',
     domain: 'work',
@@ -3439,13 +3543,14 @@ const projectData = [
   {
     id: 'work-area-cleanup',
     name: 'Work Area Cleanup and Organization',
-    status: 'closed',
-    priority: 'low',
+    status: 'ended',
+    outcome: 'completed',
+    priority: 'not-applicable',
     client: 'Personal',
     domain: 'self',
     target_date: null,
     closed_date: '2026-07-17',
-    lastUpdated: '2026-07-21',
+    lastUpdated: '2026-11-09',
     linked_goals: [],
     linked_people: [],
     tags: ['home', 'workspace', 'organization'],
@@ -3460,6 +3565,7 @@ const projectData = [
     id: 'writing-production-system',
     name: 'Writing Production System',
     status: 'planning',
+    outcome: null,
     priority: 'high',
     client: 'Personal',
     domain: 'work',
@@ -3494,8 +3600,8 @@ const domainColors = {
   work:        { bg: '#9B2D30', text: '#F9F7F2' }, // Garnet
 };
 
-const priorityOrder  = { high: 0, medium: 1, low: 2 };
-const statusOrder    = { active: 0, planning: 1, parked: 2, closed: 3 };
+const priorityOrder  = { high: 0, medium: 1, low: 2, 'not-applicable': 3 };
+const statusOrder    = { active: 0, planning: 1, parked: 2, ended: 3 };
 const attentionOrder = { focus: 0, waiting: 1, monitor: 2, maintain: 3 };
 
 const DOMAIN_GROUPS = [
@@ -3512,6 +3618,7 @@ const DOMAIN_GROUPS = [
 // STATE
 // ============================================================
 let activeStatusFilter   = 'all';
+let showEnded            = false; // ended projects hidden by default
 let activeDomainFilter   = 'all';
 let activePriorityFilter = 'all';
 let activeClientFilter   = 'all';
@@ -3539,14 +3646,17 @@ function completenessScore(p) {
 // ============================================================
 // RENDER HELPERS
 // ============================================================
-function statusBadge(status) {
+function statusBadge(status, outcome) {
   const label = status.charAt(0).toUpperCase() + status.slice(1);
-  return `<span class="badge badge-status-${status}">${label}</span>`;
+  const out = (status === 'ended' && outcome)
+    ? ` <span class="badge-status-outcome">· ${outcome.charAt(0).toUpperCase() + outcome.slice(1)}</span>` : '';
+  return `<span class="badge badge-status-${status}">${label}${out}</span>`;
 }
 
 function priorityBadge(priority) {
   if (!priority) return '<span style="color:var(--color-neutral-3);font-size:12px;">—</span>';
-  return `<span class="badge badge-priority-${priority}">${priority.toUpperCase()}</span>`;
+  const label = priority === 'not-applicable' ? 'N/A' : priority.toUpperCase();
+  return `<span class="badge badge-priority-${priority}">${label}</span>`;
 }
 
 function attentionBadge(attention) {
@@ -3595,7 +3705,8 @@ function formatGoals(arr) {
 // BUILD STATS — total count in header
 // ============================================================
 function buildStats() {
-  document.getElementById('totalCount').textContent = projectData.length;
+  const shown = showEnded ? projectData.length : projectData.filter(p => p.status !== 'ended').length;
+  document.getElementById('totalCount').textContent = shown;
 }
 
 // ============================================================
@@ -3625,6 +3736,8 @@ function applyFilters() {
 
   // Filter
   let filtered = projectData.filter(p => {
+    // Ended projects are hidden unless the toggle is on or the Status filter asks for them
+    if (p.status === 'ended' && !showEnded && activeStatusFilter !== 'ended') return false;
     if (activeStatusFilter !== 'all' && p.status !== activeStatusFilter) return false;
     if (activeDomainFilter !== 'all') {
       const group = DOMAIN_GROUPS.find(g => g.label === activeDomainFilter);
@@ -3678,6 +3791,11 @@ function applyFilters() {
       default:
         va = 0; vb = 0;
     }
+    if (activeSort === 'priority') {
+      // not-applicable always sorts last, in either direction
+      const na = (x) => x.priority === 'not-applicable';
+      if (na(a) !== na(b)) return na(a) ? 1 : -1;
+    }
     if (va < vb) return -1 * sortDir;
     if (va > vb) return 1 * sortDir;
     return 0;
@@ -3730,7 +3848,7 @@ function renderTable(projects) {
       </div>
       <div class="project-cell">${attentionBadge(p.attention)}</div>
       <div class="project-cell">${priorityBadge(p.priority)}</div>
-      <div class="project-cell">${statusBadge(p.status)}</div>
+      <div class="project-cell">${statusBadge(p.status, p.outcome)}</div>
       <div class="project-cell">${domainChip(p.domain)}</div>
       <div class="project-cell" style="font-size:12px;color:var(--color-neutral-3);">${p.client || '—'}</div>
       <div class="project-cell"><span class="${age.cls}" style="font-size:12px;">${age.label}</span></div>
@@ -3749,7 +3867,7 @@ function openModal(id) {
   document.getElementById('modalTitle').textContent = p.name;
 
   // Meta row
-  let metaHTML = statusBadge(p.status) + ' ';
+  let metaHTML = statusBadge(p.status, p.outcome) + ' ';
   metaHTML += priorityBadge(p.priority) + ' ';
   if (p.domain) metaHTML += domainChip(p.domain) + ' ';
   document.getElementById('modalMetaRow').innerHTML = metaHTML;
@@ -3814,7 +3932,7 @@ function openModal(id) {
       <span class="meta-item-value">${p.client || '—'}</span>
     </div>
     <div class="meta-item">
-      <span class="meta-item-label">Closed</span>
+      <span class="meta-item-label">Ended</span>
       <span class="meta-item-value">${formatDate(p.closed_date)}</span>
     </div>
     <div class="meta-item">
@@ -4001,7 +4119,7 @@ function initColumnDropdowns() {
         { value: 'active',   label: 'Active',   count: _fullCounts.statusCounts['active']   || 0 },
         { value: 'planning', label: 'Planning',  count: _fullCounts.statusCounts['planning'] || 0 },
         { value: 'parked',   label: 'Parked',    count: _fullCounts.statusCounts['parked']   || 0 },
-        { value: 'closed',   label: 'Closed',    count: _fullCounts.statusCounts['closed']   || 0 },
+        { value: 'ended',    label: 'Ended',     count: _fullCounts.statusCounts['ended']    || 0 },
       ]
     },
     {
@@ -4011,6 +4129,7 @@ function initColumnDropdowns() {
         { value: 'high',   label: 'High',   count: _fullCounts.priorityCounts['high']   || 0 },
         { value: 'medium', label: 'Medium', count: _fullCounts.priorityCounts['medium'] || 0 },
         { value: 'low',    label: 'Low',    count: _fullCounts.priorityCounts['low']    || 0 },
+        { value: 'not-applicable', label: 'N/A', count: _fullCounts.priorityCounts['not-applicable'] || 0 },
       ]
     },
     {
@@ -4197,7 +4316,7 @@ const artifactsData = [
   { title: 'Doc: Calvert Myelofibrosis Prognosis', date: '2026-06-17', author: 'Doc', purpose: 'Clinical prognosis assessment for Calvert Craigg — asymptomatic MF diagnosed 2026-06-09 by Dr. Moosai. Five key questions for the haematologist; DIPSS tier survival ranges; fibrosis grade significance; natural history; monitoring protocol.', file: 'doc-calvert-myelofibrosis-prognosis-20260617', type: 'Markdown', url: null, project: 'System', client: 'Personal', domain: 'body' },
   { title: 'Maraval Dredging Contacts', date: '2026-06-17', author: 'Rees', purpose: 'Maraval River dredging contact directory for Andalusia Residents Association. Correct authority: DMBC (not "Diego Martin East"). Correct councillor: Damian Fournillier (Moka/Boissiere #2). Government change May 2025 flagged.', file: '2026-06-17-maraval-dredging-contacts', type: 'Markdown', url: null, project: 'ARA', client: 'ARA', domain: 'membership' },
   { title: 'Andalusia Dredging Email Draft', date: '2026-06-18', author: 'Will + Max', purpose: 'Formal email draft — urgent dredging request to DMBC CEO Ms. Beverly Haywood. Copies: Mayor Glasgow-Warner, Councillor Fournillier, Colm Imbert MP, Ministry of Works. Ready to send pending Minister Jearlean John\'s email address confirmation.', file: '2026-06-17-andalusia-dredging-email-draft', type: 'Markdown', url: null, project: 'ARA', client: 'ARA', domain: 'membership' },
-  { title: 'Graphic Design Principles Brief', date: '2026-06-18', author: 'Rees', purpose: 'Robin Williams CRAP/PARC canon + color-in-sequential-layouts research. Grounds GL-003 and Charta/Iris contracts in established doctrine. 8 specific GL-003 recommendations.', file: '2026-06-18-rees-graphic-design-principles-brief', type: 'Markdown', url: null, project: 'System', client: 'Personal', domain: 'self' },
+  { title: 'Graphic Design Principles Brief', date: '2026-06-18', author: 'Rees', purpose: 'Robin Williams CRAP/PARC canon + color-in-sequential-layouts research. Grounds GL-003 and Charta contract in established doctrine. 8 specific GL-003 recommendations.', file: '2026-06-18-rees-graphic-design-principles-brief', type: 'Markdown', url: null, project: 'System', client: 'Personal', domain: 'self' },
   { title: 'Experience Spec', date: '2026-06-17', author: 'Charta', purpose: 'Project Vantage experience spec — Peace / Power / Purpose + Living System. Self-contained HTML using GL-003 design system. Three-pillar architecture with open-bottom pillars on foundation slab. Benchmark review dates: 2026-07-17, 2026-09-17, 2027-06-17. Superseded 2026-07-25 by the two-tab Charter (v5), which folds this spec into its Tab 1.', file: '2026-06-17-project-vantage-experience-spec', type: 'HTML', url: 'https://peterag.github.io/petergales-artifacts/2026-06-17-project-vantage-experience-spec.html', project: 'Project Vantage', client: 'Personal', domain: 'self', status: 'superseded', superseded_date: '2026-07-25' },
   { title: 'Project Vantage', date: '2026-06-18', author: 'Charta', purpose: 'Project Vantage two-tab HTML charter (v5, current — supersedes the 2026-06-17 standalone Experience Spec, which is retired). Tab 1: Peace/Power/Purpose + Living System experience spec. Tab 2: phased build plan (Phases 1-4) with benchmark checkpoint cards.', file: 'project-vantage-charter', type: 'HTML', url: 'https://peterag.github.io/petergales-artifacts/project-vantage-charter.html', project: 'Project Vantage', client: 'Personal', domain: 'self', status: 'current', supersedes: '2026-06-17-project-vantage-experience-spec' },
   { title: 'Projects Dashboard', date: '2026-06-20', author: 'Charta', purpose: 'Living projects dashboard — all PKM projects in a sortable/filterable table. Row-click opens modal with Next Action callout, Steps (numbered/sequential), Action Points (parallel), Completed Steps toggle, document links, metadata grid, completeness bar. 40+ projects loaded. Live at https://peterag.github.io/petergales-artifacts/peter-os-projects-dashboard.html', file: 'peter-os-projects-dashboard', type: 'HTML', url: 'https://peterag.github.io/petergales-artifacts/peter-os-projects-dashboard.html', project: 'Project Vantage', client: 'Personal', domain: 'self' },
